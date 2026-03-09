@@ -1,5 +1,80 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.40
+
+- Lead-Abstand unter Artikeltiteln leicht erhoeht.
+- Typografischer Unterschied zwischen H2 und Fliesstext reduziert.
+- Absatzabstaende innerhalb von Artikeln kompakter gesetzt.
+- Blockstruktur und Linienhierarchie unveraendert beibehalten.
+
+---
+
+## Version 0.39
+
+- Vertikale Abstaende an Artikel-Trennlinien symmetrisch ausgerichtet.
+- Normale Section-Linien und Block-Linien klarer hierarchisiert.
+- Blockwechsel durch staerkere Trennlinien deutlicher hervorgehoben.
+
+---
+
+## Version 0.38
+
+- Abstaende um Trennlinien in Artikelabschnitten symmetrisch ausgerichtet.
+- Vertikale Section-Abstaende kompakter gesetzt.
+- Linienstaerke unveraendert beibehalten.
+
+---
+
+## Version 0.37
+
+- Abstaende innerhalb von Artikelbloecken reduziert.
+- Blockabstaende kompakter gestaltet.
+- Trennlinien symmetrisch zwischen Abschnitten ausgerichtet.
+
+---
+
+
+## Version 0.36
+
+- Blockstruktur im Artikel visuell geschaerft.
+- Geringere Abstaende innerhalb von Bloecken umgesetzt.
+- Deutlich staerkere Trennlinien zwischen Bloecken eingefuehrt.
+
+---
+## Version 0.35
+
+- Blocklogik in `inventar.html` ueber Abstands- und Linienhierarchie geschaerft.
+- Zusammengehoerige Abschnitte innerhalb von Bloecken enger gefasst.
+- Neue Bloecke durch staerkere Trennung klarer erkennbar gemacht.
+
+---
+## Version 0.34
+
+- Blockdarstellung in `inventar.html` gestalterisch entschaerft.
+- Gruppierung staerker ueber Abstaende und Hierarchie statt ueber harte Innenboxen geloest.
+- Wiki-Charakter und Lesefluss im Artikel verbessert.
+
+---
+## Version 0.33
+
+- Artikel-Blöcke horizontal ausgerichtet, um doppelte Einrückung zu vermeiden.
+
+---
+## Version 0.32
+
+- Oberen Einstiegsbereich von `wiki/inventar.html` visuell verfeinert.
+- Lead und Grundlagenblock rhythmischer und leichter gestaltet.
+- Ersten Inhaltsblock gegenueber den unteren Bloecken gezielt differenziert.
+
+---
+## Version 0.31
+
+- Artikeldarstellung in `wiki/inventar.html` um klar erkennbare Inhaltsblöcke erweitert.
+- Logisch zusammengehörige Abschnitte in vier Blockgruppen strukturiert (Grundlagen, Anwendung, Verdichtung, Weiterführend).
+- Interne Abstände innerhalb der Blöcke reduziert und zwischen Blöcken deutlich erhöht.
+- Blöcke visuell dezent getrennt, um die Übersichtlichkeit innerhalb der bestehenden Haupt-Card zu verbessern.
+
+---
 ## Version 0.30
 
 - Offene Konsistenzluecken beim Artikelstandard geschlossen und Dateistand vollstaendig abgeglichen.
@@ -13,7 +88,7 @@
 - Verbindlichen MarktWiki-Artikelstandard in `ARTICLE_RULES.md` konsistent dokumentiert.
 - `wiki/_template.html` vollständig auf den aktuellen Artikelstandard umgestellt.
 - Bestehende Wiki-Artikel strukturell an den Standard angepasst.
-- Backlink auf "← Zurück zur Artikelübersicht" vereinheitlicht.
+- Backlink auf "? Zurück zur Artikelübersicht" vereinheitlicht.
 - Artikelstruktur, Section-Trennung, Lead und Anker-IDs konsistent umgesetzt.
 
 ---
@@ -239,6 +314,13 @@ Datum optional
 - Ã„nderung 1
 - Ã„nderung 2
 - Ã„nderung 3
+
+
+
+
+
+
+
 
 
 

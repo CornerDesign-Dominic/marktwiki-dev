@@ -220,18 +220,23 @@ p {
 }
 
 .wiki-article-header {
-  margin-bottom: 0.3rem;
+  margin-bottom: 1.15rem;
+}
+
+.wiki-article-header .lead {
+  margin-top: 0.7rem;
+  margin-bottom: 0;
 }
 
 .wiki-article p {
   line-height: 1.65;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .wiki-article h2 {
   margin-top: 40px;
   margin-bottom: 10px;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
 }
 
 .wiki-article .lead {
@@ -249,6 +254,62 @@ p {
 .wiki-article .link-list {
   margin-top: 0.4rem;
   padding-left: 1.2rem;
+}
+
+.wiki-article .article-block {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.wiki-article .article-block + .article-block {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 3px solid rgba(255, 255, 255, 0.32);
+}
+
+.wiki-article .article-block-foundation {
+  margin-top: 0.6rem;
+  padding-top: 0;
+}
+
+.wiki-article .article-block .lead {
+  margin-bottom: 1.2rem;
+}
+
+.wiki-article .article-block section {
+  margin-top: 0;
+  padding-top: 0;
+  padding-bottom: 0.625rem;
+  border-top: 0;
+}
+
+.wiki-article .article-block section + section {
+  margin-top: 0;
+  padding-top: 0.625rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wiki-article .article-block section > :first-child {
+  margin-top: 0;
+}
+
+.wiki-article .article-block section > :last-child {
+  margin-bottom: 0;
+}
+
+.wiki-article .article-block section h2 {
+  margin-top: 0;
+  margin-bottom: 0.45rem;
+}
+
+.wiki-article .article-block section:last-child {
+  padding-bottom: 0;
+}
+
+.wiki-article .article-block .link-list {
+  margin-bottom: 0;
 }
 
 .hero {
@@ -1138,6 +1199,21 @@ input[type="number"] {
 
   .segment-value {
     text-align: left;
+  }
+
+  .wiki-article .article-block {
+    padding: 0;
+  }
+
+  .wiki-article .article-block-foundation {
+    margin-top: 0.55rem;
+    padding-top: 0;
+  }
+
+  .wiki-article .article-block + .article-block {
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 3px solid rgba(255, 255, 255, 0.32);
   }
 
   .roi-compare-row {
