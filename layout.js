@@ -274,6 +274,167 @@
     injectMarkup(renderFooter(config), "beforeend");
   }
 
+  function copyWithFallback(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+      return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+      try {
+        const helper = document.createElement("textarea");
+        helper.value = text;
+        helper.setAttribute("readonly", "");
+        helper.style.position = "fixed";
+        helper.style.opacity = "0";
+        document.body.appendChild(helper);
+        helper.select();
+        const successful = document.execCommand("copy");
+        document.body.removeChild(helper);
+        if (successful) {
+          resolve();
+          return;
+        }
+        reject(new Error("Clipboard copy failed"));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  }
+
+  function enhanceDefinitionSection(article) {
+    const definitionHeading = article.querySelector("h2#definition");
+    if (!definitionHeading) {
+      return;
+    }
+
+    const definitionSection = definitionHeading.closest("section");
+    if (!definitionSection || definitionSection.querySelector(".definition-box")) {
+      return;
+    }
+
+    const definitionParagraph = Array.from(definitionSection.children).find((element) => {
+      return element.tagName === "P";
+    });
+
+    if (!definitionParagraph) {
+      return;
+    }
+
+    const definitionBox = document.createElement("div");
+    definitionBox.className = "definition-box";
+    definitionSection.insertBefore(definitionBox, definitionParagraph);
+    definitionBox.appendChild(definitionParagraph);
+
+    const copyButton = document.createElement("button");
+    copyButton.type = "button";
+    copyButton.className = "copy-definition";
+    copyButton.title = "Definition kopieren";
+    copyButton.setAttribute("aria-label", "Definition kopieren");
+    copyButton.textContent = "Kopieren";
+    definitionBox.appendChild(copyButton);
+
+    copyButton.addEventListener("click", async () => {
+      const definitionText = normalizeText(definitionParagraph.textContent);
+      if (!definitionText) {
+        return;
+      }
+
+      const defaultLabel = "Kopieren";
+      copyButton.disabled = true;
+
+      try {
+        await copyWithFallback(definitionText);
+        copyButton.textContent = "Kopiert";
+      } catch (error) {
+        copyButton.textContent = "Fehler";
+        console.error(error);
+      } finally {
+        window.setTimeout(() => {
+          copyButton.textContent = defaultLabel;
+          copyButton.disabled = false;
+        }, 1400);
+      }
+    });
+  }
+
+  function createArticleToc(article, headings) {
+    const toc = document.createElement("section");
+    toc.className = "article-toc";
+    toc.setAttribute("aria-label", "Inhaltsnavigation");
+
+    const heading = document.createElement("h3");
+    heading.textContent = "Inhalt";
+    toc.appendChild(heading);
+
+    const list = document.createElement("ul");
+    headings.forEach((entryHeading) => {
+      const id = normalizeText(entryHeading.id);
+      const label = normalizeText(entryHeading.textContent);
+      if (!id || !label) {
+        return;
+      }
+
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.href = `#${id}`;
+      link.textContent = label;
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+
+    if (!list.children.length) {
+      return null;
+    }
+
+    toc.appendChild(list);
+    return toc;
+  }
+
+  function enhanceArticleToc(article) {
+    if (!article || article.closest(".article-with-toc")) {
+      return;
+    }
+
+    const headings = Array.from(article.querySelectorAll("h2[id]"));
+    if (!headings.length) {
+      return;
+    }
+
+    const shouldShowToc = article.offsetHeight > 900 || headings.length >= 4;
+    if (!shouldShowToc) {
+      return;
+    }
+
+    const toc = createArticleToc(article, headings);
+    if (!toc || !article.parentElement) {
+      return;
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "article-with-toc";
+    article.parentElement.insertBefore(wrapper, article);
+    wrapper.appendChild(toc);
+    wrapper.appendChild(article);
+  }
+
+  function initWikiArticleEnhancements() {
+    const articles = document.querySelectorAll(".wiki-article");
+    if (!articles.length) {
+      return;
+    }
+
+    articles.forEach((article) => {
+      enhanceDefinitionSection(article);
+      enhanceArticleToc(article);
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initWikiArticleEnhancements, { once: true });
+  } else {
+    initWikiArticleEnhancements();
+  }
+
   window.MarktWikiLayout = {
     renderHeader,
     renderFooter,

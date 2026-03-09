@@ -1,5 +1,32 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.43
+
+- `inventar.html` als Referenzartikel fuer Struktur und Layout definiert.
+- Artikelstruktur auf alle Wiki-Fachartikel vereinheitlicht.
+- Definition-Box mit Copy-Funktion als Standardstruktur in Artikeln verankert.
+- Inhaltsnavigation (TOC) als Artikelstandard ueber die globale Artikellogik gefestigt.
+- Artikeltemplate (`wiki/_template.html`) an den Referenzstandard angepasst.
+
+---
+
+## Version 0.42
+
+- TOC links mit dezentem Rahmen als Navigationseinheit praezisiert.
+- Definition-Box horizontal an die Artikelspalte angepasst.
+- Artikellayout weiter verfeinert.
+
+---
+
+## Version 0.41
+
+- Sticky Inhaltsnavigation (TOC) fuer laengere Artikel ergaenzt.
+- Automatische Abschnittsnavigation links neben Artikeln umgesetzt.
+- Definition-Box mit Copy-Funktion eingefuehrt.
+- Artikelnavigation verbessert.
+
+---
+
 ## Version 0.40
 
 - Lead-Abstand unter Artikeltiteln leicht erhoeht.

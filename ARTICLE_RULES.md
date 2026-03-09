@@ -78,3 +78,70 @@ Keine leeren oder erfundenen Links.
 - neutral
 - für jeden verständlich
 - fachlich belastbar
+
+## Verbindlicher Referenzstandard
+
+Der Artikel `wiki/inventar.html` ist der verbindliche Referenzartikel fuer Struktur und Layout von MarktWiki-Artikeln.
+
+Wichtig:
+
+- `wiki/inventar.html` dient als Standardvorlage und darf bei Vereinheitlichungen nicht als Zielartikel umgebaut werden.
+- Neue und bestehende Fachartikel im Ordner `wiki/` muessen sich an diesem Referenzstandard orientieren.
+
+## Verbindliche Abschnittsreihenfolge
+
+Die Reihenfolge ist verbindlich:
+
+1. Titel (H1)
+2. Lead / Einleitung
+3. Definition
+4. Einordnung
+5. Erklaerung
+6. Beispiel
+7. Praxisbezug
+8. Abgrenzung
+9. Zusammenfassung
+10. Aehnliche Themen
+
+## Verbindliche Blockstruktur
+
+Die Abschnitte sind in vier Artikelbloecke zu gruppieren:
+
+- Block 1 (`article-block article-block-foundation`):
+  Lead, Definition, Einordnung, Erklaerung
+- Block 2 (`article-block article-block-application`):
+  Beispiel, Praxisbezug, Abgrenzung
+- Block 3 (`article-block article-block-summary`):
+  Zusammenfassung
+- Block 4 (`article-block article-block-related`):
+  Aehnliche Themen
+
+## Definition-Box und Copy-Funktion
+
+Im Abschnitt `Definition` ist folgende Struktur verpflichtend:
+
+```html
+<div class="definition-box">
+  <p>...</p>
+  <button type="button" class="copy-definition" title="Definition kopieren" aria-label="Definition kopieren">Kopieren</button>
+</div>
+```
+
+Die technische Copy-Funktion wird ueber die globale Artikellogik in `layout.js` bereitgestellt.
+
+## Inhaltsnavigation (TOC)
+
+Wiki-Artikel nutzen eine linke Inhaltsnavigation auf Basis der vorhandenen H2-Anker-IDs.
+
+- Die TOC wird automatisch aus den H2-Abschnitten erzeugt.
+- Die TOC erscheint nur bei ausreichend langen Artikeln.
+- Positionierung und Sticky-Verhalten werden zentral ueber `style.css` und `layout.js` gesteuert.
+
+## Template-Pflicht
+
+`wiki/_template.html` muss denselben strukturellen Standard abbilden:
+
+- identische Abschnittsreihenfolge
+- identische Blockstruktur
+- Definition-Box mit Copy-Button-Markup
+- gleiche Klassenstruktur wie die Referenzimplementierung
