@@ -1,5 +1,13 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.30
+
+- Offene Konsistenzluecken beim Artikelstandard geschlossen und Dateistand vollstaendig abgeglichen.
+- `wiki/_template.html` auf denselben strukturellen Stand wie die modernisierten Artikel gebracht (`wiki-article-header`, Lead, einheitliche Sections und Anker-IDs).
+- Alle vorhandenen Wiki-Artikel auf konsistenten Backlink-Text, Section-Struktur und `link-list` fuer "Aehnliche Themen" vereinheitlicht.
+- Artikelbezogene CSS-Regeln auf wirksame Selektoren abgestimmt (`.wiki-article-header`, `.wiki-article .link-list`) ohne Sonderbreite.
+
+---
 ## Version 0.29
 
 - Verbindlichen MarktWiki-Artikelstandard in `ARTICLE_RULES.md` konsistent dokumentiert.
@@ -231,6 +239,7 @@ Datum optional
 - Ã„nderung 1
 - Ã„nderung 2
 - Ã„nderung 3
+
 
 
 
