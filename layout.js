@@ -249,9 +249,9 @@
         </div>
         <nav class="main-nav" aria-label="Hauptnavigation">
           <ul>
-            ${navLink(basePath, activeNav, "home", "Startseite", "index.html")}
             ${navLink(basePath, activeNav, "terms", "Begriffe", "begriffe.html")}
             ${navLink(basePath, activeNav, "wiki", "Wiki", "wiki/index.html")}
+            ${navLink(basePath, activeNav, "stocks", "Aktien", "aktien.html")}
             ${navLink(basePath, activeNav, "tools", "Werkzeuge", "werkzeuge.html")}
           </ul>
         </nav>
