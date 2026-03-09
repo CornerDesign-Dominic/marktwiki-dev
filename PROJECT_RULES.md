@@ -354,7 +354,6 @@ Der Artikel soll hauptsächlich aus **Fließtext** bestehen.
 Am Ende der Seite können erscheinen:
 
 - verwandte Themen
-- Glossarbegriffe
 - passende Werkzeuge
 
 Ziel:
@@ -388,7 +387,6 @@ Als Startpunkt dient die Vorlage:
 Die JSON-Dateien bleiben fuer bestehende Datenstrukturen nutzbar:
 
 - /data/themen.json
-- /data/begriffe.json
 
 Sie sind fuer neue Wikiartikel jedoch nicht mehr zwingend erforderlich.
 ---

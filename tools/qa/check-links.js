@@ -70,34 +70,19 @@ function checkHtmlFile(htmlPath) {
 
 function checkDataGeneratedLinks() {
   const topicsPath = path.join(dataDir, "themen.json");
-  const termsPath = path.join(dataDir, "begriffe.json");
   const topicDetailPage = path.join(rootDir, "pages", "thema.html");
-  const termDetailPage = path.join(rootDir, "pages", "begriff.html");
 
   let topics;
-  let terms;
 
   try {
     topics = readJsonFile(topicsPath);
   } catch (error) {
-    addIssue("data-link", "data/themen.json", "-", `Kann nicht geprüft werden: ${error.message}`);
-    return;
-  }
-
-  try {
-    terms = readJsonFile(termsPath);
-  } catch (error) {
-    addIssue("data-link", "data/begriffe.json", "-", `Kann nicht geprüft werden: ${error.message}`);
+    addIssue("data-link", "data/themen.json", "-", `Kann nicht geprÃ¼ft werden: ${error.message}`);
     return;
   }
 
   if (!Array.isArray(topics)) {
     addIssue("data-link", "data/themen.json", "-", "Erwartet wird ein Array.");
-    return;
-  }
-
-  if (!Array.isArray(terms)) {
-    addIssue("data-link", "data/begriffe.json", "-", "Erwartet wird ein Array.");
     return;
   }
 
@@ -114,13 +99,6 @@ function checkDataGeneratedLinks() {
 
     if (!targetExists(topicDetailPage)) {
       addIssue("data-link", source, "pages/thema.html", "Fallback-Zielseite pages/thema.html fehlt.");
-    }
-  });
-
-  terms.forEach((term, index) => {
-    const source = `data/begriffe.json[${index}]`;
-    if (!targetExists(termDetailPage)) {
-      addIssue("data-link", source, "pages/begriff.html", "Zielseite pages/begriff.html fehlt.");
     }
   });
 }

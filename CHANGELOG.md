@@ -1,5 +1,18 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.22
+
+- Suchfeld im Header horizontal exakt zentriert und Header-Layout stabilisiert.
+
+---
+## Version 0.21
+
+- Glossar/Begriffe-System vollständig aus dem Projekt entfernt, inklusive Navigation, Datenstruktur und verwaister Logik.
+- Entfernt: `begriffe.html`, `pages/begriff.html`, `data/begriffe.json` sowie alle zugehörigen Links in `sitemap.xml`.
+- Header-Navigation auf die drei Hauptpunkte konsolidiert: Wiki, Aktien, Werkzeuge; globale Suche auf Themenquellen reduziert.
+- JS/CSS/QA bereinigt: Glossar-Renderpfade und Begriff-Detaillogik aus `main.js` entfernt, Begriffe aus `layout.js`-Suchindex entfernt, Glossar-Styles und QA-Checks für Begriffsdaten entfernt.
+
+---
 ## Version 0.20
 
 - Kontrollierter Projekt-Cleanup auf Basis des reduzierten MVP-Stands: offensichtliche Altlasten und veraltete Planungsreste entfernt (`_tmp_diff_preview.txt`, `wiki/STRUKTURPLAN.md`, `wiki/markt_wiki_kategorien.md`).
@@ -172,6 +185,8 @@ Datum optional
 - Ã„nderung 1
 - Ã„nderung 2
 - Ã„nderung 3
+
+
 
 
 

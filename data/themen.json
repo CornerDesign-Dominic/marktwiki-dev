@@ -1,146 +1,138 @@
 ﻿[
-  {
-    "id": "grundbuch",
-    "titel": "Grundbuch",
-    "kategorie": "Buchfuehrung",
-    "unterkategorie": "Laufende Buchfuehrung",
-    "beschreibung": "Grundlagen und Rolle des Grundbuchs in der laufenden Buchfuehrung.",
-    "artikelPfad": "wiki/grundbuch.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Grundbuch ist ein grundlegendes Thema aus dem Bereich Laufende Buchfuehrung.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Das Grundbuch ordnet Buchungen systematisch den Konten zu und dient als Basis fuer die laufende Nachvollziehbarkeit betrieblicher Geschaeftsvorfaelle."
-        }
-      ]
+    {
+        "id":  "grundbuch",
+        "titel":  "Grundbuch",
+        "kategorie":  "Buchfuehrung",
+        "unterkategorie":  "Laufende Buchfuehrung",
+        "beschreibung":  "Grundlagen und Rolle des Grundbuchs in der laufenden Buchfuehrung.",
+        "artikelPfad":  "wiki/grundbuch.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Grundbuch ist ein grundlegendes Thema aus dem Bereich Laufende Buchfuehrung.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Das Grundbuch ordnet Buchungen systematisch den Konten zu und dient als Basis fuer die laufende Nachvollziehbarkeit betrieblicher Geschaeftsvorfaelle."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "hauptbuch",
-    "titel": "Hauptbuch",
-    "kategorie": "Buchfuehrung",
-    "unterkategorie": "Laufende Buchfuehrung",
-    "beschreibung": "Grundlagen und Rolle des Hauptbuchs in der laufenden Buchfuehrung.",
-    "artikelPfad": "wiki/hauptbuch.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Hauptbuch ist ein grundlegendes Thema aus dem Bereich Laufende Buchfuehrung.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Das Hauptbuch fasst die Salden aller Sachkonten zusammen und bildet die zentrale Grundlage fuer Abschlussarbeiten und Auswertungen im Rechnungswesen."
-        }
-      ]
+    {
+        "id":  "hauptbuch",
+        "titel":  "Hauptbuch",
+        "kategorie":  "Buchfuehrung",
+        "unterkategorie":  "Laufende Buchfuehrung",
+        "beschreibung":  "Grundlagen und Rolle des Hauptbuchs in der laufenden Buchfuehrung.",
+        "artikelPfad":  "wiki/hauptbuch.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Hauptbuch ist ein grundlegendes Thema aus dem Bereich Laufende Buchfuehrung.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Das Hauptbuch fasst die Salden aller Sachkonten zusammen und bildet die zentrale Grundlage fuer Abschlussarbeiten und Auswertungen im Rechnungswesen."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "inventur",
-    "titel": "Inventur",
-    "kategorie": "Buchfuehrung",
-    "unterkategorie": "Periodenabschluss in der Buchfuehrung",
-    "beschreibung": "Inventur als Basis des periodischen Abschlusses in der Buchfuehrung.",
-    "artikelPfad": "wiki/inventur.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Inventur ist ein grundlegendes Thema aus dem Bereich Periodenabschluss in der Buchfuehrung.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Die Inventur ist die mengen- und wertmaessige Bestandsaufnahme aller Vermoegensgegenstaende und Schulden zu einem bestimmten Stichtag."
-        }
-      ]
+    {
+        "id":  "inventur",
+        "titel":  "Inventur",
+        "kategorie":  "Buchfuehrung",
+        "unterkategorie":  "Periodenabschluss in der Buchfuehrung",
+        "beschreibung":  "Inventur als Basis des periodischen Abschlusses in der Buchfuehrung.",
+        "artikelPfad":  "wiki/inventur.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Inventur ist ein grundlegendes Thema aus dem Bereich Periodenabschluss in der Buchfuehrung.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Die Inventur ist die mengen- und wertmaessige Bestandsaufnahme aller Vermoegensgegenstaende und Schulden zu einem bestimmten Stichtag."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "inventar",
-    "titel": "Inventar",
-    "kategorie": "Buchfuehrung",
-    "unterkategorie": "Periodenabschluss in der Buchfuehrung",
-    "beschreibung": "Inventar als strukturierte Bestandsaufnahme im Rahmen des Abschlusses.",
-    "artikelPfad": "wiki/inventar.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Inventar ist ein grundlegendes Thema aus dem Bereich Periodenabschluss in der Buchfuehrung.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Das Inventar ist das detaillierte Verzeichnis aller im Rahmen der Inventur festgestellten Vermoegenswerte und Verbindlichkeiten eines Unternehmens."
-        }
-      ]
+    {
+        "id":  "inventar",
+        "titel":  "Inventar",
+        "kategorie":  "Buchfuehrung",
+        "unterkategorie":  "Periodenabschluss in der Buchfuehrung",
+        "beschreibung":  "Inventar als strukturierte Bestandsaufnahme im Rahmen des Abschlusses.",
+        "artikelPfad":  "wiki/inventar.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Inventar ist ein grundlegendes Thema aus dem Bereich Periodenabschluss in der Buchfuehrung.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Das Inventar ist das detaillierte Verzeichnis aller im Rahmen der Inventur festgestellten Vermoegenswerte und Verbindlichkeiten eines Unternehmens."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "eroeffnungsbilanzkonto",
-    "titel": "Eroeffnungsbilanzkonto",
-    "kategorie": "Rechnungswesen",
-    "unterkategorie": "Finanzbuchhaltung",
-    "beschreibung": "Bedeutung und Einsatz des Eroeffnungsbilanzkontos in der Finanzbuchhaltung.",
-    "artikelPfad": "wiki/eroeffnungsbilanzkonto.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Eroeffnungsbilanzkonto ist ein grundlegendes Thema aus dem Bereich Finanzbuchhaltung.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Das Eroeffnungsbilanzkonto dient dazu, Anfangsbestaende aus der Eroeffnungsbilanz in die laufende Buchfuehrung eines neuen Geschaeftsjahres zu uebertragen."
-        }
-      ]
+    {
+        "id":  "eroeffnungsbilanzkonto",
+        "titel":  "Eroeffnungsbilanzkonto",
+        "kategorie":  "Rechnungswesen",
+        "unterkategorie":  "Finanzbuchhaltung",
+        "beschreibung":  "Bedeutung und Einsatz des Eroeffnungsbilanzkontos in der Finanzbuchhaltung.",
+        "artikelPfad":  "wiki/eroeffnungsbilanzkonto.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Eroeffnungsbilanzkonto ist ein grundlegendes Thema aus dem Bereich Finanzbuchhaltung.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Das Eroeffnungsbilanzkonto dient dazu, Anfangsbestaende aus der Eroeffnungsbilanz in die laufende Buchfuehrung eines neuen Geschaeftsjahres zu uebertragen."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "schlussbilanzkonto",
-    "titel": "Schlussbilanzkonto",
-    "kategorie": "Rechnungswesen",
-    "unterkategorie": "Finanzbuchhaltung",
-    "beschreibung": "Bedeutung und Einsatz des Schlussbilanzkontos in der Finanzbuchhaltung.",
-    "artikelPfad": "wiki/schlussbilanzkonto.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Schlussbilanzkonto ist ein grundlegendes Thema aus dem Bereich Finanzbuchhaltung.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Das Schlussbilanzkonto sammelt die Endbestaende der Bestandskonten und stellt sie fuer die Erstellung der Schlussbilanz eines Geschaeftsjahres bereit."
-        }
-      ]
+    {
+        "id":  "schlussbilanzkonto",
+        "titel":  "Schlussbilanzkonto",
+        "kategorie":  "Rechnungswesen",
+        "unterkategorie":  "Finanzbuchhaltung",
+        "beschreibung":  "Bedeutung und Einsatz des Schlussbilanzkontos in der Finanzbuchhaltung.",
+        "artikelPfad":  "wiki/schlussbilanzkonto.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Schlussbilanzkonto ist ein grundlegendes Thema aus dem Bereich Finanzbuchhaltung.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Das Schlussbilanzkonto sammelt die Endbestaende der Bestandskonten und stellt sie fuer die Erstellung der Schlussbilanz eines Geschaeftsjahres bereit."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "bilanzanalyse",
-    "titel": "Bilanzanalyse",
-    "kategorie": "Rechnungswesen",
-    "unterkategorie": "Jahresabschlussanalyse",
-    "beschreibung": "Bilanzanalyse als Kerninstrument zur Bewertung der wirtschaftlichen Lage.",
-    "artikelPfad": "wiki/bilanzanalyse.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Bilanzanalyse ist ein grundlegendes Thema aus dem Bereich Jahresabschlussanalyse.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Die Bilanzanalyse wertet Positionen und Kennzahlen aus Bilanz und GuV aus, um Vermoegens-, Finanz- und Ertragslage eines Unternehmens zu beurteilen."
-        }
-      ]
+    {
+        "id":  "bilanzanalyse",
+        "titel":  "Bilanzanalyse",
+        "kategorie":  "Rechnungswesen",
+        "unterkategorie":  "Jahresabschlussanalyse",
+        "beschreibung":  "Bilanzanalyse als Kerninstrument zur Bewertung der wirtschaftlichen Lage.",
+        "artikelPfad":  "wiki/bilanzanalyse.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Bilanzanalyse ist ein grundlegendes Thema aus dem Bereich Jahresabschlussanalyse.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Die Bilanzanalyse wertet Positionen und Kennzahlen aus Bilanz und GuV aus, um Vermoegens-, Finanz- und Ertragslage eines Unternehmens zu beurteilen."
+                                          }
+                                      ]
+                   }
     },
-    "verwandteBegriffe": []
-  },
-  {
-    "id": "eigenkapitalquote",
-    "titel": "Eigenkapitalquote",
-    "kategorie": "Rechnungswesen",
-    "unterkategorie": "Jahresabschlussanalyse",
-    "beschreibung": "Eigenkapitalquote als wichtige Kennzahl in der Jahresabschlussanalyse.",
-    "artikelPfad": "wiki/eigenkapitalquote.html",
-    "inhalt": {
-      "einleitung": "Der Begriff Eigenkapitalquote ist ein grundlegendes Thema aus dem Bereich Jahresabschlussanalyse.",
-      "abschnitte": [
-        {
-          "titel": "Definition",
-          "text": "Die Eigenkapitalquote setzt das Eigenkapital ins Verhaeltnis zur Bilanzsumme und zeigt, wie solide ein Unternehmen aus eigener Kraft finanziert ist."
-        }
-      ]
-    },
-    "verwandteBegriffe": []
-  }
+    {
+        "id":  "eigenkapitalquote",
+        "titel":  "Eigenkapitalquote",
+        "kategorie":  "Rechnungswesen",
+        "unterkategorie":  "Jahresabschlussanalyse",
+        "beschreibung":  "Eigenkapitalquote als wichtige Kennzahl in der Jahresabschlussanalyse.",
+        "artikelPfad":  "wiki/eigenkapitalquote.html",
+        "inhalt":  {
+                       "einleitung":  "Der Begriff Eigenkapitalquote ist ein grundlegendes Thema aus dem Bereich Jahresabschlussanalyse.",
+                       "abschnitte":  [
+                                          {
+                                              "titel":  "Definition",
+                                              "text":  "Die Eigenkapitalquote setzt das Eigenkapital ins Verhaeltnis zur Bilanzsumme und zeigt, wie solide ein Unternehmen aus eigener Kraft finanziert ist."
+                                          }
+                                      ]
+                   }
+    }
 ]

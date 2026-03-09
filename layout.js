@@ -80,7 +80,7 @@
     return normalizeText(sections[0]?.text || "");
   }
 
-  function buildSearchIndex(basePath, topics, terms) {
+  function buildSearchIndex(basePath, topics) {
     const topicEntries = topics.map((topic) => {
       const title = normalizeText(topic.titel);
       const intro = getTopicIntro(topic);
@@ -96,42 +96,18 @@
         searchable
       };
     });
-
-    const termEntries = terms.map((term) => {
-      const title = normalizeText(term.begriff);
-      const definition = normalizeText(term.definition);
-      const searchable = normalizeForSearch([title, definition, normalizeText(term.slug)].join(" "));
-
-      return {
-        type: "Begriff",
-        title,
-        intro: "",
-        definition,
-        href: `${href(basePath, "pages/begriff.html")}?slug=${encodeURIComponent(term.slug)}`,
-        searchable
-      };
-    });
-
-    return [...topicEntries, ...termEntries];
+    return topicEntries;
   }
 
   async function loadSearchIndex(basePath) {
     if (!searchDataPromise) {
-      searchDataPromise = Promise.all([
-        fetch(href(basePath, "data/themen.json")).then((response) => {
-          if (!response.ok) {
-            throw new Error("Themen konnten nicht geladen werden.");
-          }
-          return response.json();
-        }),
-        fetch(href(basePath, "data/begriffe.json")).then((response) => {
-          if (!response.ok) {
-            throw new Error("Begriffe konnten nicht geladen werden.");
-          }
-          return response.json();
-        })
-      ]).then(([topics, terms]) => {
-        return buildSearchIndex(basePath, topics, terms);
+      searchDataPromise = fetch(href(basePath, "data/themen.json")).then((response) => {
+        if (!response.ok) {
+          throw new Error("Themen konnten nicht geladen werden.");
+        }
+        return response.json();
+      }).then((topics) => {
+        return buildSearchIndex(basePath, topics);
       });
     }
 
@@ -242,20 +218,17 @@
     return `<header class="site-header">
     <div class="container nav-wrap">
       <a class="brand" href="${href(basePath, "index.html")}">MarktWiki</a>
-      <div class="header-actions">
-        <div class="header-search">
-          <input type="search" placeholder="Suche im MarktWiki..." aria-label="Suche im MarktWiki" autocomplete="off" spellcheck="false">
-          <div class="search-results" hidden aria-live="polite"></div>
-        </div>
-        <nav class="main-nav" aria-label="Hauptnavigation">
-          <ul>
-            ${navLink(basePath, activeNav, "terms", "Begriffe", "begriffe.html")}
-            ${navLink(basePath, activeNav, "wiki", "Wiki", "wiki/index.html")}
-            ${navLink(basePath, activeNav, "stocks", "Aktien", "aktien.html")}
-            ${navLink(basePath, activeNav, "tools", "Werkzeuge", "werkzeuge.html")}
-          </ul>
-        </nav>
+      <div class="header-search">
+        <input type="search" placeholder="Suche im MarktWiki..." aria-label="Suche im MarktWiki" autocomplete="off" spellcheck="false">
+        <div class="search-results" hidden aria-live="polite"></div>
       </div>
+      <nav class="main-nav" aria-label="Hauptnavigation">
+        <ul>
+          ${navLink(basePath, activeNav, "wiki", "Wiki", "wiki/index.html")}
+          ${navLink(basePath, activeNav, "stocks", "Aktien", "aktien.html")}
+          ${navLink(basePath, activeNav, "tools", "Werkzeuge", "werkzeuge.html")}
+        </ul>
+      </nav>
     </div>
   </header>`;
   }

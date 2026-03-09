@@ -2,7 +2,7 @@
 "use strict";
 
 const path = require("path");
-const { readJsonFile, relativeFromRoot } = require("./lib");
+const { readJsonFile } = require("./lib");
 
 const rootDir = path.resolve(__dirname, "../..");
 const dataDir = path.join(rootDir, "data");
@@ -25,12 +25,12 @@ function validateJsonFile(fileName) {
   try {
     return readJsonFile(fullPath);
   } catch (error) {
-    addIssue("errors", "json-invalid", `data/${fileName}`, `Ungültiges JSON: ${error.message}`);
+    addIssue("errors", "json-invalid", `data/${fileName}`, `UngÃ¼ltiges JSON: ${error.message}`);
     return null;
   }
 }
 
-function validateTopics(topics, categoryTitles, termLabels) {
+function validateTopics(topics, categoryTitles) {
   if (!Array.isArray(topics)) {
     addIssue("errors", "wrong-type", "data/themen.json", "Erwartet wird ein Array.");
     return { topicIds: new Set(), topicSlugs: new Set() };
@@ -121,89 +121,9 @@ function validateTopics(topics, categoryTitles, termLabels) {
     if (topic.artikelPfad !== undefined && !isNonEmptyString(topic.artikelPfad)) {
       addIssue("errors", "empty-article-path", location, "Feld artikelPfad ist vorhanden, aber leer.");
     }
-
-    if (topic.verwandteBegriffe !== undefined) {
-      if (!Array.isArray(topic.verwandteBegriffe)) {
-        addIssue("errors", "wrong-type", location, "Feld verwandteBegriffe muss ein Array sein.");
-      } else {
-        topic.verwandteBegriffe.forEach((label, labelIndex) => {
-          const refLocation = `${location}.verwandteBegriffe[${labelIndex}]`;
-          if (!isNonEmptyString(label)) {
-            addIssue("errors", "empty-reference", refLocation, "Verwandter Begriff ist leer.");
-            return;
-          }
-          if (!termLabels.has(label)) {
-            addIssue("errors", "invalid-reference", refLocation, `Verweis auf unbekannten Begriff: ${label}`);
-          }
-        });
-      }
-    }
   });
 
   return { topicIds, topicSlugs };
-}
-
-function validateTerms(terms, topicIds) {
-  if (!Array.isArray(terms)) {
-    addIssue("errors", "wrong-type", "data/begriffe.json", "Erwartet wird ein Array.");
-    return { termSlugs: new Set(), termLabels: new Set() };
-  }
-
-  const termSlugs = new Set();
-  const termLabels = new Set();
-
-  terms.forEach((term, index) => {
-    const location = `data/begriffe.json[${index}]`;
-
-    if (!term || typeof term !== "object") {
-      addIssue("errors", "wrong-type", location, "Datensatz muss ein Objekt sein.");
-      return;
-    }
-
-    ["begriff", "slug", "definition"].forEach((field) => {
-      if (!(field in term)) {
-        addIssue("errors", "missing-field", location, `Pflichtfeld fehlt: ${field}`);
-      }
-    });
-
-    if (!isNonEmptyString(term.begriff)) {
-      addIssue("errors", "empty-title", location, "Feld begriff fehlt oder ist leer.");
-    } else {
-      termLabels.add(term.begriff);
-    }
-
-    if (!isNonEmptyString(term.slug)) {
-      addIssue("errors", "empty-slug", location, "Feld slug fehlt oder ist leer.");
-    } else {
-      if (termSlugs.has(term.slug)) {
-        addIssue("errors", "duplicate-slug", location, `Doppelter Begriffs-Slug: ${term.slug}`);
-      }
-      termSlugs.add(term.slug);
-    }
-
-    if (!isNonEmptyString(term.definition)) {
-      addIssue("errors", "empty-definition", location, "Feld definition fehlt oder ist leer.");
-    }
-
-    if (term.verwendetIn !== undefined) {
-      if (!Array.isArray(term.verwendetIn)) {
-        addIssue("errors", "wrong-type", location, "Feld verwendetIn muss ein Array sein.");
-      } else {
-        term.verwendetIn.forEach((topicId, topicIndex) => {
-          const refLocation = `${location}.verwendetIn[${topicIndex}]`;
-          if (!isNonEmptyString(topicId)) {
-            addIssue("errors", "empty-reference", refLocation, "Themenreferenz ist leer.");
-            return;
-          }
-          if (topicIds.size > 0 && !topicIds.has(topicId)) {
-            addIssue("errors", "invalid-reference", refLocation, `Verweis auf unbekanntes Thema: ${topicId}`);
-          }
-        });
-      }
-    }
-  });
-
-  return { termSlugs, termLabels };
 }
 
 function printIssues() {
@@ -224,7 +144,6 @@ function printIssues() {
 
 function main() {
   const topics = validateJsonFile("themen.json");
-  const terms = validateJsonFile("begriffe.json");
   const categories = validateJsonFile("kategorien.json");
 
   const categoryTitles = new Set(
@@ -235,16 +154,7 @@ function main() {
       : []
   );
 
-  const termLabels = new Set(
-    Array.isArray(terms)
-      ? terms
-          .map((entry) => (entry && typeof entry === "object" ? entry.begriff : ""))
-          .filter((x) => isNonEmptyString(x))
-      : []
-  );
-
-  const { topicIds } = validateTopics(topics, categoryTitles, termLabels);
-  validateTerms(terms, topicIds);
+  validateTopics(topics, categoryTitles);
 
   printIssues();
 

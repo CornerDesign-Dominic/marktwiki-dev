@@ -6,8 +6,7 @@
 
   const DATA_FILES = {
     categories: "kategorien.json",
-    topics: "themen.json",
-    terms: "begriffe.json"
+    topics: "themen.json"
   };
 
   // Centralized JSON loader for all pages.
@@ -190,11 +189,7 @@
       return;
     }
 
-    // Load topics and glossary terms once to resolve cross-links.
-    const [topics, terms] = await Promise.all([
-      loadJson(DATA_FILES.topics),
-      loadJson(DATA_FILES.terms)
-    ]);
+    const topics = await loadJson(DATA_FILES.topics);
 
     const topic = topics.find((entry) => entry.id === topicId);
 
@@ -230,125 +225,6 @@
       });
     }
 
-    const relatedTermsList = document.querySelector("#thema-begriffe");
-    const relatedTermsBox = document.querySelector("#thema-begriffe-box");
-    if (relatedTermsList && relatedTermsBox) {
-      relatedTermsList.innerHTML = "";
-      const termMap = new Map(terms.map((term) => [term.begriff, term.slug]));
-      const relatedTerms = Array.isArray(topic.verwandteBegriffe) ? topic.verwandteBegriffe : [];
-
-      if (relatedTerms.length === 0) {
-        relatedTermsBox.style.display = "none";
-      } else {
-        relatedTerms.forEach((termLabel) => {
-          const li = document.createElement("li");
-          const link = document.createElement("a");
-          const slug = termMap.get(termLabel);
-
-          if (slug) {
-            link.href = `${basePath}/pages/begriff.html?slug=${encodeURIComponent(slug)}`;
-          } else {
-            link.href = `${basePath}/begriffe.html`;
-          }
-          link.textContent = termLabel;
-
-          li.appendChild(link);
-          relatedTermsList.appendChild(li);
-        });
-      }
-    }
-  }
-
-  async function initTerms() {
-    const container = document.querySelector("#begriffe-list");
-    if (!container) {
-      return;
-    }
-
-    const terms = await loadJson(DATA_FILES.terms);
-    const sortedTerms = [...terms].sort((a, b) => a.begriff.localeCompare(b.begriff, "de"));
-    container.innerHTML = "";
-
-    sortedTerms.forEach((term) => {
-      const card = document.createElement("article");
-      card.className = "card term-card";
-
-      const title = document.createElement("h3");
-      const link = document.createElement("a");
-      link.href = `${basePath}/pages/begriff.html?slug=${encodeURIComponent(term.slug)}`;
-      link.textContent = normalizeText(term.begriff);
-      title.appendChild(link);
-
-      const definition = document.createElement("p");
-      definition.textContent = normalizeText(term.definition);
-
-      card.append(title, definition);
-      container.appendChild(card);
-    });
-  }
-
-  async function initTermDetail() {
-    const article = document.querySelector("#begriff-detail");
-    const titleNode = document.querySelector("#begriff-titel");
-    const definitionNode = document.querySelector("#begriff-definition");
-    const relatedTopicsNode = document.querySelector("#begriff-themen");
-
-    if (!article || !titleNode || !definitionNode || !relatedTopicsNode) {
-      return;
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const slug = params.get("slug");
-
-    if (!slug) {
-      renderMessage(article, "Kein Begriff ausgewählt.", true);
-      return;
-    }
-
-    // Resolve "verwendetIn" IDs to topic titles and links.
-    const [terms, topics] = await Promise.all([
-      loadJson(DATA_FILES.terms),
-      loadJson(DATA_FILES.topics)
-    ]);
-
-    const term = terms.find((entry) => entry.slug === slug);
-    if (!term) {
-      renderMessage(article, "Begriff nicht gefunden.", true);
-      return;
-    }
-
-    document.title = `${term.begriff} | MarktWiki`;
-    setMetaDescription(term.definition);
-
-    titleNode.textContent = normalizeText(term.begriff);
-    definitionNode.textContent = normalizeText(term.definition);
-
-    relatedTopicsNode.innerHTML = "";
-    const topicMap = new Map(topics.map((topic) => [topic.id, topic]));
-    const usedIn = Array.isArray(term.verwendetIn) ? term.verwendetIn : [];
-
-    if (usedIn.length === 0) {
-      const li = document.createElement("li");
-      li.textContent = "Noch keine verknüpften Themen vorhanden.";
-      relatedTopicsNode.appendChild(li);
-      return;
-    }
-
-    usedIn.forEach((topicId) => {
-      const listItem = document.createElement("li");
-      const topic = topicMap.get(topicId);
-
-      if (topic) {
-        const link = document.createElement("a");
-        link.href = resolveTopicHref(topic);
-        link.textContent = topic.titel;
-        listItem.appendChild(link);
-      } else {
-        listItem.textContent = topicId;
-      }
-
-      relatedTopicsNode.appendChild(listItem);
-    });
   }
 
   async function initPage() {
@@ -363,14 +239,7 @@
         return;
       }
 
-      if (page === "terms") {
-        await initTerms();
-        return;
-      }
-
-      if (page === "term-detail") {
-        await initTermDetail();
-      }
+      return;
     } catch (error) {
       const targets = document.querySelectorAll("[data-error-target]");
       if (targets.length > 0) {
