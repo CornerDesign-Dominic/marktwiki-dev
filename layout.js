@@ -264,11 +264,10 @@
     const { basePath } = readLayoutConfig(config);
     return `<footer class="site-footer">
     <div class="container footer-wrap">
-      <p>&copy; MarktWiki</p>
+      <p>MarktWiki</p>
       <nav aria-label="Footer Navigation">
         <a href="${href(basePath, "impressum.html")}">Impressum</a>
         <a href="${href(basePath, "datenschutz.html")}">Datenschutz</a>
-        <a href="${href(basePath, "kontakt.html")}">Kontakt</a>
       </nav>
     </div>
   </footer>`;
