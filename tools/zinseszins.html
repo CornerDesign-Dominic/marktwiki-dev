@@ -14,10 +14,10 @@
   <main>
     <div class="container">
       <section class="card">
-        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeugübersicht</a>
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur WerkzeugÃ¼bersicht</a>
         <h1>Spar- und Zinsrechner</h1>
-        <p class="lead">Kombinierte Berechnung aus Startkapital, regelmäßigen Sparraten und Verzinsung.</p>
-        <p class="muted">Der Zinssatz gilt immer pro gewähltem Verzinsungsintervall.</p>
+        <p class="lead">Kombinierte Berechnung aus Startkapital, regelmÃ¤ÃŸigen Sparraten und Verzinsung.</p>
+        <p class="muted">Der Zinssatz gilt immer pro gewÃ¤hltem Verzinsungsintervall.</p>
 
         <form class="input-grid calculator-form" id="zinseszins-form" novalidate>
           <section class="calc-group" aria-labelledby="group-grunddaten">
@@ -47,7 +47,7 @@
                 <label for="sparrate-intervall">Sparrate-Intervall</label>
                 <select id="sparrate-intervall" aria-label="Intervall der Sparrate">
                   <option value="monatlich">Monatlich</option>
-                  <option value="jaehrlich">Jährlich</option>
+                  <option value="jaehrlich">JÃ¤hrlich</option>
                 </select>
               </div>
             </div>
@@ -64,7 +64,7 @@
               <div class="field">
                 <label for="verzinsungs-intervall">Verzinsungsintervall</label>
                 <select id="verzinsungs-intervall" aria-label="Intervall der Verzinsung">
-                  <option value="jaehrlich">Jährlich</option>
+                  <option value="jaehrlich">JÃ¤hrlich</option>
                   <option value="monatlich">Monatlich</option>
                 </select>
               </div>
@@ -97,31 +97,31 @@
         </div>
 
         <section class="result-box calculator-explanation" aria-labelledby="zinseszins-erklaerung">
-          <h2 id="zinseszins-erklaerung" class="result-heading">Erläuterung zum Rechner</h2>
+          <h2 id="zinseszins-erklaerung" class="result-heading">ErlÃ¤uterung zum Rechner</h2>
           <div class="calc-explanation-grid">
             <article class="calc-explanation-block">
               <h3>Zinseszins</h3>
-              <p>Der Zinseszinseffekt bedeutet, dass nicht nur das ursprüngliche Kapital verzinst wird, sondern auch bereits gutgeschriebene Zinsen. Mit jeder weiteren Verzinsungsperiode wächst damit die Basis für die nächste Berechnung. Über längere Zeiträume entsteht so ein zunehmender Zinseffekt.</p>
+              <p>Der Zinseszinseffekt bedeutet, dass nicht nur das ursprÃ¼ngliche Kapital verzinst wird, sondern auch bereits gutgeschriebene Zinsen. Mit jeder weiteren Verzinsungsperiode wÃ¤chst damit die Basis fÃ¼r die nÃ¤chste Berechnung. Ãœber lÃ¤ngere ZeitrÃ¤ume entsteht so ein zunehmender Zinseffekt.</p>
             </article>
 
             <article class="calc-explanation-block">
               <h3>Anfangskapital</h3>
-              <p>Das Anfangskapital ist der Betrag, der zu Beginn angelegt wird. Dieser Betrag wird über die gesamte Laufzeit verzinst. Wenn kein Anfangskapital vorhanden ist, kann die Berechnung auch ausschließlich mit regelmäßigen Sparraten durchgeführt werden.</p>
+              <p>Das Anfangskapital ist der Betrag, der zu Beginn angelegt wird. Dieser Betrag wird Ã¼ber die gesamte Laufzeit verzinst. Wenn kein Anfangskapital vorhanden ist, kann die Berechnung auch ausschlieÃŸlich mit regelmÃ¤ÃŸigen Sparraten durchgefÃ¼hrt werden.</p>
             </article>
 
             <article class="calc-explanation-block">
               <h3>Sparrate</h3>
-              <p>Die Sparrate beschreibt den regelmäßig eingezahlten Betrag. Je nach Auswahl erfolgt die Einzahlung monatlich oder jährlich. Jede Einzahlung erhöht das Kapital, auf das in den folgenden Perioden Zinsen berechnet werden.</p>
+              <p>Die Sparrate beschreibt den regelmÃ¤ÃŸig eingezahlten Betrag. Je nach Auswahl erfolgt die Einzahlung monatlich oder jÃ¤hrlich. Jede Einzahlung erhÃ¶ht das Kapital, auf das in den folgenden Perioden Zinsen berechnet werden.</p>
             </article>
 
             <article class="calc-explanation-block">
               <h3>Spardauer</h3>
-              <p>Die Spardauer legt den Berechnungszeitraum in Jahren fest. Mit zunehmender Dauer wirkt der Zinseszinseffekt stärker, weil Zinsen mehrfach erneut verzinst werden.</p>
+              <p>Die Spardauer legt den Berechnungszeitraum in Jahren fest. Mit zunehmender Dauer wirkt der Zinseszinseffekt stÃ¤rker, weil Zinsen mehrfach erneut verzinst werden.</p>
             </article>
 
             <article class="calc-explanation-block">
               <h3>Zinssatz</h3>
-              <p>Der Zinssatz gibt die jährliche Verzinsung in Prozent an. Er bestimmt, wie stark sich das Kapital pro Jahr erhöht. In der Berechnung wird der Jahreszinssatz entsprechend dem gewählten Verzinsungsintervall angewendet.</p>
+              <p>Der Zinssatz gibt die jÃ¤hrliche Verzinsung in Prozent an. Er bestimmt, wie stark sich das Kapital pro Jahr erhÃ¶ht. In der Berechnung wird der Jahreszinssatz entsprechend dem gewÃ¤hlten Verzinsungsintervall angewendet.</p>
             </article>
           </div>
         </section>
@@ -446,14 +446,14 @@
 
         if (!Number.isFinite(start) || !Number.isFinite(savingsAmount) || !Number.isFinite(ratePercent) || !Number.isFinite(years)) {
           output.hidden = false;
-          output.textContent = "Bitte alle Werte vollständig eingeben.";
+          output.textContent = "Bitte alle Werte vollstÃ¤ndig eingeben.";
           hideVisualization();
           return;
         }
 
         if (start < 0 || savingsAmount < 0 || ratePercent < 0 || years < 0) {
           output.hidden = false;
-          output.textContent = "Startkapital, Sparrate, Verzinsung und Laufzeit müssen 0 oder größer sein.";
+          output.textContent = "Startkapital, Sparrate, Verzinsung und Laufzeit mÃ¼ssen 0 oder grÃ¶ÃŸer sein.";
           hideVisualization();
           return;
         }
@@ -469,7 +469,7 @@
         output.hidden = false;
 
         output.innerHTML = `
-          <p class="result-heading">Ergebnisübersicht</p>
+          <p class="result-heading">ErgebnisÃ¼bersicht</p>
           <div class="result-summary">
             <p class="result-line result-line-total"><span>Gesamtbetrag</span><strong>${formatCurrency(result.total)} EUR</strong></p>
             <p class="result-line"><span>Startkapital</span><strong>${formatCurrency(start)} EUR</strong></p>

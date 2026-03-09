@@ -14,7 +14,7 @@
 <main>
     <div class="container">
       <section class="card">
-        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeugübersicht</a>
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur WerkzeugÃ¼bersicht</a>
         <h1>ROI Rechner</h1>
         <p class="lead">Berechnung: ROI = Gewinn / Investition * 100</p>
 
@@ -55,12 +55,12 @@
         const profit = parseNumber(gewinn.value);
 
         if (!Number.isFinite(investment) || !Number.isFinite(profit)) {
-          output.textContent = "Bitte beide Werte vollständig eingeben.";
+          output.textContent = "Bitte beide Werte vollstÃ¤ndig eingeben.";
           return;
         }
 
         if (investment <= 0) {
-          output.textContent = "Investition muss größer als 0 sein.";
+          output.textContent = "Investition muss grÃ¶ÃŸer als 0 sein.";
           return;
         }
 
