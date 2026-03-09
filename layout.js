@@ -274,22 +274,32 @@
   </footer>`;
   }
 
-  function injectMarkup(markup) {
+  function injectMarkup(markup, fallbackPosition = "afterbegin") {
     const marker = document.currentScript;
-    if (!marker) {
+    if (marker) {
+      // Waehren Parser-Ausfuehrung direkt in den Dokumentstrom schreiben,
+      // damit Header/Footer ohne spaetes Nachrendern erscheinen.
+      if (document.readyState === "loading") {
+        document.write(markup);
+        return;
+      }
+
+      // Falls spaeter aufgerufen, Skriptmarker direkt ersetzen.
+      marker.outerHTML = markup;
       return;
     }
-    marker.insertAdjacentHTML("beforebegin", markup);
-    marker.remove();
+
+    // Fallback fuer Aufrufe ausserhalb des Parser-Kontexts.
+    document.body?.insertAdjacentHTML(fallbackPosition, markup);
   }
 
   function injectHeader(config = {}) {
-    injectMarkup(renderHeader(config));
+    injectMarkup(renderHeader(config), "afterbegin");
     initHeaderSearch(config);
   }
 
   function injectFooter(config = {}) {
-    injectMarkup(renderFooter(config));
+    injectMarkup(renderFooter(config), "beforeend");
   }
 
   window.MarktWikiLayout = {
