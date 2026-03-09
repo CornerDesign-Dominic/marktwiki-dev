@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Themen | MarktWiki</title>
+  <meta name="description" content="Alle Themen im MarktWiki mit Filter nach Hauptkategorie.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./layout.js"></script>
+  <script src="./main.js" defer></script>
+</head>
+<body data-page="topics" data-base-path=".">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+<main>
+    <div class="container">
+      <section class="card">
+        <h1>Themenübersicht</h1>
+        <p>Alle Artikel im MarktWiki. Du kannst die Liste gezielt nach Kategorie filtern.</p>
+        <p class="muted">Für neue, dateibasierte Artikelseiten siehe <a href="./wiki/index.html">Wiki</a>.</p>
+        <div class="filter-row">
+          <label for="kategorie-filter">Kategorie</label>
+          <select id="kategorie-filter" aria-label="Nach Kategorie filtern"></select>
+        </div>
+        <p id="themen-count" class="muted"></p>
+      </section>
+
+      <section class="section-space" aria-labelledby="themen-heading">
+        <h2 id="themen-heading" class="sr-only">Themenliste</h2>
+        <div id="themen-list" class="card-grid" data-error-target="themen"></div>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+
+</body>
+</html>
+
+
+
+

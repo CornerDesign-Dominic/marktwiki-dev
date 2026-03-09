@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thema | MarktWiki</title>
+  <meta name="description" content="Detailansicht eines Themas im MarktWiki.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../layout.js"></script>
+  <script src="../main.js" defer></script>
+</head>
+<body data-page="topic-detail" data-base-path="..">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+<main>
+    <div class="container">
+      <article id="thema-detail" class="card" data-error-target="thema-detail">
+        <a class="back-link" href="../themen.html">&larr; Zur Themenübersicht</a>
+        <p id="thema-meta" class="meta-pill"></p>
+        <h1 id="thema-titel">Thema wird geladen ...</h1>
+        <p id="thema-einleitung" class="lead"></p>
+        <section id="thema-abschnitte"></section>
+
+        <section id="thema-begriffe-box" class="section-space">
+          <h2>Verwandte Begriffe</h2>
+          <ul id="thema-begriffe" class="link-list"></ul>
+        </section>
+      </article>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+
+</body>
+</html>
+
+
+
+

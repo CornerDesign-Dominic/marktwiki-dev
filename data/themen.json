@@ -1,0 +1,280 @@
+﻿[
+  {
+    "id": "abschreibung",
+    "titel": "Abschreibung",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Rechnungswesen",
+    "beschreibung": "Abschreibung verteilt die Anschaffungskosten eines Vermögenswerts über seine Nutzungsdauer.",
+    "artikelPfad": "wiki/abschreibung.html",
+    "inhalt": {
+      "einleitung": "Die Abschreibung zeigt den jährlichen Werteverzehr von Anlagegütern wie Maschinen oder Fahrzeugen. Sie reduziert den buchhalterischen Gewinn, ohne dass im gleichen Moment Geld abfließt.",
+      "abschnitte": [
+        {
+          "titel": "Warum wird abgeschrieben?",
+          "text": "Investitionen sollen periodengerecht den Jahren zugeordnet werden, in denen sie genutzt werden. Dadurch entstehen realistischere Erfolgsrechnungen und bessere Vergleichbarkeit zwischen Perioden."
+        },
+        {
+          "titel": "Lineare Abschreibung",
+          "text": "Bei der linearen Methode wird der abschreibbare Betrag gleichmäßig auf die Nutzungsjahre verteilt. Diese Methode ist einfach zu planen und im Alltag weit verbreitet."
+        },
+        {
+          "titel": "Wirkung auf Kennzahlen",
+          "text": "Abschreibungen beeinflussen Gewinn, EBIT und steuerliche Bemessungsgrundlagen. Für die Liquidität sind sie indirekt relevant, weil sie Steuerzahlungen verringern können."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "EBIT",
+      "Cashflow"
+    ]
+  },
+  {
+    "id": "deckungsbeitrag",
+    "titel": "Deckungsbeitrag",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Kostenrechnung",
+    "beschreibung": "Der Deckungsbeitrag zeigt, wie viel ein Produkt zur Deckung der Fixkosten beiträgt.",
+    "inhalt": {
+      "einleitung": "Der Deckungsbeitrag ergibt sich aus Umsatz minus variablen Kosten. Er hilft, die Wirtschaftlichkeit einzelner Produkte oder Aufträge einzuschätzen.",
+      "abschnitte": [
+        {
+          "titel": "Berechnungslogik",
+          "text": "Liegt der Verkaufspreis deutlich über den variablen Kosten, steigt der Deckungsbeitrag. Mit jedem zusätzlichen Verkauf wächst der Beitrag zur Deckung der Fixkosten."
+        },
+        {
+          "titel": "Einsatz in der Praxis",
+          "text": "Unternehmen nutzen den Deckungsbeitrag für Produktentscheidungen, Sortimentssteuerung und Preisuntergrenzen in Verhandlungen."
+        },
+        {
+          "titel": "Grenzen der Kennzahl",
+          "text": "Der Deckungsbeitrag allein reicht nicht für strategische Entscheidungen. Zusätzlich sollten Kapazitäten, Qualitätsziele und Marktentwicklung betrachtet werden."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Deckungsbeitrag",
+      "Break Even"
+    ]
+  },
+  {
+    "id": "break-even-point",
+    "titel": "Break Even Point",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Controlling",
+    "beschreibung": "Der Break Even Point markiert den Punkt, an dem Erlöse und Kosten gleich hoch sind.",
+    "inhalt": {
+      "einleitung": "Am Break Even Point erzielt ein Unternehmen weder Gewinn noch Verlust. Diese Schwelle ist wichtig für Planung, Preisstrategie und Risikoabschätzung.",
+      "abschnitte": [
+        {
+          "titel": "Grundformel",
+          "text": "Break Even Menge = Fixkosten / (Verkaufspreis je Einheit - variable Kosten je Einheit). Die Formel verbindet Kostenstruktur und Absatzplanung."
+        },
+        {
+          "titel": "Management-Nutzen",
+          "text": "Die Kennzahl macht transparent, welcher Mindestabsatz benötigt wird. Sie unterstützt Entscheidungen bei Markteintritt, Produktlaunch und Budgetplanung."
+        },
+        {
+          "titel": "Szenarioanalyse",
+          "text": "Durch Variation von Preis, Kosten oder Absatz können Risiken früh erkannt werden. So lassen sich robuste Planungen für unterschiedliche Marktlagen aufstellen."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Break Even",
+      "Deckungsbeitrag"
+    ]
+  },
+  {
+    "id": "liquiditaet",
+    "titel": "Liquidität",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Finanzplanung",
+    "beschreibung": "Liquidität beschreibt die Fähigkeit eines Unternehmens, fällige Zahlungen jederzeit zu leisten.",
+    "inhalt": {
+      "einleitung": "Auch profitable Unternehmen können in Schwierigkeiten geraten, wenn kurzfristig nicht genug Zahlungsmittel verfügbar sind. Liquiditätsmanagement ist daher operativ kritisch.",
+      "abschnitte": [
+        {
+          "titel": "Liquiditätsgrade",
+          "text": "Liquiditätskennzahlen vergleichen flüssige Mittel und kurzfristige Forderungen mit kurzfristigen Verbindlichkeiten. Sie zeigen die kurzfristige Zahlungsfähigkeit."
+        },
+        {
+          "titel": "Steuerungshebel",
+          "text": "Forderungsmanagement, Zahlungsziele und Lagerbestände beeinflussen die verfügbare Liquidität direkt. Schon kleine Prozessverbesserungen können große Effekte haben."
+        },
+        {
+          "titel": "Planung und Monitoring",
+          "text": "Ein rollierender Liquiditätsplan über mehrere Wochen hilft, Engpässe frühzeitig zu erkennen und Gegenmaßnahmen rechtzeitig einzuleiten."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Cashflow"
+    ]
+  },
+  {
+    "id": "marketing-funnel",
+    "titel": "Marketing Funnel",
+    "kategorie": "Marketing",
+    "unterkategorie": "Vertrieb & Kampagnen",
+    "beschreibung": "Der Marketing Funnel beschreibt die Phasen vom ersten Kontakt bis zum Kaufabschluss.",
+    "inhalt": {
+      "einleitung": "Der Funnel strukturiert die Kundenreise in messbare Schritte. Dadurch lassen sich Maßnahmen gezielt pro Phase optimieren.",
+      "abschnitte": [
+        {
+          "titel": "Funnel-Phasen",
+          "text": "Typische Schritte sind Awareness, Consideration, Conversion und Loyalty. Jede Phase benötigt andere Inhalte, Kanäle und KPIs."
+        },
+        {
+          "titel": "Wichtige Kennzahlen",
+          "text": "Conversion Rate, Cost per Lead und Customer Acquisition Cost zeigen, wie effizient Marketingbudget eingesetzt wird."
+        },
+        {
+          "titel": "Optimierung",
+          "text": "A/B-Tests, klare Botschaften und konsistente Landingpages verbessern Übergänge zwischen den Funnel-Stufen."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "ROI"
+    ]
+  },
+  {
+    "id": "lagerumschlag",
+    "titel": "Lagerumschlag",
+    "kategorie": "Logistik",
+    "unterkategorie": "Lagerwirtschaft",
+    "beschreibung": "Der Lagerumschlag misst, wie oft der durchschnittliche Lagerbestand in einer Periode verkauft oder verbraucht wird.",
+    "inhalt": {
+      "einleitung": "Ein hoher Lagerumschlag spricht oft für effiziente Bestandsführung. Zu hohe Werte können aber auch auf Versorgungsrisiken hindeuten.",
+      "abschnitte": [
+        {
+          "titel": "Berechnung",
+          "text": "Lagerumschlag = Wareneinsatz oder Absatz / durchschnittlicher Lagerbestand. Die genaue Formel hängt vom Steuerungsziel ab."
+        },
+        {
+          "titel": "Betriebswirtschaftliche Wirkung",
+          "text": "Geringe Lagerbestände senken Kapitalbindung und Lagerkosten. Gleichzeitig steigt die Bedeutung verlässlicher Lieferprozesse."
+        },
+        {
+          "titel": "Praxishebel",
+          "text": "Sortimentsbereinigung, bessere Prognosen und abgestimmte Bestellzyklen verbessern den Lagerumschlag nachhaltig."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Cashflow"
+    ]
+  },
+  {
+    "id": "fixkosten",
+    "titel": "Fixkosten",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Kostenrechnung",
+    "beschreibung": "Fixkosten fallen unabhängig von der Produktions- oder Absatzmenge an.",
+    "inhalt": {
+      "einleitung": "Zu den Fixkosten zählen etwa Miete, Grundgehälter oder Leasingraten. Sie bilden die Kostenbasis, die durch Deckungsbeiträge gedeckt werden muss.",
+      "abschnitte": [
+        {
+          "titel": "Beispiele und Einordnung",
+          "text": "Nicht jede Kostenart ist in jeder Frist komplett fix. Kosten können stufenfix oder langfristig anpassbar sein."
+        },
+        {
+          "titel": "Rolle in der Kalkulation",
+          "text": "Ein hoher Fixkostenblock erhöht das Risiko bei Nachfrageschwankungen. Gleichzeitig bieten hohe Skaleneffekte Chancen bei wachsendem Absatz."
+        },
+        {
+          "titel": "Steuerungsansätze",
+          "text": "Outsourcing, flexible Vertragsmodelle und Prozessautomatisierung helfen, Fixkostenanteile zu optimieren."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Deckungsbeitrag",
+      "Break Even"
+    ]
+  },
+  {
+    "id": "variable-kosten",
+    "titel": "Variable Kosten",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Kostenrechnung",
+    "beschreibung": "Variable Kosten verändern sich mit Produktions- oder Absatzmenge.",
+    "inhalt": {
+      "einleitung": "Typische variable Kosten sind Material, Verpackung oder provisionsabhängige Vergütung. Sie sind zentral für Preisuntergrenzen und Deckungsbeiträge.",
+      "abschnitte": [
+        {
+          "titel": "Abgrenzung zu Fixkosten",
+          "text": "Die Trennung von fixen und variablen Kosten ist für Controlling und Entscheidungsrechnungen essenziell."
+        },
+        {
+          "titel": "Einfluss auf Preisentscheidungen",
+          "text": "Kurzfristig sollte ein Preis zumindest die variablen Kosten decken. Langfristig müssen zusätzlich Fixkosten und Renditeziele berücksichtigt werden."
+        },
+        {
+          "titel": "Optimierung",
+          "text": "Einkaufsstrategien, Materialeffizienz und Standardisierung können variable Kosten pro Einheit senken."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Deckungsbeitrag"
+    ]
+  },
+  {
+    "id": "return-on-investment",
+    "titel": "Return on Investment",
+    "kategorie": "Unternehmensführung",
+    "unterkategorie": "Kennzahlen",
+    "beschreibung": "ROI zeigt, wie profitabel eingesetztes Kapital ist.",
+    "inhalt": {
+      "einleitung": "Der Return on Investment verbindet Gewinn und Kapitaleinsatz zu einer zentralen Steuerungsgröße. Er hilft, Investitionen vergleichbar zu machen.",
+      "abschnitte": [
+        {
+          "titel": "Formel",
+          "text": "ROI = Gewinn / eingesetztes Kapital. Je höher der Wert, desto effizienter wurde Kapital genutzt."
+        },
+        {
+          "titel": "Einsatzgebiete",
+          "text": "ROI wird für Investitionsentscheidungen, Business Cases und Performance-Vergleiche zwischen Bereichen genutzt."
+        },
+        {
+          "titel": "Interpretation",
+          "text": "Ein hoher ROI ist positiv, sollte aber zusammen mit Risiko, Liquidität und strategischer Relevanz bewertet werden."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "ROI",
+      "EBIT"
+    ]
+  },
+  {
+    "id": "cashflow",
+    "titel": "Cashflow",
+    "kategorie": "Finanzen",
+    "unterkategorie": "Finanzanalyse",
+    "beschreibung": "Cashflow zeigt die tatsächlichen Zahlungsströme eines Unternehmens in einer Periode.",
+    "inhalt": {
+      "einleitung": "Der Cashflow ergänzt Gewinnkennzahlen, da er den Fokus auf Einzahlungen und Auszahlungen legt. Er ist zentral für Finanzierung und Investitionen.",
+      "abschnitte": [
+        {
+          "titel": "Arten von Cashflow",
+          "text": "Üblich ist die Trennung in operativen, investiven und finanziellen Cashflow. Dadurch wird sichtbar, wo Mittel erwirtschaftet oder gebunden werden."
+        },
+        {
+          "titel": "Praktische Bedeutung",
+          "text": "Ein stabil positiver operativer Cashflow verbessert die Krisenfestigkeit und erhöht die Handlungsfähigkeit des Unternehmens."
+        },
+        {
+          "titel": "Zusammenhang zu Liquidität",
+          "text": "Cashflow-Analysen unterstützen die Liquiditätsplanung und zeigen frühzeitig, ob externe Finanzierung nötig werden könnte."
+        }
+      ]
+    },
+    "verwandteBegriffe": [
+      "Cashflow",
+      "EBIT"
+    ]
+  }
+]
+

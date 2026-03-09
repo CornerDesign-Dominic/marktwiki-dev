@@ -1,0 +1,51 @@
+﻿[
+  {
+    "begriff": "ROI",
+    "slug": "roi",
+    "definition": "Return on Investment (ROI) misst das Verhältnis von Gewinn zu eingesetztem Kapital und zeigt die Rentabilität einer Investition.",
+    "verwendetIn": [
+      "return-on-investment",
+      "marketing-funnel"
+    ]
+  },
+  {
+    "begriff": "Cashflow",
+    "slug": "cashflow",
+    "definition": "Cashflow beschreibt die Netto-Zahlungsströme eines Unternehmens innerhalb einer Periode und zeigt die Innenfinanzierungskraft.",
+    "verwendetIn": [
+      "cashflow",
+      "liquiditaet",
+      "abschreibung"
+    ]
+  },
+  {
+    "begriff": "EBIT",
+    "slug": "ebit",
+    "definition": "EBIT steht für Earnings Before Interest and Taxes und zeigt das operative Ergebnis vor Zinsen und Steuern.",
+    "verwendetIn": [
+      "abschreibung",
+      "return-on-investment",
+      "cashflow"
+    ]
+  },
+  {
+    "begriff": "Break Even",
+    "slug": "break-even",
+    "definition": "Der Break-Even-Punkt ist die Absatzmenge oder Umsatzhöhe, bei der ein Unternehmen weder Gewinn noch Verlust erzielt.",
+    "verwendetIn": [
+      "break-even-point",
+      "fixkosten"
+    ]
+  },
+  {
+    "begriff": "Deckungsbeitrag",
+    "slug": "deckungsbeitrag",
+    "definition": "Der Deckungsbeitrag ergibt sich aus Erlösen minus variablen Kosten und dient der Deckung von Fixkosten.",
+    "verwendetIn": [
+      "deckungsbeitrag",
+      "fixkosten",
+      "variable-kosten",
+      "break-even-point"
+    ]
+  }
+]

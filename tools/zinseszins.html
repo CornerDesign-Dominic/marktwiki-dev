@@ -1,0 +1,483 @@
+﻿<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spar- und Zinsrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Spar- und Zinsrechner im MarktWiki.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeugübersicht</a>
+        <h1>Spar- und Zinsrechner</h1>
+        <p class="lead">Kombinierte Berechnung aus Startkapital, regelmäßigen Sparraten und Verzinsung.</p>
+        <p class="muted">Der Zinssatz gilt immer pro gewähltem Verzinsungsintervall.</p>
+
+        <form class="input-grid calculator-form" id="zinseszins-form" novalidate>
+          <section class="calc-group" aria-labelledby="group-grunddaten">
+            <h2 id="group-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field">
+                <label for="startkapital">Startkapital</label>
+                <input type="number" id="startkapital" min="0" step="0.01" placeholder="10000">
+              </div>
+
+              <div class="field">
+                <label for="jahre">Laufzeit in Jahren</label>
+                <input type="number" id="jahre" min="0" step="1" placeholder="10">
+              </div>
+            </div>
+          </section>
+
+          <section class="calc-group" aria-labelledby="group-sparen">
+            <h2 id="group-sparen" class="calc-group-title">Sparen</h2>
+            <div class="calc-grid">
+              <div class="field">
+                <label for="sparrate-betrag">Betrag der Sparrate</label>
+                <input type="number" id="sparrate-betrag" min="0" step="0.01" placeholder="200">
+              </div>
+
+              <div class="field">
+                <label for="sparrate-intervall">Sparrate-Intervall</label>
+                <select id="sparrate-intervall" aria-label="Intervall der Sparrate">
+                  <option value="monatlich">Monatlich</option>
+                  <option value="jaehrlich">Jährlich</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <section class="calc-group" aria-labelledby="group-verzinsung">
+            <h2 id="group-verzinsung" class="calc-group-title">Verzinsung</h2>
+            <div class="calc-grid">
+              <div class="field">
+                <label for="zinssatz">Verzinsung in Prozent (z. B. 5 oder 0,5)</label>
+                <input type="number" id="zinssatz" min="0" step="0.01" placeholder="5">
+              </div>
+
+              <div class="field">
+                <label for="verzinsungs-intervall">Verzinsungsintervall</label>
+                <select id="verzinsungs-intervall" aria-label="Intervall der Verzinsung">
+                  <option value="jaehrlich">Jährlich</option>
+                  <option value="monatlich">Monatlich</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          <div class="calculator-actions">
+            <button type="button" id="zinseszins-berechnen" class="btn calc-submit">Berechnen</button>
+          </div>
+        </form>
+
+        <div id="zinseszins-ergebnis" class="result-box" aria-live="polite" hidden></div>
+
+        <div id="zinseszins-visual" class="result-box result-visual" hidden>
+          <p class="result-heading">Verteilung</p>
+          <div id="zinseszins-segment-values" class="segment-values"></div>
+          <div id="zinseszins-segment-bar" class="segment-bar" aria-hidden="true"></div>
+          <p id="zinseszins-gesamt" class="visual-total"></p>
+
+          <div id="zinseszins-year-chart" class="year-chart" hidden>
+            <p class="result-heading">Jahresentwicklung</p>
+            <div class="chart-legend" aria-hidden="true">
+              <span><i class="legend-swatch legend-own"></i>Startkapital + Einzahlungen</span>
+              <span><i class="legend-swatch legend-interest"></i>Zinsen</span>
+            </div>
+            <p id="zinseszins-chart-summary" class="chart-summary"></p>
+            <div id="zinseszins-year-bars" class="year-bars"></div>
+            <div id="zinseszins-year-tooltip" class="chart-tooltip" hidden></div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>window.MarktWikiLayout.injectFooter();</script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      const MONTHS_PER_YEAR = 12;
+
+      const form = document.getElementById("zinseszins-form");
+      const startkapital = document.getElementById("startkapital");
+      const sparrateIntervall = document.getElementById("sparrate-intervall");
+      const sparrateBetrag = document.getElementById("sparrate-betrag");
+      const zinssatz = document.getElementById("zinssatz");
+      const verzinsungsIntervall = document.getElementById("verzinsungs-intervall");
+      const jahre = document.getElementById("jahre");
+      const berechnenButton = document.getElementById("zinseszins-berechnen");
+      const output = document.getElementById("zinseszins-ergebnis");
+
+      const visualBox = document.getElementById("zinseszins-visual");
+      const segmentValues = document.getElementById("zinseszins-segment-values");
+      const segmentBar = document.getElementById("zinseszins-segment-bar");
+      const gesamtRow = document.getElementById("zinseszins-gesamt");
+      const yearChart = document.getElementById("zinseszins-year-chart");
+      const chartSummary = document.getElementById("zinseszins-chart-summary");
+      const yearBars = document.getElementById("zinseszins-year-bars");
+      const yearTooltip = document.getElementById("zinseszins-year-tooltip");
+
+      let hasCalculated = false;
+
+      function parseNumber(value) {
+        const normalized = String(value).trim().replace(/\s+/g, "").replace(",", ".");
+        return Number(normalized);
+      }
+
+      function formatCurrency(value) {
+        return value.toLocaleString("de-DE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function hideYearTooltip() {
+        yearTooltip.hidden = true;
+        yearTooltip.innerHTML = "";
+      }
+
+      function hideYearChart() {
+        yearChart.hidden = true;
+        chartSummary.textContent = "";
+        yearBars.innerHTML = "";
+        hideYearTooltip();
+      }
+
+      function hideVisualization() {
+        visualBox.hidden = true;
+        segmentValues.innerHTML = "";
+        segmentBar.innerHTML = "";
+        segmentBar.removeAttribute("aria-label");
+        gesamtRow.textContent = "";
+        hideYearChart();
+      }
+
+      function resetVisibleResults() {
+        output.hidden = true;
+        output.textContent = "";
+        hideVisualization();
+      }
+
+      function positionYearTooltip(clientX, clientY) {
+        const offset = 12;
+        const edgePadding = 8;
+        const rect = yearTooltip.getBoundingClientRect();
+
+        let nextLeft = clientX + offset;
+        let nextTop = clientY + offset;
+
+        if (nextLeft + rect.width > window.innerWidth - edgePadding) {
+          nextLeft = clientX - rect.width - offset;
+        }
+
+        if (nextTop + rect.height > window.innerHeight - edgePadding) {
+          nextTop = clientY - rect.height - offset;
+        }
+
+        const minLeft = edgePadding;
+        const minTop = edgePadding;
+        const maxLeft = Math.max(edgePadding, window.innerWidth - rect.width - edgePadding);
+        const maxTop = Math.max(edgePadding, window.innerHeight - rect.height - edgePadding);
+
+        yearTooltip.style.left = `${Math.min(Math.max(nextLeft, minLeft), maxLeft)}px`;
+        yearTooltip.style.top = `${Math.min(Math.max(nextTop, minTop), maxTop)}px`;
+      }
+
+      function showYearTooltip(entry, clientX, clientY) {
+        yearTooltip.innerHTML = `
+          <p class="chart-tooltip-title">Jahr ${entry.year}</p>
+          <p class="chart-tooltip-row"><span>Startkapital + Einzahlungen</span><strong>${formatCurrency(entry.ownCapital)} EUR</strong></p>
+          <p class="chart-tooltip-row"><span>Zinsen</span><strong>${formatCurrency(entry.interest)} EUR</strong></p>
+          <p class="chart-tooltip-row chart-tooltip-total"><span>Gesamtbetrag</span><strong>${formatCurrency(entry.total)} EUR</strong></p>
+        `;
+
+        yearTooltip.hidden = false;
+        positionYearTooltip(clientX, clientY);
+      }
+
+      function renderDistribution(start, savings, interests, total) {
+        const segments = [
+          { label: "Startkapital", value: start, className: "segment-start" },
+          { label: "Sparbetrag", value: savings, className: "segment-savings" },
+          { label: "Zinsen", value: interests, className: "segment-interests" }
+        ].filter((segment) => segment.value > 0);
+
+        if (total <= 0 || segments.length === 0) {
+          hideVisualization();
+          return false;
+        }
+
+        segmentValues.innerHTML = "";
+        segmentBar.innerHTML = "";
+
+        const ariaParts = [];
+
+        segments.forEach((segment) => {
+          const ratio = segment.value / total;
+          const valueNode = document.createElement("div");
+          valueNode.className = "segment-value";
+          valueNode.style.flex = `${ratio} 1 0`;
+
+          const labelNode = document.createElement("span");
+          labelNode.className = "segment-label";
+          labelNode.textContent = segment.label;
+
+          const amountNode = document.createElement("strong");
+          amountNode.textContent = `${formatCurrency(segment.value)} EUR`;
+
+          valueNode.append(labelNode, amountNode);
+          segmentValues.appendChild(valueNode);
+
+          const barNode = document.createElement("div");
+          barNode.className = `segment-part ${segment.className}`;
+          barNode.style.flex = `${ratio} 1 0`;
+          barNode.title = `${segment.label}: ${formatCurrency(segment.value)} EUR`;
+          segmentBar.appendChild(barNode);
+
+          ariaParts.push(`${segment.label} ${formatCurrency(segment.value)} Euro`);
+        });
+
+        segmentBar.setAttribute("aria-label", `Aufteilung: ${ariaParts.join(", ")}`);
+        gesamtRow.textContent = `Gesamtbetrag: ${formatCurrency(total)} EUR`;
+        visualBox.hidden = false;
+        return true;
+      }
+
+      function renderYearChart(yearlyData) {
+        yearBars.innerHTML = "";
+
+        if (!yearlyData.length) {
+          hideYearChart();
+          return;
+        }
+
+        const maxTotal = Math.max(...yearlyData.map((entry) => entry.total), 0);
+        if (maxTotal <= 0) {
+          hideYearChart();
+          return;
+        }
+
+        const yearCount = yearlyData.length;
+        const containerWidth = yearBars.clientWidth || yearBars.parentElement.clientWidth || 800;
+        const gapPx = yearCount <= 8 ? 10 : yearCount <= 16 ? 8 : yearCount <= 30 ? 6 : yearCount <= 50 ? 4 : 2;
+        const estimatedBarWidth = Math.max((containerWidth - gapPx * (yearCount - 1)) / yearCount, 1);
+        const minLabelWidth = 44;
+        const minStepByDensity = Math.max(1, Math.ceil(minLabelWidth / estimatedBarWidth));
+        const minStepByYears = Math.max(1, Math.ceil(yearCount / 12));
+
+        function normalizeStep(step) {
+          if (step <= 1) return 1;
+          if (step <= 2) return 2;
+          if (step <= 3) return 3;
+          if (step <= 5) return 5;
+          if (step <= 10) return 10;
+          return Math.ceil(step / 10) * 10;
+        }
+
+        const labelStep = normalizeStep(Math.max(minStepByDensity, minStepByYears));
+        const compactLabels = yearCount > 15;
+
+        yearBars.style.setProperty("--year-gap", `${gapPx}px`);
+        yearBars.style.setProperty("--year-label-size", yearCount > 40 ? "0.68rem" : yearCount > 25 ? "0.74rem" : "0.8rem");
+
+        yearlyData.forEach((entry) => {
+          const barItem = document.createElement("div");
+          barItem.className = "year-bar-item";
+          barItem.style.flex = "1 1 0";
+
+          const stack = document.createElement("div");
+          stack.className = "year-bar-stack";
+          stack.tabIndex = 0;
+          stack.setAttribute("aria-label", `Jahr ${entry.year}, Startkapital plus Einzahlungen ${formatCurrency(entry.ownCapital)} Euro, Zinsen ${formatCurrency(entry.interest)} Euro, Gesamtbetrag ${formatCurrency(entry.total)} Euro`);
+
+          const ownPart = document.createElement("div");
+          ownPart.className = "year-bar-own";
+          ownPart.style.height = `${(entry.ownCapital / maxTotal) * 100}%`;
+
+          const interestPart = document.createElement("div");
+          interestPart.className = "year-bar-interest";
+          interestPart.style.height = `${(entry.interest / maxTotal) * 100}%`;
+
+          stack.append(ownPart, interestPart);
+
+          const yearLabel = document.createElement("span");
+          yearLabel.className = "year-bar-label";
+          const isFirst = entry.year === 1;
+          const isLast = entry.year === yearCount;
+          const isTick = entry.year % labelStep === 0;
+          const showLabel = isFirst || isLast || isTick;
+
+          if (showLabel) {
+            yearLabel.textContent = compactLabels ? `${entry.year}` : `Jahr ${entry.year}`;
+          } else {
+            yearLabel.textContent = "";
+            yearLabel.classList.add("is-skip");
+            yearLabel.setAttribute("aria-hidden", "true");
+          }
+
+          barItem.append(stack, yearLabel);
+          yearBars.appendChild(barItem);
+
+          stack.addEventListener("pointerenter", (event) => {
+            if (event.pointerType === "touch") {
+              return;
+            }
+            showYearTooltip(entry, event.clientX, event.clientY);
+          });
+
+          stack.addEventListener("pointermove", (event) => {
+            if (event.pointerType === "touch") {
+              return;
+            }
+            positionYearTooltip(event.clientX, event.clientY);
+          });
+
+          stack.addEventListener("pointerleave", hideYearTooltip);
+
+          stack.addEventListener("focus", () => {
+            const box = stack.getBoundingClientRect();
+            showYearTooltip(entry, box.left + box.width / 2, box.top);
+          });
+
+          stack.addEventListener("blur", hideYearTooltip);
+        });
+
+        const lastYear = yearlyData[yearlyData.length - 1];
+        const yearWord = lastYear.year === 1 ? "Jahr" : "Jahren";
+        chartSummary.textContent = `Endwert nach ${lastYear.year} ${yearWord}: ${formatCurrency(lastYear.total)} EUR`;
+        yearChart.hidden = false;
+      }
+
+      function calculatePlan(start, savingsAmount, savingsInterval, ratePercent, interestInterval, years) {
+        const savingsEveryMonths = savingsInterval === "monatlich" ? 1 : MONTHS_PER_YEAR;
+        const interestEveryMonths = interestInterval === "monatlich" ? 1 : MONTHS_PER_YEAR;
+
+        // Konservative Standardannahme:
+        // Wenn in einem Monat sowohl Verzinsung als auch Einzahlung anfallen,
+        // wird erst verzinst und danach die Sparrate am Periodenende eingezahlt.
+        const intervalRate = ratePercent / 100;
+        const totalMonths = years * MONTHS_PER_YEAR;
+
+        let total = start;
+        let savingsTotal = 0;
+        const yearlyData = [];
+
+        for (let month = 1; month <= totalMonths; month += 1) {
+          if (intervalRate > 0 && month % interestEveryMonths === 0) {
+            total *= 1 + intervalRate;
+          }
+
+          if (savingsAmount > 0 && month % savingsEveryMonths === 0) {
+            total += savingsAmount;
+            savingsTotal += savingsAmount;
+          }
+
+          if (month % MONTHS_PER_YEAR === 0) {
+            const ownCapital = start + savingsTotal;
+            const interest = Math.max(total - ownCapital, 0);
+            yearlyData.push({
+              year: month / MONTHS_PER_YEAR,
+              total,
+              ownCapital,
+              interest
+            });
+          }
+        }
+
+        let interestTotal = total - start - savingsTotal;
+        if (Math.abs(interestTotal) < 1e-9) {
+          interestTotal = 0;
+        }
+
+        return {
+          total,
+          savingsTotal,
+          interestTotal,
+          yearlyData
+        };
+      }
+
+      function updateResult() {
+        const start = parseNumber(startkapital.value);
+        const savingsAmount = parseNumber(sparrateBetrag.value);
+        const ratePercent = parseNumber(zinssatz.value);
+        const years = parseNumber(jahre.value);
+        const savingsInterval = sparrateIntervall.value;
+        const interestInterval = verzinsungsIntervall.value;
+
+        if (!Number.isFinite(start) || !Number.isFinite(savingsAmount) || !Number.isFinite(ratePercent) || !Number.isFinite(years)) {
+          output.hidden = false;
+          output.textContent = "Bitte alle Werte vollständig eingeben.";
+          hideVisualization();
+          return;
+        }
+
+        if (start < 0 || savingsAmount < 0 || ratePercent < 0 || years < 0) {
+          output.hidden = false;
+          output.textContent = "Startkapital, Sparrate, Verzinsung und Laufzeit müssen 0 oder größer sein.";
+          hideVisualization();
+          return;
+        }
+
+        if (!Number.isInteger(years)) {
+          output.hidden = false;
+          output.textContent = "Bitte die Laufzeit in vollen Jahren angeben.";
+          hideVisualization();
+          return;
+        }
+
+        const result = calculatePlan(start, savingsAmount, savingsInterval, ratePercent, interestInterval, years);
+        output.hidden = false;
+
+        output.innerHTML = `
+          <p class="result-heading">Ergebnisübersicht</p>
+          <div class="result-summary">
+            <p class="result-line result-line-total"><span>Gesamtbetrag</span><strong>${formatCurrency(result.total)} EUR</strong></p>
+            <p class="result-line"><span>Startkapital</span><strong>${formatCurrency(start)} EUR</strong></p>
+            <p class="result-line"><span>Sparbetrag</span><strong>${formatCurrency(result.savingsTotal)} EUR</strong></p>
+            <p class="result-line"><span>Zinsbetrag</span><strong>${formatCurrency(result.interestTotal)} EUR</strong></p>
+          </div>
+        `;
+
+        const showDistribution = renderDistribution(start, result.savingsTotal, result.interestTotal, result.total);
+        if (showDistribution) {
+          renderYearChart(result.yearlyData);
+        }
+      }
+
+      form.addEventListener("input", () => {
+        if (hasCalculated) {
+          hasCalculated = false;
+          resetVisibleResults();
+        }
+      });
+
+      form.addEventListener("change", () => {
+        if (hasCalculated) {
+          hasCalculated = false;
+          resetVisibleResults();
+        }
+      });
+
+      berechnenButton.addEventListener("click", () => {
+        hasCalculated = true;
+        updateResult();
+      });
+
+      resetVisibleResults();
+    })();
+  </script>
+</body>
+</html>

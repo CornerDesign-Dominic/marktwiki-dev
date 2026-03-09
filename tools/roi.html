@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ROI Rechner | MarktWiki</title>
+  <meta name="description" content="Statischer ROI Rechner im MarktWiki.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../style.css">
+  <script src="../layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+<main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeugübersicht</a>
+        <h1>ROI Rechner</h1>
+        <p class="lead">Berechnung: ROI = Gewinn / Investition * 100</p>
+
+        <form class="input-grid" id="roi-form" novalidate>
+          <div class="field">
+            <label for="investition">Investition</label>
+            <input type="number" id="investition" min="0" step="0.01" placeholder="5000">
+          </div>
+
+          <div class="field">
+            <label for="gewinn">Gewinn</label>
+            <input type="number" id="gewinn" step="0.01" placeholder="1200">
+          </div>
+        </form>
+
+        <div id="roi-ergebnis" class="result-box" aria-live="polite">Bitte Werte eingeben.</div>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+
+<script>
+    (function () {
+      "use strict";
+
+      const form = document.getElementById("roi-form");
+      const investition = document.getElementById("investition");
+      const gewinn = document.getElementById("gewinn");
+      const output = document.getElementById("roi-ergebnis");
+
+      function parseNumber(value) {
+        return Number(String(value).replace(",", "."));
+      }
+
+      // Rechnet live bei jeder Eingabe neu.
+      function updateResult() {
+        const investment = parseNumber(investition.value);
+        const profit = parseNumber(gewinn.value);
+
+        if (!Number.isFinite(investment) || !Number.isFinite(profit)) {
+          output.textContent = "Bitte beide Werte vollständig eingeben.";
+          return;
+        }
+
+        if (investment <= 0) {
+          output.textContent = "Investition muss größer als 0 sein.";
+          return;
+        }
+
+        const roi = (profit / investment) * 100;
+        output.textContent = `ROI: ${roi.toLocaleString("de-DE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        })} %`;
+      }
+
+      form.addEventListener("input", updateResult);
+    })();
+  </script>
+</body>
+</html>
+
+
+
+

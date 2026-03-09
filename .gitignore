@@ -1,0 +1,37 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Build and cache outputs
+dist/
+build/
+coverage/
+.cache/
+.tmp/
+tmp/
+temp/
+
+# IDE/editor settings
+.idea/
+.vscode/
+*.code-workspace
+
+# QA artifacts
+tools/qa/reports/
+tools/qa/.cache/

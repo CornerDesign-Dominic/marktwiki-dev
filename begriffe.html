@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Begriffe | MarktWiki</title>
+  <meta name="description" content="Glossar mit zentralen betriebswirtschaftlichen Begriffen im MarktWiki.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./layout.js"></script>
+  <script src="./main.js" defer></script>
+</head>
+<body data-page="terms" data-base-path="." data-nav="terms">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+<main>
+    <div class="container">
+      <section class="card">
+        <h1>Glossar</h1>
+        <p>Alle Begriffe sind alphabetisch sortiert und direkt zur Detailansicht verlinkt.</p>
+        <p class="muted">Für neue, dateibasierte Artikelseiten siehe <a href="./wiki/index.html">Wiki</a>.</p>
+      </section>
+
+      <section class="section-space" aria-labelledby="begriffe-heading">
+        <h2 id="begriffe-heading" class="sr-only">Begriffsliste</h2>
+        <div id="begriffe-list" class="glossary-grid" data-error-target="begriffe"></div>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+
+</body>
+</html>
+
+
+
+
