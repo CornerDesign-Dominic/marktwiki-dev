@@ -1,13 +1,10 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Wiki | MarktWiki</title>
   <meta name="description" content="Artikelbasiertes Wirtschafts-Wiki im MarktWiki.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style.css">
   <script src="../layout.js"></script>
 </head>
@@ -18,24 +15,87 @@
     <div class="container">
       <section class="hero card">
         <h1>Wiki-Artikel</h1>
-        <p>Wählen Sie eine Hauptkategorie, danach eine Unterkategorie und anschließend den gewünschten Artikel.</p>
+        <p>W�hlen Sie eine Hauptkategorie, danach eine Unterkategorie und anschlie�end den gew�nschten Artikel.</p>
       </section>
 
       <section class="section-space" aria-labelledby="wiki-kategorien-heading">
         <div class="section-head">
           <h2 id="wiki-kategorien-heading">Hauptkategorien</h2>
         </div>
-        <div class="wiki-list">
-          <article class="card category-card"><h3>Buchführung</h3><p>Grundlagen der laufenden Buchhaltung.</p><div class="card-actions"><a class="btn" href="./kategorie-buchfuehrung.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>Rechnungswesen</h3><p>Jahresabschluss, Bilanz und Kennzahlen.</p><div class="card-actions"><a class="btn" href="./kategorie-rechnungswesen.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>BWL</h3><p>Unternehmenssteuerung und Managementthemen.</p><div class="card-actions"><a class="btn" href="./kategorie-bwl.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>VWL</h3><p>Volkswirtschaftliche Grundlagen und Zusammenhänge.</p><div class="card-actions"><a class="btn" href="./kategorie-vwl.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>Logistik</h3><p>Bestände, Warenfluss und Lieferketten.</p><div class="card-actions"><a class="btn" href="./kategorie-logistik.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>Recht & Steuern</h3><p>Rechtliche und steuerliche Grundlagen.</p><div class="card-actions"><a class="btn" href="./kategorie-recht-und-steuern.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>Personal</h3><p>Personalplanung, Arbeitsorganisation und Führung.</p><div class="card-actions"><a class="btn" href="./kategorie-personal.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>Finanzierung</h3><p>Kapitalbedarf, Finanzierungsarten und Liquidität.</p><div class="card-actions"><a class="btn" href="./kategorie-finanzierung.html">Kategorie öffnen</a></div></article>
-          <article class="card category-card"><h3>Kapitalmarkt</h3><p>Wertpapiere, Zinsen und Marktmechanismen.</p><div class="card-actions"><a class="btn" href="./kategorie-kapitalmarkt.html">Kategorie öffnen</a></div></article>
-        </div>
+        <ul class="wiki-list-main" aria-label="Hauptkategorien">
+          <li>
+            <a class="category-link-card" href="./kategorie-buchfuehrung.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Buchf�hrung</span>
+              <span class="category-card-description">Grundlagen der laufenden Buchhaltung.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-rechnungswesen.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Rechnungswesen</span>
+              <span class="category-card-description">Jahresabschluss, Bilanz und Kennzahlen.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-bwl.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">BWL</span>
+              <span class="category-card-description">Unternehmenssteuerung und Managementthemen.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-vwl.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">VWL</span>
+              <span class="category-card-description">Volkswirtschaftliche Grundlagen und Zusammenh�nge.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-logistik.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Logistik</span>
+              <span class="category-card-description">Best�nde, Warenfluss und Lieferketten.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-recht-und-steuern.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Recht &amp; Steuern</span>
+              <span class="category-card-description">Rechtliche und steuerliche Grundlagen.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-personal.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Personal</span>
+              <span class="category-card-description">Personalplanung, Arbeitsorganisation und F�hrung.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-finanzierung.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Finanzierung</span>
+              <span class="category-card-description">Kapitalbedarf, Finanzierungsarten und Liquidit�t.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+          <li>
+            <a class="category-link-card" href="./kategorie-kapitalmarkt.html">
+              <span class="category-card-meta">Hauptkategorie</span>
+              <span class="category-card-title">Kapitalmarkt</span>
+              <span class="category-card-description">Wertpapiere, Zinsen und Marktmechanismen.</span>
+              <span class="category-card-cta">Zur Kategorie <span aria-hidden="true">?</span></span>
+            </a>
+          </li>
+        </ul>
       </section>
     </div>
   </main>
