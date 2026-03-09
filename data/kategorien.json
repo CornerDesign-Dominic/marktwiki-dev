@@ -1,27 +1,12 @@
 ﻿[
   {
-    "id": "marketing",
-    "titel": "Marketing",
-    "beschreibung": "Strategien und Methoden, um Zielgruppen zu erreichen, Nachfrage zu erzeugen und Kunden langfristig zu binden."
+    "id": "buchfuehrung",
+    "titel": "Buchfuehrung",
+    "beschreibung": "Grundlagen der laufenden Buchhaltung und des periodischen Abschlusses."
   },
   {
-    "id": "finanzen",
-    "titel": "Finanzen",
-    "beschreibung": "Kennzahlen, Planung und Steuerung von Zahlungsströmen, Kosten und Wirtschaftlichkeit im Unternehmen."
-  },
-  {
-    "id": "unternehmensfuehrung",
-    "titel": "Unternehmensführung",
-    "beschreibung": "Entscheidungsprozesse, Steuerungsinstrumente und Führungsprinzipien für nachhaltiges Wachstum."
-  },
-  {
-    "id": "logistik",
-    "titel": "Logistik",
-    "beschreibung": "Planung und Optimierung von Lager, Materialfluss und Lieferketten für effiziente Abläufe."
-  },
-  {
-    "id": "recht-steuern",
-    "titel": "Recht & Steuern",
-    "beschreibung": "Grundlagen zu rechtlichen und steuerlichen Rahmenbedingungen, die Unternehmen beachten müssen."
+    "id": "rechnungswesen",
+    "titel": "Rechnungswesen",
+    "beschreibung": "Finanzbuchhaltung sowie Bilanzanalyse als Kernbereiche des betrieblichen Rechnungswesens."
   }
 ]

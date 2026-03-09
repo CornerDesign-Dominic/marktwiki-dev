@@ -1,82 +1,384 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ROI Rechner | MarktWiki</title>
-  <meta name="description" content="Statischer ROI Rechner im MarktWiki.">
+  <title>Return-on-Investment-Rechner (ROI) | MarktWiki</title>
+  <meta name="description" content="Statischer Return-on-Investment-Rechner (ROI) im MarktWiki.">
   <link rel="stylesheet" href="../style.css">
   <script src="../layout.js"></script>
 </head>
 <body data-base-path=".." data-nav="tools">
   <script>window.MarktWikiLayout.injectHeader();</script>
 
-<main>
+  <main>
     <div class="container">
       <section class="card">
         <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeugübersicht</a>
-        <h1>ROI Rechner</h1>
-        <p class="lead">Berechnung: ROI = Gewinn / Investition * 100</p>
+        <h1>Return-on-Investment-Rechner (ROI)</h1>
+        <p class="lead">Berechnung der Kapitalrendite (Return on Investment) auf Basis von Gewinn und Investition.</p>
+        <p class="muted">Formel: ROI = Gewinn / Investition * 100</p>
 
-        <form class="input-grid" id="roi-form" novalidate>
-          <div class="field">
-            <label for="investition">Investition</label>
-            <input type="number" id="investition" min="0" step="0.01" placeholder="5000">
-          </div>
+        <form class="input-grid calculator-form" id="roi-form" novalidate>
+          <section class="calc-group" aria-labelledby="group-roi-grunddaten">
+            <h2 id="group-roi-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field">
+                <label for="investition">Investition (Pflicht)</label>
+                <input type="number" id="investition" min="0" step="0.01" placeholder="5000">
+              </div>
 
-          <div class="field">
-            <label for="gewinn">Gewinn</label>
-            <input type="number" id="gewinn" step="0.01" placeholder="1200">
+              <div class="field">
+                <label for="gewinn">Gewinn (Pflicht)</label>
+                <input type="number" id="gewinn" step="0.01" placeholder="1200">
+              </div>
+            </div>
+          </section>
+
+          <section class="calc-group" aria-labelledby="group-roi-erweitert">
+            <h2 id="group-roi-erweitert" class="calc-group-title">Erweiterte Angaben (optional)</h2>
+            <div class="calc-grid">
+              <div class="field">
+                <label for="umsatz">Umsatz</label>
+                <input type="number" id="umsatz" min="0" step="0.01" placeholder="15000">
+              </div>
+
+              <div class="field">
+                <label for="kosten">Kosten</label>
+                <input type="number" id="kosten" min="0" step="0.01" placeholder="13800">
+              </div>
+            </div>
+</section>
+
+          <div class="calculator-actions">
+            <button type="button" id="roi-berechnen" class="btn calc-submit">Berechnen</button>
           </div>
         </form>
 
-        <div id="roi-ergebnis" class="result-box" aria-live="polite">Bitte Werte eingeben.</div>
+        <div id="roi-ergebnis" class="result-box" aria-live="polite" hidden></div>
+
+        <div id="roi-visual" class="result-box result-visual" hidden>
+          <p class="result-heading">Visuelle Auswertung</p>
+          <div id="roi-compare" class="roi-compare"></div>
+          <p id="roi-visual-summary" class="visual-total"></p>
+        </div>
+
+        <section class="result-box calculator-explanation" aria-labelledby="roi-erklaerung">
+          <h2 id="roi-erklaerung" class="result-heading">Erläuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block">
+              <h3>Was ist ROI?</h3>
+              <p>Der Return on Investment (ROI) zeigt, wie viel Gewinn im Verhältnis zur eingesetzten Investition erzielt wird. Der Wert wird in Prozent angegeben und macht Investitionen vergleichbar.</p>
+            </article>
+
+            <article class="calc-explanation-block">
+              <h3>Was bedeutet Gewinn?</h3>
+              <p>Der Gewinn ist der absolute Ertrag nach Abzug aller relevanten Aufwendungen. Im Rechner ist er die zentrale Größe für die ROI-Berechnung.</p>
+            </article>
+
+            <article class="calc-explanation-block">
+              <h3>Wie lautet die Formel?</h3>
+              <p>Die Formel lautet: ROI = Gewinn / Investition * 100.</p>
+            </article>
+
+            <article class="calc-explanation-block">
+              <h3>Optionale Angaben Umsatz und Kosten</h3>
+              <p>Umsatz und Kosten sind Zusatzangaben. Wenn nur einer der beiden Werte angegeben ist, wird der andere aus dem Gewinn hergeleitet. Wenn beide Werte eingegeben werden, müssen sie zusammen mit dem Gewinn konsistent sein.</p>
+            </article>
+
+            <article class="calc-explanation-block">
+              <h3>Unterschied zwischen ROI und Marge</h3>
+              <p>Der ROI setzt Gewinn in Beziehung zur Investition. Die Marge setzt Gewinn in Beziehung zum Umsatz. Beide Kennzahlen betrachten Wirtschaftlichkeit aus unterschiedlichen Perspektiven.</p>
+            </article>
+          </div>
+        </section>
       </section>
     </div>
   </main>
+
   <script>window.MarktWikiLayout.injectFooter();</script>
 
-<script>
+  <script>
     (function () {
       "use strict";
+
+      const CONSISTENCY_TOLERANCE = 0.01;
 
       const form = document.getElementById("roi-form");
       const investition = document.getElementById("investition");
       const gewinn = document.getElementById("gewinn");
+      const umsatz = document.getElementById("umsatz");
+      const kosten = document.getElementById("kosten");
+      const berechnenButton = document.getElementById("roi-berechnen");
+
       const output = document.getElementById("roi-ergebnis");
+      const visualBox = document.getElementById("roi-visual");
+      const compareBox = document.getElementById("roi-compare");
+      const visualSummary = document.getElementById("roi-visual-summary");
+
+      const revenueDefaultPlaceholder = umsatz.getAttribute("placeholder") || "";
+      const costsDefaultPlaceholder = kosten.getAttribute("placeholder") || "";
+
+      let hasCalculated = false;
 
       function parseNumber(value) {
-        return Number(String(value).replace(",", "."));
+        const normalized = String(value).trim().replace(/\s+/g, "").replace(",", ".");
+        return Number(normalized);
       }
 
-      // Rechnet live bei jeder Eingabe neu.
+      function parseOptional(value) {
+        const normalized = String(value).trim();
+        if (normalized === "") {
+          return null;
+        }
+        return parseNumber(normalized);
+      }
+
+      function formatCurrency(value) {
+        return value.toLocaleString("de-DE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function formatPercent(value) {
+        return value.toLocaleString("de-DE", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+      }
+
+      function setFieldAutoMode(field, isAuto, autoText, fallbackPlaceholder) {
+        if (isAuto) {
+          field.disabled = true;
+          field.classList.add("is-auto-field");
+          field.setAttribute("placeholder", autoText);
+          field.setAttribute("aria-label", `${field.previousElementSibling ? field.previousElementSibling.textContent : "Feld"} (automatisch berechnet)`);
+        } else {
+          field.disabled = false;
+          field.classList.remove("is-auto-field");
+          field.setAttribute("placeholder", fallbackPlaceholder);
+          field.removeAttribute("aria-label");
+        }
+      }
+
+      function syncOptionalFieldState() {
+        const revenueHasValue = String(umsatz.value).trim() !== "";
+        const costsHasValue = String(kosten.value).trim() !== "";
+
+        // Nur wenn genau eines der Felder befüllt ist, wird das andere automatisch gesperrt.
+        const autoCosts = revenueHasValue && !costsHasValue;
+        const autoRevenue = costsHasValue && !revenueHasValue;
+
+        setFieldAutoMode(kosten, autoCosts, "wird automatisch berechnet", costsDefaultPlaceholder);
+        setFieldAutoMode(umsatz, autoRevenue, "wird automatisch berechnet", revenueDefaultPlaceholder);
+      }
+
+      function hideVisualization() {
+        visualBox.hidden = true;
+        compareBox.innerHTML = "";
+        visualSummary.textContent = "";
+      }
+
+      function resetVisibleResults() {
+        output.hidden = true;
+        output.textContent = "";
+        hideVisualization();
+      }
+
+      function showError(message) {
+        output.hidden = false;
+        output.textContent = message;
+        hideVisualization();
+      }
+
+      function renderVisual(investment, profit) {
+        const normalizedProfit = Math.abs(profit);
+        const maxValue = Math.max(investment, normalizedProfit, 1);
+        const investmentWidth = (investment / maxValue) * 100;
+        const profitWidth = (normalizedProfit / maxValue) * 100;
+
+        const profitLabel = profit >= 0 ? "Gewinn" : "Verlust";
+        const profitClass = profit >= 0 ? "roi-fill-profit" : "roi-fill-loss";
+
+        compareBox.innerHTML = `
+          <div class="roi-compare-row">
+            <span>Investition</span>
+            <div class="roi-compare-track" aria-hidden="true"><div class="roi-compare-fill roi-fill-invest" style="width:${investmentWidth}%;"></div></div>
+            <strong>${formatCurrency(investment)} EUR</strong>
+          </div>
+          <div class="roi-compare-row">
+            <span>${profitLabel}</span>
+            <div class="roi-compare-track" aria-hidden="true"><div class="roi-compare-fill ${profitClass}" style="width:${profitWidth}%;"></div></div>
+            <strong>${formatCurrency(profit)} EUR</strong>
+          </div>
+        `;
+
+        visualBox.hidden = false;
+      }
+
+      function resolveRevenueAndCosts(profit, revenueInput, costsInput) {
+        const hasRevenue = revenueInput !== null;
+        const hasCosts = costsInput !== null;
+
+        if (!hasRevenue && !hasCosts) {
+          return {
+            revenue: null,
+            costs: null,
+            revenueDerived: false,
+            costsDerived: false
+          };
+        }
+
+        if (hasRevenue && !hasCosts) {
+          const derivedCosts = revenueInput - profit;
+          if (derivedCosts < 0) {
+            return { error: "Die Angaben sind unplausibel: Aus Umsatz und Gewinn ergeben sich negative Kosten." };
+          }
+          return {
+            revenue: revenueInput,
+            costs: derivedCosts,
+            revenueDerived: false,
+            costsDerived: true
+          };
+        }
+
+        if (!hasRevenue && hasCosts) {
+          const derivedRevenue = profit + costsInput;
+          if (derivedRevenue < 0) {
+            return { error: "Die Angaben sind unplausibel: Aus Gewinn und Kosten ergibt sich ein negativer Umsatz." };
+          }
+          return {
+            revenue: derivedRevenue,
+            costs: costsInput,
+            revenueDerived: true,
+            costsDerived: false
+          };
+        }
+
+        const expectedRevenue = profit + costsInput;
+        if (Math.abs(revenueInput - expectedRevenue) > CONSISTENCY_TOLERANCE) {
+          return { error: "Die Angaben zu Gewinn, Umsatz und Kosten sind widersprüchlich. Es muss gelten: Gewinn + Kosten = Umsatz." };
+        }
+
+        return {
+          revenue: revenueInput,
+          costs: costsInput,
+          revenueDerived: false,
+          costsDerived: false
+        };
+      }
+
       function updateResult() {
+        if (String(investition.value).trim() === "" || String(gewinn.value).trim() === "") {
+          showError("Bitte Investition und Gewinn vollständig eingeben.");
+          return;
+        }
+
+        syncOptionalFieldState();
+
         const investment = parseNumber(investition.value);
         const profit = parseNumber(gewinn.value);
+        const revenueInput = parseOptional(umsatz.value);
+        const costsInput = parseOptional(kosten.value);
 
         if (!Number.isFinite(investment) || !Number.isFinite(profit)) {
-          output.textContent = "Bitte beide Werte vollständig eingeben.";
+          showError("Bitte Investition und Gewinn als gültige Zahlen eingeben.");
           return;
         }
 
         if (investment <= 0) {
-          output.textContent = "Investition muss größer als 0 sein.";
+          showError("Die Investition muss größer als 0 sein.");
+          return;
+        }
+
+        if (revenueInput !== null && !Number.isFinite(revenueInput)) {
+          showError("Bitte den Umsatz als gültige Zahl eingeben oder das Feld leer lassen.");
+          return;
+        }
+
+        if (costsInput !== null && !Number.isFinite(costsInput)) {
+          showError("Bitte die Kosten als gültige Zahl eingeben oder das Feld leer lassen.");
+          return;
+        }
+
+        if (revenueInput !== null && revenueInput < 0) {
+          showError("Der Umsatz darf nicht negativ sein.");
+          return;
+        }
+
+        if (costsInput !== null && costsInput < 0) {
+          showError("Die Kosten dürfen nicht negativ sein.");
+          return;
+        }
+
+        const resolved = resolveRevenueAndCosts(profit, revenueInput, costsInput);
+        if (resolved.error) {
+          showError(resolved.error);
           return;
         }
 
         const roi = (profit / investment) * 100;
-        output.textContent = `ROI: ${roi.toLocaleString("de-DE", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2
-        })} %`;
+        const resultLines = [
+          `<p class="result-line result-line-total"><span>ROI</span><strong>${formatPercent(roi)} %</strong></p>`,
+          `<p class="result-line"><span>Investition</span><strong>${formatCurrency(investment)} EUR</strong></p>`,
+          `<p class="result-line"><span>Gewinn</span><strong>${formatCurrency(profit)} EUR</strong></p>`
+        ];
+
+        if (resolved.revenue !== null) {
+          const revenueLabel = resolved.revenueDerived ? "Umsatz (automatisch berechnet)" : "Umsatz";
+          resultLines.push(`<p class="result-line"><span>${revenueLabel}</span><strong>${formatCurrency(resolved.revenue)} EUR</strong></p>`);
+        }
+
+        if (resolved.costs !== null) {
+          const costsLabel = resolved.costsDerived ? "Kosten (automatisch berechnet)" : "Kosten";
+          resultLines.push(`<p class="result-line"><span>${costsLabel}</span><strong>${formatCurrency(resolved.costs)} EUR</strong></p>`);
+        }
+
+        if (resolved.revenue !== null && resolved.revenue > 0) {
+          const margin = (profit / resolved.revenue) * 100;
+          const costRatio = (resolved.costs / resolved.revenue) * 100;
+          resultLines.push(`<p class="result-line"><span>Marge (auf Umsatz)</span><strong>${formatPercent(margin)} %</strong></p>`);
+          resultLines.push(`<p class="result-line"><span>Kostenquote (auf Umsatz)</span><strong>${formatPercent(costRatio)} %</strong></p>`);
+        }
+
+        output.hidden = false;
+        output.innerHTML = `
+          <p class="result-heading">Ergebnisübersicht</p>
+          <div class="result-summary">${resultLines.join("")}</div>
+        `;
+
+        visualSummary.textContent = `ROI: ${formatPercent(roi)} %`;
+        renderVisual(investment, profit);
       }
 
-      form.addEventListener("input", updateResult);
+      umsatz.addEventListener("input", syncOptionalFieldState);
+      kosten.addEventListener("input", syncOptionalFieldState);
+
+      form.addEventListener("input", () => {
+        if (hasCalculated) {
+          hasCalculated = false;
+          resetVisibleResults();
+        }
+      });
+
+      form.addEventListener("change", () => {
+        if (hasCalculated) {
+          hasCalculated = false;
+          resetVisibleResults();
+        }
+      });
+
+      berechnenButton.addEventListener("click", () => {
+        hasCalculated = true;
+        updateResult();
+      });
+
+      syncOptionalFieldState();
+      resetVisibleResults();
     })();
   </script>
 </body>
 </html>
-
-
 
 

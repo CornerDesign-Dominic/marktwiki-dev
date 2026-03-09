@@ -1,56 +1,126 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.20
+
+- Kontrollierter Projekt-Cleanup auf Basis des reduzierten MVP-Stands: offensichtliche Altlasten und veraltete Planungsreste entfernt (`_tmp_diff_preview.txt`, `wiki/STRUKTURPLAN.md`, `wiki/markt_wiki_kategorien.md`).
+- Datenkonsistenz in `data/themen.json` bereinigt: alle verbleibenden Themen enthalten wieder valide, nicht-leere `inhalt.abschnitte`, passend zur bestehenden Validierungslogik.
+- `style.css` von klar ungenutzten Legacy-Regeln bereinigt (`.wiki-list`, `.category-card`, `.category-card p`) ohne visuelle Aenderung der aktiven Seiten.
+
+---
+## Version 0.19
+
+- Redundanten Hinweistext unter den optionalen ROI-Feldern Umsatz/Kosten entfernt, da die Feldinteraktion (deaktiviertes Gegenfeld mit "wird automatisch berechnet") das Verhalten bereits ausreichend erklärt.
+- Bestehende Umsatz/Kosten-Logik und Platzhalter-/Auto-Hinweis im deaktivierten Feld unverändert beibehalten.
+- Formularbereich dadurch visuell ruhiger und kompakter gehalten, ohne Layout- oder Designänderung außerhalb des ROI-Rechners.
+
+---
+## Version 0.18
+
+- Wiki-Hauptkategorie-Uebersicht (`wiki/index.html`) optisch auf den kompakten internen Seitenkopf umgestellt (Ruecklink + H1), analog zur reduzierten Kopfstruktur der Unterkategorie-Seiten.
+- Grosse Intro-/Hero-Card auf der Hauptkategorie-Uebersicht vollstaendig entfernt, damit der Inhalt ohne zusaetzlichen Einleitungsblock weiter oben beginnt.
+- Abschnittsstruktur unterhalb des Kopfbereichs beibehalten und funktionale Kategorie-Links unveraendert gelassen.
+
+---
+## Version 0.17
+
+- ROI-Rechner auf fachï¿½bliche Benennung umgestellt: Haupttitel jetzt "Return-on-Investment-Rechner (ROI)".
+- Ergebnisï¿½bersicht bereinigt: qualitative Kennzahl "Einordnung" vollstï¿½ndig entfernt, Ausgabe bleibt bei neutralen, berechneten Kennzahlen.
+- UX fï¿½r optionale Felder Umsatz/Kosten vereinfacht: bei Eingabe in einem Feld wird das andere sichtbar deaktiviert und als "wird automatisch berechnet" gefï¿½hrt; Konsistenzregel Gewinn + Kosten = Umsatz bleibt bei Doppelangabe strikt mit Fehlermeldung.
+
+---
+## Version 0.16
+
+- Wiki als Test-/MVP-Bestand auf exakt 2 Hauptkategorien, 4 Unterkategorien und 8 Artikel reduziert.
+- Alle nicht benoetigten Kategorie-, Unterkategorie- und Artikelseiten unter `/wiki` entfernt und verbleibende Wiki-Navigation entsprechend bereinigt.
+- Referenzen und Datenquellen auf den reduzierten Bestand konsolidiert (`wiki/index.html`, `data/kategorien.json`, `data/themen.json`, `data/begriffe.json`, `sitemap.xml`), damit keine verwaisten Links/Eintraege verbleiben.
+
+---
+## Version 0.15
+
+- Hauptkategorie-Cards auf der Wiki-Uebersicht entschlackt: interne CTA-/Meta-Elemente entfernt, Fokus auf Titel und kurzen Beschreibungstext bei unveraenderter voller Klickflaeche.
+- Unterkategorie-Seiten (`kategorie-*.html`) strukturell an die Hauptkategorie-Darstellung angeglichen: kompakter Seitenkopf, einspaltige Vollbreiten-Card-Links ohne interne Buttons.
+- Artikel-Card-Listen buendig ausgerichtet: Einrueckung fuer `link-list article-card-list` gezielt entfernt, damit Artikel-Cards mit dem Inhaltsraster starten.
+
+---
+## Version 0.14
+
+- ROI-Rechner fachlich korrigiert: optionale Felder Umsatz/Kosten werden nun konsistent behandelt (fehlender Wert wird aus Gewinn hergeleitet; bei drei angegebenen Werten wird Gewinn + Kosten = Umsatz strikt geprÃ¼ft).
+- Bei widersprÃ¼chlichen Angaben zu Gewinn, Umsatz und Kosten wird die Berechnung abgebrochen und eine klare Fehlermeldung im UI ausgegeben, ohne stille Korrektur.
+- Formular- und ErklÃ¤rungstexte prÃ¤zisiert (Pflichtfelder klar markiert, Regeln fÃ¼r optionale Felder transparent erklÃ¤rt) sowie Ergebnisdarstellung um automatisch hergeleitete Werte gekennzeichnet.
+
+---
+## Version 0.13
+
+- ROI-Rechner in Struktur und UX auf das Muster des Spar- und Zinsrechners angehoben: klar gegliederte Eingabegruppen, Berechnen-Button, getrennte Ergebnis- und Visualisierungsboxen.
+- Ergebnisbereich erweitert um ROI in Prozent, Gewinn/Investition absolut, Einordnung der Kapitalrendite sowie optionale Zusatzkennzahlen aus Umsatz und Kosten (Marge, Kostenquote, Vergleich Gewinn vs. Umsatz-Kosten).
+- Neue visuelle ROI-Auswertung ohne externe Libraries ergÃ¤nzt (vergleichende Balkendarstellung fÃ¼r Investition und Gewinn/Verlust) sowie erlÃ¤uternder Informationsbereich mit sachlichen InfoblÃ¶cken unterhalb der Ergebnisse.
+
+---
+## Version 0.12
+
+- Interne Seitenkoepfe auf den drei Wiki-Ebenen (Hauptkategorie, Unterkategorie, Artikel-Uebersicht) entschlackt: grosse Intro-Card entfernt, stattdessen kompakter Kopfbereich mit Ruecklink/Pfad und klarer Ueberschrift.
+- Erklaerende Einleitungstexte im Kopfbereich entfernt, damit der eigentliche Listen-/Card-Inhalt frueher beginnt und weniger vertikaler Leerraum entsteht.
+- Abstaende fuer den neuen kompakten Kopfbereich in style.css vereinheitlicht, ohne die bestehende MarktWiki-Designsprache zu veraendern.
+
+---
+## Version 0.11
+
+- Wiki-Hauptkategorien auf eine dauerhaft einspaltige Vollbreiten-Darstellung umgestellt, damit die Auswahl klarer und konsistenter untereinander erfassbar bleibt.
+- Unterkategorien visuell an die Hauptkategorie-Logik angenaehert (einspaltig, ruhige Vollbreiten-Cards, konsistente Abstaende und Hierarchie).
+- Artikel-Listen in allen Unterkategorie-Seiten auf kompakte Card-Links umgestellt (platzsparend, scanbar, klar klickbar statt Bullet-Liste).
+
+---
 ## Version 0.10
 
-- Hover-Tooltip im Jahresdiagramm auf sofortige Einblendung umgestellt (direkt beim Überfahren der Balken ohne merkliche Verzögerung) und auf Pointer-Events für stabile Reaktion angepasst.
+- Hover-Tooltip im Jahresdiagramm auf sofortige Einblendung umgestellt (direkt beim Ãœberfahren der Balken ohne merkliche VerzÃ¶gerung) und auf Pointer-Events fÃ¼r stabile Reaktion angepasst.
 - Tooltip sprachlich vereinfacht und nutzerfreundlich strukturiert: Jahr, Startkapital + Einzahlungen, Zinsen und Gesamtbetrag in kompakter Reihenfolge.
 - Tooltip optisch beruhigt und lesbarer gestaltet (eigene Kartenoptik im MarktWiki-Stil, klare Typografie, bessere Positionierung mit Kantenlogik ohne Abschneiden im Viewport).
 
 ---
 ## Version 0.9
 
-- Jahresdiagramm des Spar- und Zinsrechners auf laufzeitadaptive Skalierung ohne Horizontal-Scroll umgestellt (Balkenbreite und Abstände passen sich automatisch an).
-- Achsenbeschriftung bei langen Laufzeiten reduziert (dynamischer Label-Schritt je nach Dichte), bei kurzen Laufzeiten weiterhin vollständig und gut lesbar.
-- Diagramm bleibt innerhalb des Containers responsiv kompakt; Endwert bleibt über die ruhige Summenzeile klar hervorgehoben.
+- Jahresdiagramm des Spar- und Zinsrechners auf laufzeitadaptive Skalierung ohne Horizontal-Scroll umgestellt (Balkenbreite und AbstÃ¤nde passen sich automatisch an).
+- Achsenbeschriftung bei langen Laufzeiten reduziert (dynamischer Label-Schritt je nach Dichte), bei kurzen Laufzeiten weiterhin vollstÃ¤ndig und gut lesbar.
+- Diagramm bleibt innerhalb des Containers responsiv kompakt; Endwert bleibt Ã¼ber die ruhige Summenzeile klar hervorgehoben.
 
 ---
 
 ## Version 0.8
 
-- UI/UX des Spar- und Zinsrechners als klarer Finanzrechner strukturiert: drei saubere Eingabegruppen (Grunddaten, Sparen, Verzinsung), konsistente Feldgrößen und kompakter Aktionen-Bereich.
-- Ergebnisfluss geschärft: vor Klick auf "Berechnen" keinerlei Ergebnisdarstellung; nach Eingabeänderungen erneute Berechnung per Klick erforderlich.
-- Ergebnisdarstellung konsolidiert: ruhige Kennzahlenübersicht, lesbarer Verteilbalken und entschlacktes Jahresdiagramm mit kompakter Endwert-Summenzeile statt permanenter Summen je Balken.
+- UI/UX des Spar- und Zinsrechners als klarer Finanzrechner strukturiert: drei saubere Eingabegruppen (Grunddaten, Sparen, Verzinsung), konsistente FeldgrÃ¶ÃŸen und kompakter Aktionen-Bereich.
+- Ergebnisfluss geschÃ¤rft: vor Klick auf "Berechnen" keinerlei Ergebnisdarstellung; nach EingabeÃ¤nderungen erneute Berechnung per Klick erforderlich.
+- Ergebnisdarstellung konsolidiert: ruhige KennzahlenÃ¼bersicht, lesbarer Verteilbalken und entschlacktes Jahresdiagramm mit kompakter Endwert-Summenzeile statt permanenter Summen je Balken.
 
 ---
 ## Version 0.7
 
-- Ergebnisfreigabe im Spar- und Zinsrechner beibehalten: Ergebnisse bleiben bis zum ersten Klick auf "Berechnen" ausgeblendet; danach werden Änderungen direkt mit aktualisierten Werten dargestellt.
+- Ergebnisfreigabe im Spar- und Zinsrechner beibehalten: Ergebnisse bleiben bis zum ersten Klick auf "Berechnen" ausgeblendet; danach werden Ã„nderungen direkt mit aktualisierten Werten dargestellt.
 - Diagramm-Summenzeile sprachlich vereinfacht (klarer Endwerttext mit korrekter Jahr/Jahren-Form).
-- Bestehende Gruppenstruktur (Grunddaten, Sparen, Verzinsung) und aufgeräumtes Layout konsolidiert.
+- Bestehende Gruppenstruktur (Grunddaten, Sparen, Verzinsung) und aufgerÃ¤umtes Layout konsolidiert.
 
 ---
 
 ## Version 0.6
 
-- Ergebnisanzeige des Spar- und Zinsrechners auf expliziten Klick umgestellt: Ausgabe, Verteilbalken und Jahresdiagramm bleiben bis "Berechnen" vollständig ausgeblendet.
-- Eingabemaske im bestehenden Design weiter bereinigt (klare Gruppierung, einheitliche Feldgrößen, eigener Aktionen-Bereich mit Berechnen-Button).
-- Jahresdiagramm entschlackt: keine dauerhaften Summen über jedem Balken mehr, stattdessen kompakte Endwert-Zeile und Detailwerte per Tooltip.
+- Ergebnisanzeige des Spar- und Zinsrechners auf expliziten Klick umgestellt: Ausgabe, Verteilbalken und Jahresdiagramm bleiben bis "Berechnen" vollstÃ¤ndig ausgeblendet.
+- Eingabemaske im bestehenden Design weiter bereinigt (klare Gruppierung, einheitliche FeldgrÃ¶ÃŸen, eigener Aktionen-Bereich mit Berechnen-Button).
+- Jahresdiagramm entschlackt: keine dauerhaften Summen Ã¼ber jedem Balken mehr, stattdessen kompakte Endwert-Zeile und Detailwerte per Tooltip.
 
 ---
 
 ## Version 0.5
 
-- Eingabebereich des Spar- und Zinsrechners strukturiert und optisch vereinheitlicht (klare Gruppierung, einheitliche Feldgrößen, bessere Lesbarkeit).
-- Berechnungslogik fachlich auf Monatsbasis vereinheitlicht und für alle Kombinationen aus Spar- und Verzinsungsintervall nachvollziehbar korrigiert.
-- Unterhalb des Verteilbalkens ein gestapeltes Jahres-Balkendiagramm ergänzt (Startkapital + Einzahlungen vs. Zinsen pro Jahr).
+- Eingabebereich des Spar- und Zinsrechners strukturiert und optisch vereinheitlicht (klare Gruppierung, einheitliche FeldgrÃ¶ÃŸen, bessere Lesbarkeit).
+- Berechnungslogik fachlich auf Monatsbasis vereinheitlicht und fÃ¼r alle Kombinationen aus Spar- und Verzinsungsintervall nachvollziehbar korrigiert.
+- Unterhalb des Verteilbalkens ein gestapeltes Jahres-Balkendiagramm ergÃ¤nzt (Startkapital + Einzahlungen vs. Zinsen pro Jahr).
 
 ---
 
 ## Version 0.4
 
 - Zinseszins-Rechner zu einem Spar- und Zinsrechner erweitert (Startkapital, Sparrate, Verzinsungs- und Sparintervall, Laufzeit).
-- Berechnung auf Prozent-Eingaben umgestellt (z. B. 30 = 30 %, 0,5 = 0,5 %) inklusive robuster Validierung für negative und unvollständige Eingaben.
-- Ergebnisdarstellung ergänzt um Gesamtbetrag, Sparbetrag und Zinsbetrag sowie eine proportionale Balkenvisualisierung der Anteile.
+- Berechnung auf Prozent-Eingaben umgestellt (z. B. 30 = 30 %, 0,5 = 0,5 %) inklusive robuster Validierung fÃ¼r negative und unvollstÃ¤ndige Eingaben.
+- Ergebnisdarstellung ergÃ¤nzt um Gesamtbetrag, Sparbetrag und Zinsbetrag sowie eine proportionale Balkenvisualisierung der Anteile.
 
 ---
 
@@ -78,20 +148,20 @@ Projektstart
 - Grundstruktur erstellt
 - Startseite erstellt
 - Themenstruktur erstellt
-- 10 Beispielthemen hinzugefügt
+- 10 Beispielthemen hinzugefÃ¼gt
 - Glossar erstellt
-- 5 Beispielbegriffe hinzugefügt
+- 5 Beispielbegriffe hinzugefÃ¼gt
 - Werkzeuge-Seite erstellt
 - Zinseszins Rechner erstellt
 - ROI Rechner erstellt
 - Footer erweitert
-- Suchfeld im Header ergänzt
+- Suchfeld im Header ergÃ¤nzt
 
 ---
 
-Regeln für zukünftige Einträge:
+Regeln fÃ¼r zukÃ¼nftige EintrÃ¤ge:
 
-Neue Änderungen müssen IMMER oben ergänzt werden.
+Neue Ã„nderungen mÃ¼ssen IMMER oben ergÃ¤nzt werden.
 
 Format:
 
@@ -99,9 +169,16 @@ Format:
 
 Datum optional
 
-- Änderung 1
-- Änderung 2
-- Änderung 3
+- Ã„nderung 1
+- Ã„nderung 2
+- Ã„nderung 3
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,3 @@
-User-agent: *
+﻿User-agent: *
 Allow: /
-
-Sitemap: /sitemap.xml
+Sitemap: https://cornerdesign-dominic.github.io/marktwiki/sitemap.xml

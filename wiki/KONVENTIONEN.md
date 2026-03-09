@@ -7,8 +7,8 @@ Neue Artikel koennen direkt unter `/wiki/` als eigenstaendige HTML-Dateien angel
 Beispiele:
 
 - `/wiki/inventur.html`
-- `/wiki/bilanz.html`
-- `/wiki/deckungsbeitrag.html`
+- `/wiki/bilanzanalyse.html`
+- `/wiki/eigenkapitalquote.html`
 
 Artikel liegen direkt im Ordner `/wiki/`; Kategorie-Unterordner werden nicht genutzt.
 
@@ -23,7 +23,7 @@ Artikel liegen direkt im Ordner `/wiki/`; Kategorie-Unterordner werden nicht gen
 
 - Von Uebersichtsseiten zu Artikeln mit relativen Links
 - Von Artikeln zur Wiki-Uebersicht: `./index.html`
-- Interne Verlinkung relativ, z. B. `./anleihe.html` oder `./abschreibung.html`
+- Interne Verlinkung relativ, z. B. `./inventur.html` oder `./bilanzanalyse.html`
 
 ## 4. Feste Artikelstruktur
 

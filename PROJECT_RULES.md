@@ -376,8 +376,8 @@ angelegt.
 Beispiel:
 
 - /wiki/inventur.html
-- /wiki/bilanz.html
-- /wiki/deckungsbeitrag.html
+- /wiki/bilanzanalyse.html
+- /wiki/eigenkapitalquote.html
 
 Als Startpunkt dient die Vorlage:
 

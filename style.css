@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: "Source Sans 3";
   src: url("./fonts/source-sans-3-400.woff2") format("woff2");
   font-style: normal;
@@ -179,6 +179,24 @@ main {
   margin-bottom: 0.75rem;
 }
 
+.page-head-compact {
+  display: grid;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+
+.page-head-compact .back-link {
+  margin-bottom: 0.15rem;
+}
+
+.page-head-compact h1 {
+  margin-bottom: 0;
+}
+
+.page-head-compact + .section-space {
+  margin-top: 1rem;
+}
+
 h1,
 h2,
 h3 {
@@ -215,19 +233,13 @@ p {
   gap: 1rem;
 }
 
-.wiki-list {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
 .wiki-list-main {
   list-style: none;
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 0.8rem;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
 }
 
 .wiki-list-main li {
@@ -237,9 +249,10 @@ p {
 .category-link-card {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
   height: 100%;
-  padding: 0.9rem 1rem;
+  min-height: 104px;
+  padding: 1rem 1.1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);
@@ -258,15 +271,6 @@ p {
   outline-offset: 1px;
 }
 
-.category-card-meta {
-  display: block;
-  color: var(--text-secondary);
-  font-size: 0.76rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
 .category-card-title {
   display: block;
   font-size: 1.07rem;
@@ -281,23 +285,40 @@ p {
   line-height: 1.45;
 }
 
-.category-card-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-top: auto;
-  color: var(--link);
-  font-size: 0.9rem;
-  font-weight: 600;
+.article-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
 }
 
-.category-link-card:hover .category-card-cta,
-.category-link-card:focus-visible .category-card-cta {
-  color: var(--hover);
+.article-card-list li {
+  margin: 0;
+}
+
+.link-list.article-card-list {
+  padding-left: 0;
+}
+
+.article-card-list a {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0.55rem 0.7rem;
+  line-height: 1.35;
+}
+
+.article-card-list a:hover,
+.article-card-list a:focus-visible {
+  color: var(--text);
+  background: var(--bg-secondary);
+  border-color: var(--link);
 }
 
 .topic-card,
-.category-card,
 .term-card {
   display: flex;
   flex-direction: column;
@@ -305,7 +326,6 @@ p {
 }
 
 .topic-card p,
-.category-card p,
 .term-card p {
   color: var(--text-secondary);
   margin-bottom: 0;
@@ -576,6 +596,19 @@ input[type="number"] {
   min-width: 0;
 }
 
+.calculator-form input[disabled],
+.calculator-form input.is-auto-field {
+  background: color-mix(in srgb, var(--bg-secondary) 82%, var(--surface) 18%);
+  color: var(--text-secondary);
+  border-color: var(--border);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.calculator-form input.is-auto-field::placeholder {
+  color: var(--text-secondary);
+  opacity: 1;
+}
 /* Entfernt Spin-Buttons nur in den Rechner-Formularen unter /tools. */
 .calculator-form input[type="number"],
 #roi-form input[type="number"] {
@@ -664,6 +697,67 @@ input[type="number"] {
   color: var(--text);
 }
 
+.roi-formula-note {
+  margin: 0.65rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.roi-compare {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.roi-compare-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(140px, 2fr) auto;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.roi-compare-row strong {
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.roi-compare-track {
+  height: 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.roi-compare-fill {
+  height: 100%;
+}
+
+.roi-fill-invest {
+  background: var(--link);
+}
+
+.roi-fill-profit {
+  background: var(--accent);
+}
+
+.roi-fill-loss {
+  background: var(--hover);
+}
+
+.roi-note {
+  margin: 0.6rem 0 0;
+  padding: 0.45rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.roi-note[hidden] {
+  display: none;
+}
 .result-visual[hidden] {
   display: none;
 }
@@ -1023,15 +1117,15 @@ input[type="number"] {
   .segment-value {
     text-align: left;
   }
+
+  .roi-compare-row {
+    grid-template-columns: 1fr;
+    gap: 0.35rem;
+  }
+  .roi-compare-track {
+    width: 100%;
+  }
 }
-
-
-
-
-
-
-
-
 
 
 
