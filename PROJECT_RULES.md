@@ -347,6 +347,8 @@ Die Reihenfolge ist verpflichtend.
 
 Der Artikel soll hauptsächlich aus **Fließtext** bestehen.
 
+Die konkreten verbindlichen Redaktions- und Strukturregeln für Wiki-Artikel sind in `ARTICLE_RULES.md` dokumentiert.
+
 ---
 
 ## 9.5 Verwandte Inhalte

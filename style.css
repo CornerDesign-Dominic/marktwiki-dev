@@ -215,6 +215,42 @@ p {
   padding: 1.2rem;
 }
 
+.wiki-article {
+  margin: 0 auto;
+}
+
+.wiki-article-header {
+  margin-bottom: 0.3rem;
+}
+
+.wiki-article p {
+  line-height: 1.65;
+  margin-bottom: 14px;
+}
+
+.wiki-article h2 {
+  margin-top: 40px;
+  margin-bottom: 10px;
+  font-size: 1.5rem;
+}
+
+.wiki-article .lead {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.wiki-article section {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wiki-article .link-list {
+  margin-top: 0.4rem;
+  padding-left: 1.2rem;
+}
+
 .hero {
   margin-bottom: 0.5rem;
 }

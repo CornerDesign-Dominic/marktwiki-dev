@@ -1,10 +1,10 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>[Titel des Artikels] | MarktWiki</title>
-  <meta name="description" content="[Kurze Beschreibung des Artikels fuer Suchmaschinen.]">
+  <title>[Artikeltitel] | MarktWiki</title>
+  <meta name="description" content="[Kurze sachliche Beschreibung des Artikels in einem Satz.]">
   <link rel="stylesheet" href="../style.css">
   <script src="../layout.js"></script>
 </head>
@@ -13,50 +13,61 @@
 
   <main>
     <div class="container">
-      <article class="card">
-        <a class="back-link" href="./index.html">&larr; Zur Wiki-Uebersicht</a>
+      <section class="page-head-compact" aria-label="Seitenkopf">
+        <a class="back-link" href="./index.html">&larr; Zurück zur Artikelübersicht</a>
+      </section>
 
-        <!-- Titel -->
-        <h1>[Titel des Artikels]</h1>
+      <article class="card wiki-article" aria-labelledby="article-title">
+        <div class="wiki-article-header">
+        <h1 id="article-title">[Artikeltitel]</h1>
 
-        <!-- Einleitung -->
-        <p class="lead">[Einleitung in 2 bis 4 Saetzen.]</p>
+        <p class="lead">[Kurzdefinition / Einstieg in 2 bis 4 Sätzen: Thema, Einordnung, Relevanz.]</p>
+      </div>
 
-        <section class="section-space">
-          <h2>Definition</h2>
-          <!-- Definition -->
-          <p>[Kurze, klare Definition.]</p>
+        <!-- Optional: Nur verwenden, wenn es eine klare fachliche Definition gibt. Bei fehlendem Mehrwert Abschnitt komplett entfernen. -->
+        <section aria-labelledby="definition">
+          <h2 id="definition">Definition</h2>
+          <p>[Klare fachliche Definition des Begriffs, falls vorhanden.]</p>
         </section>
 
-        <section class="section-space">
-          <h2>Erklaerung</h2>
-          <!-- Erklaerung -->
-          <p>[Vertiefende Erklaerung mit Zusammenhaengen.]</p>
+        <section aria-labelledby="einordnung">
+          <h2 id="einordnung">Einordnung</h2>
+          <p>[Einordnung in Fachbereich, Zusammenhang und Relevanz.]</p>
         </section>
 
-        <section class="section-space">
-          <h2>Beispiel</h2>
-          <!-- Beispiel -->
-          <p>[Konkretes Praxis- oder Rechenbeispiel.]</p>
+        <section aria-labelledby="erklaerung">
+          <h2 id="erklaerung">Erklaerung</h2>
+          <p>[Hauptteil: fachlich sauber, verständlich, auf den Punkt.]</p>
         </section>
 
-        <section class="section-space">
-          <h2>Praxisbezug</h2>
-          <!-- Praxisbezug -->
-          <p>[Relevanz fuer Unternehmen und Entscheidungen.]</p>
+        <!-- Optional: Nur verwenden, wenn das Beispiel das Verständnis konkret verbessert. Bei fehlendem Mehrwert Abschnitt komplett entfernen. -->
+        <section aria-labelledby="beispiel">
+          <h2 id="beispiel">Beispiel</h2>
+          <p>[Praxisnahes Beispiel zur Veranschaulichung.]</p>
         </section>
 
-        <section class="section-space">
-          <h2>Zusammenfassung</h2>
-          <!-- Zusammenfassung -->
-          <p>[Wichtigste Punkte in kurzer Form.]</p>
+        <section aria-labelledby="praxisbezug">
+          <h2 id="praxisbezug">Praxisbezug</h2>
+          <p>[Konkrete Bedeutung im Unternehmens-, Lern- oder Arbeitskontext.]</p>
         </section>
 
-        <section class="section-space">
-          <h2>Verwandte Themen</h2>
-          <!-- Verwandte Themen (optional) -->
+        <!-- Optional: Nur verwenden, wenn eine klare Abgrenzung zu ähnlichen Begriffen nötig ist. Bei fehlendem Mehrwert Abschnitt komplett entfernen. -->
+        <section aria-labelledby="abgrenzung">
+          <h2 id="abgrenzung">Abgrenzung</h2>
+          <p>[Unterschiede zu ähnlichen Begriffen und typische Missverständnisse.]</p>
+        </section>
+
+        <section aria-labelledby="zusammenfassung">
+          <h2 id="zusammenfassung">Zusammenfassung</h2>
+          <p>[Kurze, präzise Verdichtung der Kernaussagen.]</p>
+        </section>
+
+        <!-- Optional: Nur verwenden, wenn passende interne Verlinkungen vorhanden sind. Bei fehlendem Mehrwert Abschnitt komplett entfernen. -->
+        <section aria-labelledby="aehnliche-themen">
+          <h2 id="aehnliche-themen">Aehnliche Themen</h2>
           <ul class="link-list">
-            <li><a href="#">[Optionaler interner Link]</a></li>
+            <li><a href="[interner-link-1.html]">[Thema 1]</a></li>
+            <li><a href="[interner-link-2.html]">[Thema 2]</a></li>
           </ul>
         </section>
       </article>
@@ -66,3 +77,12 @@
   <script>window.MarktWikiLayout.injectFooter();</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+

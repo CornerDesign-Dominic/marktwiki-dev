@@ -1,5 +1,51 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.29
+
+- Verbindlichen MarktWiki-Artikelstandard in `ARTICLE_RULES.md` konsistent dokumentiert.
+- `wiki/_template.html` vollständig auf den aktuellen Artikelstandard umgestellt.
+- Bestehende Wiki-Artikel strukturell an den Standard angepasst.
+- Backlink auf "← Zurück zur Artikelübersicht" vereinheitlicht.
+- Artikelstruktur, Section-Trennung, Lead und Anker-IDs konsistent umgesetzt.
+
+---
+## Version 0.28
+
+- Alle vorhandenen Wiki-Artikel an den aktuellen MarktWiki-Standard angepasst.
+- Struktur und Abschnittslogik vereinheitlicht.
+- Backlink, Typografie und Section-Trennung konsistent umgesetzt.
+- Abschnittsanker in Artikeln ergänzt und vereinheitlicht.
+
+---
+## Version 0.27
+
+- Reduzierte Sonderbreite fuer Wiki-Artikel zurueckgenommen; Lesbarkeitsverbesserung erfolgt nun ueber innere Struktur und Typografie.
+
+---
+## Version 0.26
+
+- Lesbarkeit der Wiki-Artikel verbessert (feste Artikelbreite, typografische Optimierung, Abschnittsanker hinzugefügt).
+
+---
+## Version 0.25
+
+- Darstellung der Wiki-Artikel verbessert (Section-Trennung, Lead-Hervorhebung, feste Artikelbreite, Backlink angepasst).
+
+---
+## Version 0.24
+
+- Bestehende Wiki-Artikel an den neuen Artikelstandard angepasst.
+- Struktur, Einstiege und Abschnittslogik vereinheitlicht.
+- Praxisbezug und Einordnung in vorhandenen Artikeln ueberarbeitet.
+
+---
+## Version 0.23
+
+- Neuer verbindlicher Artikelstandard für MarktWiki definiert.
+- `ARTICLE_RULES.md` als verbindliche Redaktionsgrundlage für Wiki-Artikel angelegt.
+- Neues Artikel-Template unter `wiki/_template.html` erstellt.
+
+---
 ## Version 0.22
 
 - Suchfeld im Header horizontal exakt zentriert und Header-Layout stabilisiert.
@@ -185,6 +231,17 @@ Datum optional
 - Ã„nderung 1
 - Ã„nderung 2
 - Ã„nderung 3
+
+
+
+
+
+
+
+
+
+
+
 
 
 
