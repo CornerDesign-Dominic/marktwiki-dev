@@ -19,6 +19,29 @@
         <p class="lead">Hier finden Sie Unternehmen mit kompakten Eckdaten zur Aktie. Die Karten zeigen zentrale Informationen auf einen Blick und markieren links den Bereich fuer den spaeteren 1-Jahres-Verlauf.</p>
       </section>
 
+      <section class="card section-space stocks-controls" aria-labelledby="stocks-controls-heading">
+        <h2 id="stocks-controls-heading" class="sr-only">Unternehmen suchen und filtern</h2>
+        <div class="stocks-controls-grid">
+          <div class="field">
+            <label for="stocks-search">Unternehmen suchen</label>
+            <input id="stocks-search" type="search" placeholder="Name, Symbol, CEO, Sektor, Branche, Land ..." autocomplete="off" spellcheck="false">
+          </div>
+          <div class="field">
+            <label for="stocks-country-filter">Land</label>
+            <select id="stocks-country-filter" aria-label="Nach Land filtern"></select>
+          </div>
+          <div class="field">
+            <label for="stocks-currency-filter">Waehrung</label>
+            <select id="stocks-currency-filter" aria-label="Nach Waehrung filtern"></select>
+          </div>
+          <div class="field">
+            <label for="stocks-sector-filter">Sektor</label>
+            <select id="stocks-sector-filter" aria-label="Nach Sektor filtern"></select>
+          </div>
+        </div>
+        <p id="stocks-results-count" class="muted stocks-results-count"></p>
+      </section>
+
       <section class="section-space" aria-labelledby="stocks-heading">
         <h2 id="stocks-heading" class="sr-only">Aktien-Uebersicht</h2>
         <div id="stocks-list" class="card-grid stock-grid" data-error-target="stocks">

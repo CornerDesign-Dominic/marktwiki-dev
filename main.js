@@ -53,6 +53,13 @@
     return String(value || "").trim();
   }
 
+  function normalizeForMatch(value) {
+    return normalizeText(value)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+  }
+
   function toNumber(value) {
     if (typeof value === "number" && Number.isFinite(value)) {
       return value;
@@ -257,9 +264,10 @@
 
   function createDataSection(title, items) {
     const section = document.createElement("section");
-    section.className = "section-space company-detail-section";
+    section.className = "card company-info-card";
 
     const heading = document.createElement("h2");
+    heading.className = "company-info-title";
     heading.textContent = title;
 
     const list = document.createElement("dl");
@@ -271,6 +279,21 @@
 
     section.append(heading, list);
     return section;
+  }
+
+  function createStatusPill(value) {
+    const pill = document.createElement("span");
+    pill.className = "company-status-pill";
+
+    if (typeof value === "boolean") {
+      pill.classList.add(value ? "is-yes" : "is-no");
+      pill.textContent = value ? "Ja" : "Nein";
+      return pill;
+    }
+
+    pill.classList.add("is-unknown");
+    pill.textContent = "k. A.";
+    return pill;
   }
 
   function normalizeCompanySymbol(value) {
@@ -293,6 +316,56 @@
 
   function findCompanyBySymbol(companies, symbol) {
     return companies.find((entry) => normalizeCompanySymbol(entry.symbol) === normalizeCompanySymbol(symbol));
+  }
+
+  function createCompanySearchText(company) {
+    return normalizeForMatch([
+      company.companyName,
+      company.symbol,
+      company.ceo,
+      company.sector,
+      company.industry,
+      company.country,
+      company.description
+    ].map((value) => normalizeText(value)).join(" "));
+  }
+
+  function getFilterValues(companies, field) {
+    const values = companies.map((company) => normalizeText(company[field])).filter(Boolean);
+    return [...new Set(values)].sort((a, b) => a.localeCompare(b, "de"));
+  }
+
+  function fillSelectOptions(select, values, allLabel) {
+    if (!select) {
+      return;
+    }
+
+    select.innerHTML = "";
+
+    const allOption = document.createElement("option");
+    allOption.value = "";
+    allOption.textContent = allLabel;
+    select.appendChild(allOption);
+
+    values.forEach((value) => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      select.appendChild(option);
+    });
+  }
+
+  function renderStockCards(list, companies) {
+    list.innerHTML = "";
+
+    if (!companies.length) {
+      renderMessage(list, "Keine Unternehmen fuer diese Suche/Filter gefunden.");
+      return;
+    }
+
+    companies.forEach((company) => {
+      list.appendChild(createStockCard(company));
+    });
   }
 
   function createStockCard(company) {
@@ -357,6 +430,12 @@
 
   async function initStocks() {
     const list = document.querySelector("#stocks-list");
+    const searchInput = document.querySelector("#stocks-search");
+    const countryFilter = document.querySelector("#stocks-country-filter");
+    const currencyFilter = document.querySelector("#stocks-currency-filter");
+    const sectorFilter = document.querySelector("#stocks-sector-filter");
+    const resultsCount = document.querySelector("#stocks-results-count");
+
     if (!list) {
       return;
     }
@@ -368,13 +447,43 @@
 
     if (!companies.length) {
       renderMessage(list, "Derzeit sind noch keine Unternehmen verfuegbar.");
+      if (resultsCount) {
+        resultsCount.textContent = "0 Unternehmen gefunden";
+      }
       return;
     }
 
-    list.innerHTML = "";
-    companies.forEach((company) => {
-      list.appendChild(createStockCard(company));
-    });
+    fillSelectOptions(countryFilter, getFilterValues(companies, "country"), "Alle Laender");
+    fillSelectOptions(currencyFilter, getFilterValues(companies, "currency"), "Alle Waehrungen");
+    fillSelectOptions(sectorFilter, getFilterValues(companies, "sector"), "Alle Sektoren");
+
+    const applyStockFilters = () => {
+      const query = normalizeForMatch(searchInput?.value || "");
+      const selectedCountry = normalizeText(countryFilter?.value);
+      const selectedCurrency = normalizeText(currencyFilter?.value);
+      const selectedSector = normalizeText(sectorFilter?.value);
+
+      const filtered = companies.filter((company) => {
+        const matchesSearch = !query || createCompanySearchText(company).includes(query);
+        const matchesCountry = !selectedCountry || normalizeText(company.country) === selectedCountry;
+        const matchesCurrency = !selectedCurrency || normalizeText(company.currency) === selectedCurrency;
+        const matchesSector = !selectedSector || normalizeText(company.sector) === selectedSector;
+        return matchesSearch && matchesCountry && matchesCurrency && matchesSector;
+      });
+
+      renderStockCards(list, filtered);
+
+      if (resultsCount) {
+        resultsCount.textContent = `${filtered.length} von ${companies.length} Unternehmen`;
+      }
+    };
+
+    searchInput?.addEventListener("input", applyStockFilters);
+    countryFilter?.addEventListener("change", applyStockFilters);
+    currencyFilter?.addEventListener("change", applyStockFilters);
+    sectorFilter?.addEventListener("change", applyStockFilters);
+
+    applyStockFilters();
   }
 
   function createWebsiteLink(urlText) {
@@ -396,7 +505,7 @@
 
     const symbol = normalizeCompanySymbol(company.symbol);
     const companyName = normalizeText(company.companyName) || symbol || "Unternehmen";
-    const tone = getChangeTone(company.change);
+    const tone = getChangeTone(company.changePercentage);
 
     const backLink = document.createElement("a");
     backLink.className = "back-link";
@@ -404,56 +513,72 @@
     backLink.textContent = "\u2190 Zur Aktien-Uebersicht";
 
     const header = document.createElement("section");
-    header.className = "company-detail-header";
+    header.className = "company-detail-header card";
+
+    const logoWrap = document.createElement("div");
+    logoWrap.className = "company-logo-wrap";
 
     if (normalizeText(company.image) && company.defaultImage !== true) {
       const logo = document.createElement("img");
       logo.className = "company-logo";
       logo.src = company.image;
       logo.alt = `${companyName} Logo`;
-      header.appendChild(logo);
+      logoWrap.appendChild(logo);
+    } else {
+      const logoFallback = document.createElement("span");
+      logoFallback.className = "company-logo-fallback";
+      logoFallback.textContent = symbol || "N/A";
+      logoWrap.appendChild(logoFallback);
     }
 
     const headMain = document.createElement("div");
-    headMain.className = "company-head-main";
+    headMain.className = "company-head-main company-identity";
 
-    const meta = document.createElement("p");
-    meta.className = "meta-pill";
-    meta.textContent = `${symbol || "k. A."} / ${normalizeText(company.sector) || "Sektor offen"} / ${normalizeText(company.industry) || "Branche offen"}`;
+    const topMeta = document.createElement("div");
+    topMeta.className = "company-inline-meta";
+    topMeta.append(
+      createBadge(`Symbol: ${symbol || "k. A."}`),
+      createBadge(`Boerse: ${normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A."}`),
+      createBadge(`Land: ${normalizeText(company.country) || "k. A."}`)
+    );
 
     const title = document.createElement("h1");
     title.textContent = companyName;
 
-    const subtitle = document.createElement("p");
-    subtitle.className = "lead";
-    subtitle.textContent = `Boerse: ${normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A."} / Land: ${normalizeText(company.country) || "k. A."}`;
+    const classification = document.createElement("p");
+    classification.className = "company-classification";
+    classification.textContent = `${normalizeText(company.sector) || "Sektor offen"} / ${normalizeText(company.industry) || "Branche offen"}`;
 
     const description = document.createElement("p");
     description.className = "company-description";
     description.textContent = normalizeText(company.description) || "Keine Beschreibung vorhanden.";
 
-    const metrics = document.createElement("div");
-    metrics.className = "company-metrics";
+    const marketSnapshot = document.createElement("aside");
+    marketSnapshot.className = "company-market-snapshot";
 
-    const priceBox = document.createElement("p");
-    priceBox.className = "company-metric";
+    const priceBox = document.createElement("div");
+    priceBox.className = "company-price-block";
     const priceLabel = document.createElement("span");
+    priceLabel.className = "company-metric-label";
     priceLabel.textContent = "Kurs";
     const priceValue = document.createElement("strong");
+    priceValue.className = "company-price-value";
     priceValue.textContent = formatCurrency(company.price, company.currency);
     priceBox.append(priceLabel, priceValue);
 
-    const changeBox = document.createElement("p");
-    changeBox.className = `company-metric tone-${tone}`;
+    const changeBox = document.createElement("div");
+    changeBox.className = `company-change-row tone-${tone}`;
     const changeLabel = document.createElement("span");
+    changeLabel.className = "company-metric-label";
     changeLabel.textContent = "Veraenderung";
     const changeValue = document.createElement("strong");
+    changeValue.className = "company-change-value";
     changeValue.textContent = `${formatSignedCurrency(company.change, company.currency)} (${formatPercent(company.changePercentage)})`;
     changeBox.append(changeLabel, changeValue);
 
-    metrics.append(priceBox, changeBox);
-    headMain.append(meta, title, subtitle, metrics, description);
-    header.appendChild(headMain);
+    marketSnapshot.append(priceBox, changeBox);
+    headMain.append(topMeta, title, classification, description);
+    header.append(logoWrap, headMain, marketSnapshot);
 
     const addressParts = [
       normalizeText(company.address),
@@ -486,13 +611,40 @@
     ]);
 
     const statusSection = createDataSection("Status / Klassifikation", [
-      { label: "ETF", value: formatBoolean(company.isEtf) },
-      { label: "Fund", value: formatBoolean(company.isFund) },
-      { label: "ADR", value: formatBoolean(company.isAdr) },
-      { label: "Aktiv gehandelt", value: formatBoolean(company.isActivelyTrading) }
+      { label: "ETF", value: createStatusPill(company.isEtf) },
+      { label: "Fund", value: createStatusPill(company.isFund) },
+      { label: "ADR", value: createStatusPill(company.isAdr) },
+      { label: "Aktiv gehandelt", value: createStatusPill(company.isActivelyTrading) }
     ]);
+    statusSection.classList.add("company-status-card");
 
-    container.append(backLink, header, profileSection, marketSection, statusSection);
+    const detailGrid = document.createElement("section");
+    detailGrid.className = "company-detail-grid section-space";
+    detailGrid.append(profileSection, marketSection, statusSection);
+
+    const futureSection = document.createElement("section");
+    futureSection.className = "card section-space company-next-sections";
+    futureSection.setAttribute("aria-label", "Weiterfuehrende Analyse");
+
+    const futureTitle = document.createElement("h2");
+    futureTitle.className = "company-info-title";
+    futureTitle.textContent = "Weiterfuehrende Analyse (in Vorbereitung)";
+
+    const futureIntro = document.createElement("p");
+    futureIntro.className = "muted";
+    futureIntro.textContent = "Dieser Bereich ist fuer spaetere Vertiefungen vorbereitet.";
+
+    const futureList = document.createElement("div");
+    futureList.className = "company-future-topics";
+    futureList.append(
+      createBadge("Chancen"),
+      createBadge("Risiken"),
+      createBadge("Konkurrenz"),
+      createBadge("Marktmacht")
+    );
+
+    futureSection.append(futureTitle, futureIntro, futureList);
+    container.append(backLink, header, detailGrid, futureSection);
   }
 
   async function initCompanyDetail() {

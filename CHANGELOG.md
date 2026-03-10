@@ -1,4 +1,13 @@
-﻿## Version 0.44
+﻿# MarktWiki Changelog
+
+## Version 0.45
+
+- Aktienseite um eine eigene lokale Unternehmenssuche erweitert (unabhaengig von der globalen Header-Suche).
+- Kombinierbare Filter fuer Land, Waehrung und Sektor eingefuehrt; Optionen werden dynamisch aus `data/companies/index.json` erzeugt.
+- Leerzustand und Ergebniszaehler fuer gefilterte Unternehmenskarten auf `aktien.html` ergaenzt.
+
+---
+## Version 0.44
 
 - Aktienseite auf dynamisches Rendering aus `data/companies/index.json` umgestellt (vollstaendig klickbare, kompakte Unternehmenskarten).
 - Neue Unternehmens-Detailseite `pages/unternehmen.html` mit robustem Laden per `symbol`, Lade-/Fehlerzustand und gruppierter Datendarstellung eingefuehrt.
@@ -347,6 +356,8 @@ Datum optional
 - Ã„nderung 1
 - Ã„nderung 2
 - Ã„nderung 3
+
+
 
 
 

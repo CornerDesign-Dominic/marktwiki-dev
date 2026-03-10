@@ -606,12 +606,41 @@ input[type="number"] {
   grid-template-columns: 1fr;
 }
 
+.stocks-controls {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.stocks-controls-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(140px, 1fr));
+  gap: 0.7rem;
+}
+
+.stocks-controls .field {
+  min-width: 0;
+}
+
+.stocks-controls input[type="search"] {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  width: 100%;
+  font: inherit;
+}
+
+.stocks-results-count {
+  margin: 0;
+}
+
 .stock-card {
   display: grid;
-  grid-template-columns: minmax(82px, 108px) minmax(0, 1fr);
-  gap: 0.9rem;
+  grid-template-columns: minmax(64px, 82px) minmax(0, 1fr);
+  gap: 0.72rem;
   align-items: start;
-  padding: 0.95rem;
+  padding: 0.82rem;
 }
 
 .stock-card-link {
@@ -641,28 +670,30 @@ input[type="number"] {
 }
 
 .stock-logo-box {
-  min-height: 84px;
+  min-height: 68px;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 5px;
   background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.45rem;
+  padding: 0.32rem;
 }
 
 .stock-logo {
-  width: 52px;
-  height: 52px;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
   object-fit: contain;
   background: #fff;
-  padding: 0.25rem;
+  padding: 0.2rem;
 }
 
 .stock-logo-fallback {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.03em;
+  line-height: 1.1;
   color: var(--text-secondary);
 }
 
@@ -674,13 +705,14 @@ input[type="number"] {
 }
 
 .stock-details h2 {
-  font-size: 1.05rem;
-  margin-bottom: 0.45rem;
+  font-size: 1.01rem;
+  line-height: 1.28;
+  margin-bottom: 0.2rem;
 }
 
 .stock-details {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.34rem;
 }
 
 .stock-card-header {
@@ -715,7 +747,8 @@ input[type="number"] {
 .stock-price-line {
   margin: 0;
   color: var(--text-secondary);
-  font-size: 0.92rem;
+  font-size: 0.87rem;
+  line-height: 1.32;
 }
 
 .tone-positive {
@@ -733,12 +766,12 @@ input[type="number"] {
 .stock-meta {
   margin: 0;
   display: grid;
-  gap: 0.28rem;
+  gap: 0.22rem;
 }
 
 .stock-facts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.3rem 0.85rem;
+  gap: 0.26rem 0.55rem;
 }
 
 .stock-facts-compact {
@@ -763,10 +796,43 @@ input[type="number"] {
   font-size: 0.9rem;
 }
 
+.stock-facts div {
+  display: grid;
+  grid-template-columns: minmax(64px, 84px) minmax(0, 1fr);
+  gap: 0.32rem;
+  align-items: start;
+  border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--bg-secondary) 55%, var(--bg));
+  padding: 0.28rem 0.44rem;
+}
+
+.stock-facts dt {
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.stock-facts dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.84rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
 .stock-context {
   margin: 0;
   color: var(--text-secondary);
-  line-height: 1.5;
+  line-height: 1.38;
+  font-size: 0.87rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  max-height: calc(1.38em * 2);
 }
 
 .stock-highlights {
@@ -782,9 +848,10 @@ input[type="number"] {
 
 .company-detail-header {
   display: grid;
-  grid-template-columns: minmax(72px, 110px) minmax(0, 1fr);
-  gap: 0.95rem;
-  margin-bottom: 0.9rem;
+  grid-template-columns: minmax(72px, 112px) minmax(0, 1fr) minmax(220px, 310px);
+  gap: 1rem;
+  align-items: start;
+  margin-bottom: 1rem;
 }
 
 .company-logo {
@@ -797,48 +864,141 @@ input[type="number"] {
   border: 1px solid var(--border);
 }
 
-.company-head-main h1 {
-  margin-bottom: 0.45rem;
+.company-logo-wrap {
+  min-height: 88px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
 
-.company-head-main .lead {
+.company-logo-fallback {
+  width: 88px;
+  height: 88px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.company-head-main h1 {
+  margin-bottom: 0.35rem;
+}
+
+.company-inline-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
   margin-bottom: 0.65rem;
+}
+
+.company-inline-meta .badge {
+  font-size: 0.8rem;
+}
+
+.company-classification {
+  margin: 0 0 0.55rem;
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 
 .company-description {
   margin: 0;
   color: var(--text-secondary);
+  line-height: 1.55;
 }
 
-.company-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  margin-bottom: 0.75rem;
-}
-
-.company-metric {
-  margin: 0;
-  min-width: 220px;
+.company-market-snapshot {
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 8px;
   background: var(--bg);
-  padding: 0.55rem 0.65rem;
+  padding: 0.75rem;
   display: grid;
-  gap: 0.15rem;
+  gap: 0.65rem;
 }
 
-.company-metric span {
+.company-price-block {
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  gap: 0.2rem;
+}
+
+.company-metric-label {
   color: var(--text-secondary);
   font-size: 0.87rem;
 }
 
-.company-metric strong {
+.company-price-value {
   color: var(--text);
+  font-size: 1.3rem;
+  line-height: 1.2;
 }
 
-.company-detail-section {
-  margin-top: 1.1rem;
+.company-change-row {
+  margin: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.company-change-value {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.company-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.company-info-card {
+  margin: 0;
+  padding: 0.95rem;
+}
+
+.company-info-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.12rem;
+}
+
+.company-status-pill {
+  display: inline-flex;
+  align-items: center;
+  min-width: 52px;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.83rem;
+  line-height: 1.3;
+}
+
+.company-status-pill.is-yes,
+.company-status-pill.is-no,
+.company-status-pill.is-unknown {
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg) 84%, var(--surface) 16%);
+}
+
+.company-next-sections {
+  padding: 0.9rem 0.95rem;
+}
+
+.company-next-sections .muted {
+  margin: 0 0 0.55rem;
+}
+
+.company-future-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
 }
 
 .detail-facts {
@@ -1398,13 +1558,34 @@ input[type="number"] {
     grid-template-columns: 1fr;
   }
 
-  .stock-card {
+  .stocks-controls-grid {
     grid-template-columns: 1fr;
-    gap: 0.7rem;
+    gap: 0.6rem;
+  }
+
+  .stock-card {
+    grid-template-columns: minmax(52px, 64px) minmax(0, 1fr);
+    gap: 0.55rem;
+    padding: 0.72rem;
   }
 
   .stock-chart-placeholder {
     min-height: 92px;
+  }
+
+  .stock-logo-box {
+    min-height: 56px;
+    padding: 0.25rem;
+  }
+
+  .stock-logo {
+    width: 34px;
+    height: 34px;
+    padding: 0.16rem;
+  }
+
+  .stock-logo-fallback {
+    font-size: 0.74rem;
   }
 
   .stock-meta div {
@@ -1421,6 +1602,20 @@ input[type="number"] {
     grid-template-columns: 1fr;
   }
 
+  .stock-facts div {
+    grid-template-columns: minmax(58px, 78px) minmax(0, 1fr);
+    gap: 0.26rem;
+    padding: 0.24rem 0.34rem;
+  }
+
+  .stock-facts dt {
+    font-size: 0.72rem;
+  }
+
+  .stock-facts dd {
+    font-size: 0.82rem;
+  }
+
   .stock-price-row {
     gap: 0.35rem;
     align-items: start;
@@ -1429,27 +1624,31 @@ input[type="number"] {
 
   .company-detail-header {
     grid-template-columns: 1fr;
-    gap: 0.7rem;
+    gap: 0.75rem;
   }
 
-  .company-logo {
+  .company-logo,
+  .company-logo-fallback {
     width: 74px;
     height: 74px;
   }
 
-  .company-metrics {
-    flex-direction: column;
-    gap: 0.5rem;
+  .company-logo-wrap {
+    justify-content: flex-start;
   }
 
-  .company-metric {
-    min-width: 0;
+  .company-market-snapshot {
     width: 100%;
   }
 
   .detail-facts div {
     grid-template-columns: 1fr;
     gap: 0.18rem;
+  }
+
+  .company-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
 
   .calc-grid {
