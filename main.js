@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   "use strict";
 
   const page = document.body.dataset.page || "";
@@ -351,7 +351,7 @@
     button.className = "favorite-toggle";
     button.setAttribute("aria-label", isActive ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufuegen");
     button.setAttribute("aria-pressed", String(Boolean(isActive)));
-    button.textContent = isActive ? "★" : "☆";
+    button.textContent = isActive ? "\u2605" : "\u2606";
 
     if (isActive) {
       button.classList.add("is-active");
@@ -541,6 +541,7 @@
     const sectorFilter = document.querySelector("#stocks-sector-filter");
     const sortSelect = document.querySelector("#stocks-sort");
     const resultsCount = document.querySelector("#stocks-results-count");
+    const params = new URLSearchParams(window.location.search);
 
     if (!list) {
       return;
@@ -584,14 +585,14 @@
       renderStockCards(favoritesList, favoriteCompanies, {
         favoriteSymbols,
         onToggleFavorite: persistAndRefresh,
-        emptyMessage: "Noch keine Favoriten gespeichert."
+        emptyMessage: "Sie koennen Unternehmen als Favoriten markieren, um sie hier schnell wiederzufinden."
       });
     };
 
     if (!companies.length) {
       renderMessage(list, "Derzeit sind noch keine Unternehmen verfuegbar.");
       if (favoritesList) {
-        renderMessage(favoritesList, "Noch keine Favoriten gespeichert.");
+        renderMessage(favoritesList, "Sie koennen Unternehmen als Favoriten markieren, um sie hier schnell wiederzufinden.");
       }
       if (resultsCount) {
         resultsCount.textContent = "0 Unternehmen gefunden";
@@ -602,6 +603,29 @@
     fillSelectOptions(countryFilter, getFilterValues(companies, "country"), "Alle Laender");
     fillSelectOptions(currencyFilter, getFilterValues(companies, "currency"), "Alle Waehrungen");
     fillSelectOptions(sectorFilter, getFilterValues(companies, "sector"), "Alle Sektoren");
+
+    const setSelectFromParam = (select, rawParamValue) => {
+      if (!select) {
+        return;
+      }
+
+      const paramValue = normalizeText(rawParamValue);
+      if (!paramValue) {
+        return;
+      }
+
+      const normalizedParamValue = normalizeForMatch(paramValue);
+      const option = [...select.options].find((entry) => normalizeForMatch(entry.value) === normalizedParamValue);
+
+      if (option) {
+        select.value = option.value;
+      }
+    };
+
+    setSelectFromParam(countryFilter, params.get("country"));
+    setSelectFromParam(currencyFilter, params.get("currency"));
+    setSelectFromParam(sectorFilter, params.get("sector"));
+    setSelectFromParam(sortSelect, params.get("sort"));
 
     const sortCompanies = (entries, sortBy) => {
       const sorted = [...entries];
@@ -651,6 +675,8 @@
       const selectedCountry = normalizeText(countryFilter?.value);
       const selectedCurrency = normalizeText(currencyFilter?.value);
       const selectedSector = normalizeText(sectorFilter?.value);
+      const selectedIndustry = normalizeText(params.get("industry"));
+      const normalizedIndustry = normalizeForMatch(selectedIndustry);
       const selectedSort = normalizeText(sortSelect?.value) || "alphabet";
 
       const filtered = companies.filter((company) => {
@@ -658,7 +684,8 @@
         const matchesCountry = !selectedCountry || normalizeText(company.country) === selectedCountry;
         const matchesCurrency = !selectedCurrency || normalizeText(company.currency) === selectedCurrency;
         const matchesSector = !selectedSector || normalizeText(company.sector) === selectedSector;
-        return matchesSearch && matchesCountry && matchesCurrency && matchesSector;
+        const matchesIndustry = !normalizedIndustry || normalizeForMatch(company.industry) === normalizedIndustry;
+        return matchesSearch && matchesCountry && matchesCurrency && matchesSector && matchesIndustry;
       });
       const sorted = sortCompanies(filtered, selectedSort);
 
@@ -693,6 +720,21 @@
     link.target = "_blank";
     link.rel = "noopener noreferrer";
     link.textContent = url;
+    return link;
+  }
+
+  function createStocksFilterLink(value, key) {
+    const filterValue = normalizeText(value);
+    const filterKey = normalizeText(key);
+
+    if (!filterValue || !filterKey) {
+      return null;
+    }
+
+    const link = document.createElement("a");
+    link.className = "company-filter-link";
+    link.href = `${basePath}/aktien.html?${encodeURIComponent(filterKey)}=${encodeURIComponent(filterValue)}`;
+    link.textContent = filterValue;
     return link;
   }
 
@@ -864,7 +906,12 @@
 
     const classification = document.createElement("p");
     classification.className = "company-classification";
-    classification.textContent = `${normalizeText(company.sector) || "Sektor offen"} / ${normalizeText(company.industry) || "Branche offen"}`;
+    const sectorLink = createStocksFilterLink(company.sector, "sector");
+    const industryLink = createStocksFilterLink(company.industry, "industry");
+    classification.appendChild(document.createTextNode("Sektor: "));
+    classification.appendChild(sectorLink || document.createTextNode("k. A."));
+    classification.appendChild(document.createTextNode(" | Branche: "));
+    classification.appendChild(industryLink || document.createTextNode("k. A."));
 
     const description = document.createElement("p");
     description.className = "company-description";
@@ -1241,3 +1288,4 @@
 
   document.addEventListener("DOMContentLoaded", initPage);
 })();
+

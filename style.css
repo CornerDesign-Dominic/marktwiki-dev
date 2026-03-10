@@ -984,6 +984,17 @@ input[type="number"] {
   font-weight: 600;
 }
 
+.company-filter-link {
+  color: var(--link);
+  text-decoration: none;
+}
+
+.company-filter-link:hover,
+.company-filter-link:focus-visible {
+  color: var(--hover);
+  text-decoration: underline;
+}
+
 .company-description {
   margin: 0;
   color: var(--text-secondary);
