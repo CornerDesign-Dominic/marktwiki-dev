@@ -6,14 +6,15 @@
 
   const DATA_FILES = {
     categories: "kategorien.json",
-    topics: "themen.json"
+    topics: "themen.json",
+    companiesIndex: "companies/index.json"
   };
 
-  // Centralized JSON loader for all pages.
-  async function loadJson(fileName) {
-    const response = await fetch(`${basePath}/data/${fileName}`);
+  async function loadJson(path) {
+    const cleanPath = String(path || "").replace(/^\/+/, "");
+    const response = await fetch(`${basePath}/${cleanPath}`);
     if (!response.ok) {
-      throw new Error(`Daten konnten nicht geladen werden: ${fileName}`);
+      throw new Error(`Daten konnten nicht geladen werden: ${cleanPath}`);
     }
     return response.json();
   }
@@ -52,7 +53,491 @@
     return String(value || "").trim();
   }
 
-  // Allows gradual migration from JSON detail pages to static wiki article files.
+  function toNumber(value) {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return value;
+    }
+
+    if (typeof value === "string") {
+      const normalized = value.replace(/\s+/g, "").replace(",", ".");
+      const parsed = Number.parseFloat(normalized);
+      if (Number.isFinite(parsed)) {
+        return parsed;
+      }
+    }
+
+    return null;
+  }
+
+  function formatNumber(value, options = {}) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "k. A.";
+    }
+
+    return new Intl.NumberFormat("de-DE", options).format(number);
+  }
+
+  function formatCurrency(value, currency, options = {}) {
+    const number = toNumber(value);
+    const currencyCode = normalizeText(currency).toUpperCase();
+
+    if (number === null) {
+      return "k. A.";
+    }
+
+    if (!currencyCode) {
+      return formatNumber(number, { maximumFractionDigits: 2 });
+    }
+
+    try {
+      return new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: currencyCode,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        ...options
+      }).format(number);
+    } catch (_) {
+      return `${formatNumber(number, { maximumFractionDigits: 2 })} ${currencyCode}`;
+    }
+  }
+
+  function formatPrice(value) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "k. A.";
+    }
+    return formatNumber(number, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function formatSignedCurrency(value, currency) {
+    const number = toNumber(value);
+    const currencyCode = normalizeText(currency).toUpperCase();
+
+    if (number === null) {
+      return "k. A.";
+    }
+
+    if (!currencyCode) {
+      return formatNumber(number, { maximumFractionDigits: 2, signDisplay: "always" });
+    }
+
+    try {
+      return new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: currencyCode,
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        signDisplay: "always"
+      }).format(number);
+    } catch (_) {
+      return `${formatNumber(number, { maximumFractionDigits: 2, signDisplay: "always" })} ${currencyCode}`;
+    }
+  }
+
+  function formatPercent(value) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "k. A.";
+    }
+
+    return `${formatNumber(number, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+      signDisplay: "always"
+    })} %`;
+  }
+
+  function formatCompactNumber(value) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "k. A.";
+    }
+
+    return formatNumber(number, {
+      notation: "compact",
+      compactDisplay: "short",
+      maximumFractionDigits: 2
+    });
+  }
+
+  function formatCompactCurrency(value, currency) {
+    const number = toNumber(value);
+    const currencyCode = normalizeText(currency).toUpperCase();
+
+    if (number === null) {
+      return "k. A.";
+    }
+
+    if (!currencyCode) {
+      return formatCompactNumber(number);
+    }
+
+    try {
+      return new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: currencyCode,
+        notation: "compact",
+        compactDisplay: "short",
+        maximumFractionDigits: 2
+      }).format(number);
+    } catch (_) {
+      return `${formatCompactNumber(number)} ${currencyCode}`;
+    }
+  }
+
+  function formatDate(value) {
+    const dateText = normalizeText(value);
+    if (!dateText) {
+      return "k. A.";
+    }
+
+    const date = new Date(dateText);
+    if (Number.isNaN(date.getTime())) {
+      return dateText;
+    }
+
+    return new Intl.DateTimeFormat("de-DE", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    }).format(date);
+  }
+
+  function formatBoolean(value) {
+    if (typeof value !== "boolean") {
+      return "k. A.";
+    }
+    return value ? "Ja" : "Nein";
+  }
+
+  function shortenText(value, maxLength = 190) {
+    const text = normalizeText(value);
+    if (!text) {
+      return "Keine Beschreibung vorhanden.";
+    }
+
+    if (text.length <= maxLength) {
+      return text;
+    }
+
+    return `${text.slice(0, maxLength - 1).trimEnd()}...`;
+  }
+
+  function composeLocation(company) {
+    const parts = [normalizeText(company.city), normalizeText(company.state), normalizeText(company.country)].filter(Boolean);
+    return parts.length ? parts.join(", ") : "k. A.";
+  }
+
+  function getChangeTone(value) {
+    const number = toNumber(value);
+    if (number === null || number === 0) {
+      return "neutral";
+    }
+    return number > 0 ? "positive" : "negative";
+  }
+
+  function appendFact(dl, label, value) {
+    const row = document.createElement("div");
+    const term = document.createElement("dt");
+    const detail = document.createElement("dd");
+
+    term.textContent = label;
+
+    if (value instanceof Node) {
+      detail.appendChild(value);
+    } else {
+      detail.textContent = normalizeText(value) || "k. A.";
+    }
+
+    row.append(term, detail);
+    dl.appendChild(row);
+  }
+
+  function createDataSection(title, items) {
+    const section = document.createElement("section");
+    section.className = "section-space company-detail-section";
+
+    const heading = document.createElement("h2");
+    heading.textContent = title;
+
+    const list = document.createElement("dl");
+    list.className = "stock-meta detail-facts";
+
+    items.forEach((item) => {
+      appendFact(list, item.label, item.value);
+    });
+
+    section.append(heading, list);
+    return section;
+  }
+
+  function normalizeCompanySymbol(value) {
+    return normalizeText(value).toUpperCase();
+  }
+
+  async function loadCompanyIndex() {
+    const payload = await loadJson(`data/${DATA_FILES.companiesIndex}`);
+
+    if (Array.isArray(payload)) {
+      return payload;
+    }
+
+    if (payload && Array.isArray(payload.companies)) {
+      return payload.companies;
+    }
+
+    throw new Error("Ungueltige Unternehmensindex-Struktur.");
+  }
+
+  function findCompanyBySymbol(companies, symbol) {
+    return companies.find((entry) => normalizeCompanySymbol(entry.symbol) === normalizeCompanySymbol(symbol));
+  }
+
+  function createStockCard(company) {
+    const symbol = normalizeCompanySymbol(company.symbol);
+    const companyName = normalizeText(company.companyName) || symbol || "Unbekanntes Unternehmen";
+    const currencyCode = normalizeText(company.currency).toUpperCase() || "k. A.";
+
+    const card = document.createElement("a");
+    card.className = "card stock-card stock-card-link";
+    card.href = `${basePath}/pages/unternehmen.html?symbol=${encodeURIComponent(symbol)}`;
+    card.setAttribute("aria-label", `${companyName} (${symbol}) - zur Unternehmensseite`);
+
+    const visual = document.createElement("div");
+    visual.className = "stock-logo-box";
+
+    const hasImage = normalizeText(company.image) && company.defaultImage !== true;
+    if (hasImage) {
+      const logo = document.createElement("img");
+      logo.className = "stock-logo";
+      logo.src = company.image;
+      logo.alt = `${companyName} Logo`;
+      logo.loading = "lazy";
+      visual.appendChild(logo);
+    } else {
+      const fallback = document.createElement("span");
+      fallback.className = "stock-logo-fallback";
+      fallback.textContent = symbol || "N/A";
+      visual.appendChild(fallback);
+    }
+
+    const details = document.createElement("div");
+    details.className = "stock-details";
+
+    const title = document.createElement("h2");
+    title.textContent = companyName;
+
+    const symbolLine = document.createElement("p");
+    symbolLine.className = "stock-symbol-line";
+    symbolLine.textContent = `Symbol: ${symbol || "k. A."}`;
+
+    const priceLine = document.createElement("p");
+    priceLine.className = "stock-price-line";
+    priceLine.textContent = `Kurs: ${formatPrice(company.price)} ${currencyCode}`;
+
+    const facts = document.createElement("dl");
+    facts.className = "stock-meta stock-facts stock-facts-compact";
+
+    appendFact(facts, "CEO", company.ceo);
+    appendFact(facts, "Sektor", company.sector);
+    appendFact(facts, "Branche", company.industry);
+    appendFact(facts, "Land", company.country);
+
+    const teaser = document.createElement("p");
+    teaser.className = "stock-context";
+    teaser.textContent = shortenText(company.description, 110);
+
+    details.append(title, symbolLine, priceLine, facts, teaser);
+    card.append(visual, details);
+
+    return card;
+  }
+
+  async function initStocks() {
+    const list = document.querySelector("#stocks-list");
+    if (!list) {
+      return;
+    }
+
+    renderMessage(list, "Unternehmen werden geladen ...");
+
+    // Index enthaelt Vorschauwerte, damit die Uebersicht in einem Request ladbar bleibt.
+    const companies = await loadCompanyIndex();
+
+    if (!companies.length) {
+      renderMessage(list, "Derzeit sind noch keine Unternehmen verfuegbar.");
+      return;
+    }
+
+    list.innerHTML = "";
+    companies.forEach((company) => {
+      list.appendChild(createStockCard(company));
+    });
+  }
+
+  function createWebsiteLink(urlText) {
+    const url = normalizeText(urlText);
+    if (!url) {
+      return "k. A.";
+    }
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = url;
+    return link;
+  }
+
+  function renderCompanyDetail(container, company) {
+    container.innerHTML = "";
+
+    const symbol = normalizeCompanySymbol(company.symbol);
+    const companyName = normalizeText(company.companyName) || symbol || "Unternehmen";
+    const tone = getChangeTone(company.change);
+
+    const backLink = document.createElement("a");
+    backLink.className = "back-link";
+    backLink.href = `${basePath}/aktien.html`;
+    backLink.textContent = "\u2190 Zur Aktien-Uebersicht";
+
+    const header = document.createElement("section");
+    header.className = "company-detail-header";
+
+    if (normalizeText(company.image) && company.defaultImage !== true) {
+      const logo = document.createElement("img");
+      logo.className = "company-logo";
+      logo.src = company.image;
+      logo.alt = `${companyName} Logo`;
+      header.appendChild(logo);
+    }
+
+    const headMain = document.createElement("div");
+    headMain.className = "company-head-main";
+
+    const meta = document.createElement("p");
+    meta.className = "meta-pill";
+    meta.textContent = `${symbol || "k. A."} / ${normalizeText(company.sector) || "Sektor offen"} / ${normalizeText(company.industry) || "Branche offen"}`;
+
+    const title = document.createElement("h1");
+    title.textContent = companyName;
+
+    const subtitle = document.createElement("p");
+    subtitle.className = "lead";
+    subtitle.textContent = `Boerse: ${normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A."} / Land: ${normalizeText(company.country) || "k. A."}`;
+
+    const description = document.createElement("p");
+    description.className = "company-description";
+    description.textContent = normalizeText(company.description) || "Keine Beschreibung vorhanden.";
+
+    const metrics = document.createElement("div");
+    metrics.className = "company-metrics";
+
+    const priceBox = document.createElement("p");
+    priceBox.className = "company-metric";
+    const priceLabel = document.createElement("span");
+    priceLabel.textContent = "Kurs";
+    const priceValue = document.createElement("strong");
+    priceValue.textContent = formatCurrency(company.price, company.currency);
+    priceBox.append(priceLabel, priceValue);
+
+    const changeBox = document.createElement("p");
+    changeBox.className = `company-metric tone-${tone}`;
+    const changeLabel = document.createElement("span");
+    changeLabel.textContent = "Veraenderung";
+    const changeValue = document.createElement("strong");
+    changeValue.textContent = `${formatSignedCurrency(company.change, company.currency)} (${formatPercent(company.changePercentage)})`;
+    changeBox.append(changeLabel, changeValue);
+
+    metrics.append(priceBox, changeBox);
+    headMain.append(meta, title, subtitle, metrics, description);
+    header.appendChild(headMain);
+
+    const addressParts = [
+      normalizeText(company.address),
+      normalizeText(company.city),
+      normalizeText(company.state),
+      normalizeText(company.zip),
+      normalizeText(company.country)
+    ].filter(Boolean);
+
+    const profileSection = createDataSection("Unternehmensprofil", [
+      { label: "CEO", value: company.ceo },
+      { label: "Mitarbeitende", value: formatNumber(company.fullTimeEmployees) },
+      { label: "IPO-Datum", value: formatDate(company.ipoDate) },
+      { label: "Website", value: createWebsiteLink(company.website) },
+      { label: "Telefon", value: company.phone },
+      { label: "Adresse", value: addressParts.join(", ") || "k. A." }
+    ]);
+
+    const marketSection = createDataSection("Boersen- und Stammdaten", [
+      { label: "Market Cap", value: formatCompactCurrency(company.marketCap, company.currency) },
+      { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
+      { label: "Last Dividend", value: formatCurrency(company.lastDividend, company.currency) },
+      { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
+      { label: "Volume", value: formatCompactNumber(company.volume) },
+      { label: "Average Volume", value: formatCompactNumber(company.averageVolume) },
+      { label: "CIK", value: company.cik },
+      { label: "ISIN", value: company.isin },
+      { label: "CUSIP", value: company.cusip },
+      { label: "Exchange Full Name", value: company.exchangeFullName }
+    ]);
+
+    const statusSection = createDataSection("Status / Klassifikation", [
+      { label: "ETF", value: formatBoolean(company.isEtf) },
+      { label: "Fund", value: formatBoolean(company.isFund) },
+      { label: "ADR", value: formatBoolean(company.isAdr) },
+      { label: "Aktiv gehandelt", value: formatBoolean(company.isActivelyTrading) }
+    ]);
+
+    container.append(backLink, header, profileSection, marketSection, statusSection);
+  }
+
+  async function initCompanyDetail() {
+    const article = document.querySelector("#company-detail");
+    if (!article) {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const symbol = normalizeCompanySymbol(params.get("symbol"));
+
+    if (!symbol) {
+      renderMessage(article, "Kein Unternehmenssymbol uebergeben. Bitte waehlen Sie ein Unternehmen aus der Aktien-Uebersicht.", true);
+      return;
+    }
+
+    renderMessage(article, "Unternehmensdaten werden geladen ...");
+
+    const index = await loadCompanyIndex();
+    const entry = findCompanyBySymbol(index, symbol);
+
+    if (!entry) {
+      renderMessage(article, `Unternehmen mit Symbol ${symbol} wurde nicht gefunden.`, true);
+      return;
+    }
+
+    const fileName = normalizeText(entry.file) || `${symbol}.json`;
+    const company = await loadJson(`data/companies/${fileName}`);
+
+    if (!company || typeof company !== "object") {
+      renderMessage(article, "Unternehmensdaten sind unvollstaendig.", true);
+      return;
+    }
+
+    if (!normalizeCompanySymbol(company.symbol)) {
+      company.symbol = symbol;
+    }
+
+    const companyName = normalizeText(company.companyName) || symbol;
+    document.title = `${companyName} Aktie (${symbol}) | MarktWiki`;
+    setMetaDescription(shortenText(company.description, 155));
+
+    renderCompanyDetail(article, company);
+  }
+
   function resolveTopicHref(topic) {
     const articlePath = normalizeText(topic?.artikelPfad);
     if (articlePath) {
@@ -102,8 +587,8 @@
     }
 
     const [topics, categories] = await Promise.all([
-      loadJson(DATA_FILES.topics),
-      loadJson(DATA_FILES.categories)
+      loadJson(`data/${DATA_FILES.topics}`),
+      loadJson(`data/${DATA_FILES.categories}`)
     ]);
 
     filter.innerHTML = "";
@@ -112,7 +597,6 @@
     allOption.textContent = "Alle Kategorien";
     filter.appendChild(allOption);
 
-    // Merge configured categories with data categories from topics for easy future extension.
     const categorySet = new Set(categories.map((category) => normalizeText(category.titel)));
     topics.forEach((topic) => categorySet.add(normalizeText(topic.kategorie)));
 
@@ -128,7 +612,6 @@
     const categoryExists = [...filter.options].some((option) => option.value === initialCategory);
     filter.value = categoryExists ? initialCategory : "Alle";
 
-    // Re-render list whenever filter changes or URL param updates.
     const renderTopicList = () => {
       list.innerHTML = "";
 
@@ -140,7 +623,7 @@
       counter.textContent = `${filteredTopics.length} Thema/Themen gefunden`;
 
       if (filteredTopics.length === 0) {
-        renderMessage(list, "Für diese Kategorie sind noch keine Themen vorhanden.");
+        renderMessage(list, "Fuer diese Kategorie sind noch keine Themen vorhanden.");
         return;
       }
 
@@ -185,11 +668,11 @@
     const topicId = params.get("id");
 
     if (!topicId) {
-      renderMessage(article, "Kein Thema ausgewählt.", true);
+      renderMessage(article, "Kein Thema ausgewaehlt.", true);
       return;
     }
 
-    const topics = await loadJson(DATA_FILES.topics);
+    const topics = await loadJson(`data/${DATA_FILES.topics}`);
 
     const topic = topics.find((entry) => entry.id === topicId);
 
@@ -224,7 +707,6 @@
         sectionContainer.appendChild(block);
       });
     }
-
   }
 
   async function initPage() {
@@ -239,12 +721,22 @@
         return;
       }
 
+      if (page === "stocks") {
+        await initStocks();
+        return;
+      }
+
+      if (page === "company-detail") {
+        await initCompanyDetail();
+        return;
+      }
+
       return;
     } catch (error) {
       const targets = document.querySelectorAll("[data-error-target]");
       if (targets.length > 0) {
         targets.forEach((target) => {
-          renderMessage(target, "Fehler beim Laden der Inhalte. Bitte später erneut versuchen.", true);
+          renderMessage(target, "Fehler beim Laden der Inhalte. Bitte spaeter erneut versuchen.", true);
         });
       }
       console.error(error);
@@ -253,3 +745,4 @@
 
   document.addEventListener("DOMContentLoaded", initPage);
 })();
+

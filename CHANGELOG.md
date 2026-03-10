@@ -1,5 +1,11 @@
-﻿# MarktWiki Changelog
+﻿## Version 0.44
 
+- Aktienseite auf dynamisches Rendering aus `data/companies/index.json` umgestellt (vollstaendig klickbare, kompakte Unternehmenskarten).
+- Neue Unternehmens-Detailseite `pages/unternehmen.html` mit robustem Laden per `symbol`, Lade-/Fehlerzustand und gruppierter Datendarstellung eingefuehrt.
+- Neue statische Unternehmensdatenstruktur unter `data/companies/` inklusive `AAPL.json`, `TEST1.json` und unvollstaendigem `TEST2.json` fuer Robustheitstests angelegt.
+- `main.js` und `style.css` behutsam fuer Stocks-Uebersicht und Unternehmensdetail erweitert (responsive, bestehender Stil beibehalten).
+
+---
 ## Version 0.43
 
 - `inventar.html` als Referenzartikel fuer Struktur und Layout definiert.
@@ -341,6 +347,7 @@ Datum optional
 - Ã„nderung 1
 - Ã„nderung 2
 - Ã„nderung 3
+
 
 
 

@@ -608,10 +608,22 @@ input[type="number"] {
 
 .stock-card {
   display: grid;
-  grid-template-columns: minmax(110px, 145px) minmax(0, 1fr);
+  grid-template-columns: minmax(82px, 108px) minmax(0, 1fr);
   gap: 0.9rem;
   align-items: start;
   padding: 0.95rem;
+}
+
+.stock-card-link {
+  color: var(--text);
+  height: 100%;
+}
+
+.stock-card-link:hover,
+.stock-card-link:focus-visible {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--bg-secondary);
 }
 
 .stock-chart-placeholder {
@@ -626,6 +638,32 @@ input[type="number"] {
   align-items: flex-end;
   justify-content: center;
   padding: 0.45rem;
+}
+
+.stock-logo-box {
+  min-height: 84px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem;
+}
+
+.stock-logo {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: contain;
+  background: #fff;
+  padding: 0.25rem;
+}
+
+.stock-logo-fallback {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-secondary);
 }
 
 .stock-chart-label {
@@ -645,6 +683,53 @@ input[type="number"] {
   gap: 0.5rem;
 }
 
+.stock-card-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.stock-symbol-badge {
+  white-space: nowrap;
+}
+
+.stock-price-row {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.7rem;
+}
+
+.stock-price {
+  font-size: 1rem;
+}
+
+.stock-change {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.stock-symbol-line,
+.stock-price-line {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+}
+
+.tone-positive {
+  color: var(--link);
+}
+
+.tone-negative {
+  color: var(--hover);
+}
+
+.tone-neutral {
+  color: var(--text-secondary);
+}
+
 .stock-meta {
   margin: 0;
   display: grid;
@@ -654,6 +739,10 @@ input[type="number"] {
 .stock-facts {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.3rem 0.85rem;
+}
+
+.stock-facts-compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .stock-meta div {
@@ -689,6 +778,75 @@ input[type="number"] {
 .stock-highlights li {
   margin: 0.12rem 0;
   line-height: 1.45;
+}
+
+.company-detail-header {
+  display: grid;
+  grid-template-columns: minmax(72px, 110px) minmax(0, 1fr);
+  gap: 0.95rem;
+  margin-bottom: 0.9rem;
+}
+
+.company-logo {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+  border-radius: 14px;
+  background: #fff;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+}
+
+.company-head-main h1 {
+  margin-bottom: 0.45rem;
+}
+
+.company-head-main .lead {
+  margin-bottom: 0.65rem;
+}
+
+.company-description {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.company-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 0.75rem;
+}
+
+.company-metric {
+  margin: 0;
+  min-width: 220px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  padding: 0.55rem 0.65rem;
+  display: grid;
+  gap: 0.15rem;
+}
+
+.company-metric span {
+  color: var(--text-secondary);
+  font-size: 0.87rem;
+}
+
+.company-metric strong {
+  color: var(--text);
+}
+
+.company-detail-section {
+  margin-top: 1.1rem;
+}
+
+.detail-facts {
+  gap: 0.4rem;
+}
+
+.detail-facts div {
+  grid-template-columns: minmax(170px, 220px) minmax(0, 1fr);
 }
 
 .site-footer {
@@ -1257,6 +1415,41 @@ input[type="number"] {
   .stock-facts {
     grid-template-columns: 1fr;
     gap: 0.25rem;
+  }
+
+  .stock-facts-compact {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-price-row {
+    gap: 0.35rem;
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .company-detail-header {
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
+  }
+
+  .company-logo {
+    width: 74px;
+    height: 74px;
+  }
+
+  .company-metrics {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .company-metric {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .detail-facts div {
+    grid-template-columns: 1fr;
+    gap: 0.18rem;
   }
 
   .calc-grid {

@@ -1,0 +1,44 @@
+﻿[
+  {
+    "symbol": "AAPL",
+    "file": "AAPL.json",
+    "companyName": "Apple Inc.",
+    "price": 261.85,
+    "currency": "USD",
+    "ceo": "Timothy D. Cook",
+    "sector": "Technology",
+    "industry": "Consumer Electronics",
+    "country": "US",
+    "description": "Apple entwickelt integrierte Hardware, Software und Services fuer ein stark vernetztes Oekosystem.",
+    "image": "https://images.financialmodelingprep.com/symbol/AAPL.png",
+    "defaultImage": false
+  },
+  {
+    "symbol": "TEST1",
+    "file": "TEST1.json",
+    "companyName": "Nordic Mobility Systems AG",
+    "price": 37.42,
+    "currency": "EUR",
+    "ceo": "Anna Reuter",
+    "sector": "Industrials",
+    "industry": "Transportation Equipment",
+    "country": "DE",
+    "description": "Testunternehmen fuer Fahrzeug- und Ladeinfrastruktur in Europa.",
+    "image": "",
+    "defaultImage": true
+  },
+  {
+    "symbol": "TEST2",
+    "file": "TEST2.json",
+    "companyName": "BlueHarbor Data Labs",
+    "price": 12.9,
+    "currency": "USD",
+    "ceo": "",
+    "sector": "Technology",
+    "industry": "",
+    "country": "US",
+    "description": "Unvollstaendiger Testdatensatz fuer robuste Platzhalterdarstellung.",
+    "image": "",
+    "defaultImage": true
+  }
+]
