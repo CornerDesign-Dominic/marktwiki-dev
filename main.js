@@ -9,6 +9,7 @@
     topics: "themen.json",
     companiesIndex: "companies/index.json"
   };
+  const FAVORITES_STORAGE_KEY = "favorites";
 
   async function loadJson(path) {
     const cleanPath = String(path || "").replace(/^\/+/, "");
@@ -300,6 +301,76 @@
     return normalizeText(value).toUpperCase();
   }
 
+  function readFavorites() {
+    try {
+      const rawValue = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
+      if (!rawValue) {
+        return [];
+      }
+
+      const parsed = JSON.parse(rawValue);
+      const rawSymbols = Array.isArray(parsed)
+        ? parsed
+        : Array.isArray(parsed?.favorites)
+          ? parsed.favorites
+          : null;
+
+      if (!rawSymbols) {
+        return [];
+      }
+
+      const symbols = rawSymbols
+        .map((entry) => normalizeCompanySymbol(entry))
+        .filter(Boolean);
+
+      return [...new Set(symbols)];
+    } catch (error) {
+      console.warn("Favoriten konnten nicht gelesen werden.", error);
+      return [];
+    }
+  }
+
+  function writeFavorites(favorites) {
+    try {
+      const normalized = [...new Set((favorites || [])
+        .map((entry) => normalizeCompanySymbol(entry))
+        .filter(Boolean))];
+      window.localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify({
+        favorites: normalized
+      }));
+      return true;
+    } catch (error) {
+      console.warn("Favoriten konnten nicht gespeichert werden.", error);
+      return false;
+    }
+  }
+
+  function createFavoriteButton(symbol, isActive = false, onToggle = null) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "favorite-toggle";
+    button.setAttribute("aria-label", isActive ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufuegen");
+    button.setAttribute("aria-pressed", String(Boolean(isActive)));
+    button.textContent = isActive ? "★" : "☆";
+
+    if (isActive) {
+      button.classList.add("is-active");
+    }
+
+    if (!symbol || typeof onToggle !== "function") {
+      button.disabled = true;
+      return button;
+    }
+
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      onToggle(symbol);
+    });
+
+    return button;
+  }
+
   async function loadCompanyIndex() {
     const payload = await loadJson(`data/${DATA_FILES.companiesIndex}`);
 
@@ -355,28 +426,56 @@
     });
   }
 
-  function renderStockCards(list, companies) {
+  function renderStockCards(list, companies, options = {}) {
     list.innerHTML = "";
+    const { favoriteSymbols = new Set(), onToggleFavorite = null, emptyMessage = "Keine Unternehmen fuer diese Suche/Filter gefunden." } = options;
 
     if (!companies.length) {
-      renderMessage(list, "Keine Unternehmen fuer diese Suche/Filter gefunden.");
+      renderMessage(list, emptyMessage);
       return;
     }
 
     companies.forEach((company) => {
-      list.appendChild(createStockCard(company));
+      const symbol = normalizeCompanySymbol(company?.symbol);
+      const isFavorite = symbol ? favoriteSymbols.has(symbol) : false;
+      list.appendChild(createStockCard(company, {
+        isFavorite,
+        onToggleFavorite
+      }));
     });
   }
 
-  function createStockCard(company) {
+  function createStockCard(company, options = {}) {
+    const { isFavorite = false, onToggleFavorite = null } = options;
     const symbol = normalizeCompanySymbol(company.symbol);
     const companyName = normalizeText(company.companyName) || symbol || "Unbekanntes Unternehmen";
     const currencyCode = normalizeText(company.currency).toUpperCase() || "k. A.";
+    const logoFallbackText = symbol || normalizeText(company.companyName).slice(0, 3).toUpperCase() || "N/A";
 
-    const card = document.createElement("a");
-    card.className = "card stock-card stock-card-link";
-    card.href = `${basePath}/pages/unternehmen.html?symbol=${encodeURIComponent(symbol)}`;
-    card.setAttribute("aria-label", `${companyName} (${symbol}) - zur Unternehmensseite`);
+    const appendStockFact = (target, label, value) => {
+      const row = document.createElement("div");
+      const term = document.createElement("dt");
+      const detail = document.createElement("dd");
+      const normalizedValue = normalizeText(value);
+
+      term.textContent = label;
+      detail.textContent = normalizedValue || "k. A.";
+
+      if (!normalizedValue) {
+        detail.classList.add("is-missing");
+      }
+
+      row.append(term, detail);
+      target.appendChild(row);
+    };
+
+    const card = document.createElement("article");
+    card.className = "card stock-card";
+
+    const link = document.createElement("a");
+    link.className = "stock-card-link";
+    link.href = `${basePath}/pages/unternehmen.html?symbol=${encodeURIComponent(symbol)}`;
+    link.setAttribute("aria-label", `${companyName} (${symbol}) - zur Unternehmensseite`);
 
     const visual = document.createElement("div");
     visual.className = "stock-logo-box";
@@ -392,7 +491,7 @@
     } else {
       const fallback = document.createElement("span");
       fallback.className = "stock-logo-fallback";
-      fallback.textContent = symbol || "N/A";
+      fallback.textContent = logoFallbackText;
       visual.appendChild(fallback);
     }
 
@@ -413,27 +512,34 @@
     const facts = document.createElement("dl");
     facts.className = "stock-meta stock-facts stock-facts-compact";
 
-    appendFact(facts, "CEO", company.ceo);
-    appendFact(facts, "Sektor", company.sector);
-    appendFact(facts, "Branche", company.industry);
-    appendFact(facts, "Land", company.country);
+    appendStockFact(facts, "CEO", company.ceo);
+    appendStockFact(facts, "Sektor", company.sector);
+    appendStockFact(facts, "Branche", company.industry);
+    appendStockFact(facts, "Land", company.country);
 
     const teaser = document.createElement("p");
     teaser.className = "stock-context";
     teaser.textContent = shortenText(company.description, 110);
 
     details.append(title, symbolLine, priceLine, facts, teaser);
-    card.append(visual, details);
+    link.append(visual, details);
+    card.appendChild(link);
+
+    const favoriteButton = createFavoriteButton(symbol, isFavorite, onToggleFavorite);
+    favoriteButton.classList.add("favorite-toggle-card");
+    card.appendChild(favoriteButton);
 
     return card;
   }
 
   async function initStocks() {
     const list = document.querySelector("#stocks-list");
+    const favoritesList = document.querySelector("#stocks-favorites-list");
     const searchInput = document.querySelector("#stocks-search");
     const countryFilter = document.querySelector("#stocks-country-filter");
     const currencyFilter = document.querySelector("#stocks-currency-filter");
     const sectorFilter = document.querySelector("#stocks-sector-filter");
+    const sortSelect = document.querySelector("#stocks-sort");
     const resultsCount = document.querySelector("#stocks-results-count");
 
     if (!list) {
@@ -441,12 +547,52 @@
     }
 
     renderMessage(list, "Unternehmen werden geladen ...");
+    if (favoritesList) {
+      renderMessage(favoritesList, "Favoriten werden geladen ...");
+    }
 
     // Index enthaelt Vorschauwerte, damit die Uebersicht in einem Request ladbar bleibt.
     const companies = await loadCompanyIndex();
+    let favoriteSymbols = new Set(readFavorites());
+
+    const persistAndRefresh = (symbol) => {
+      const normalizedSymbol = normalizeCompanySymbol(symbol);
+      if (!normalizedSymbol) {
+        return;
+      }
+
+      if (favoriteSymbols.has(normalizedSymbol)) {
+        favoriteSymbols.delete(normalizedSymbol);
+      } else {
+        favoriteSymbols.add(normalizedSymbol);
+      }
+
+      writeFavorites([...favoriteSymbols]);
+      applyStockFilters();
+    };
+
+    const renderFavorites = () => {
+      if (!favoritesList) {
+        return;
+      }
+
+      const favoriteCompanies = companies.filter((company) => {
+        const symbol = normalizeCompanySymbol(company?.symbol);
+        return symbol && favoriteSymbols.has(symbol);
+      });
+
+      renderStockCards(favoritesList, favoriteCompanies, {
+        favoriteSymbols,
+        onToggleFavorite: persistAndRefresh,
+        emptyMessage: "Noch keine Favoriten gespeichert."
+      });
+    };
 
     if (!companies.length) {
       renderMessage(list, "Derzeit sind noch keine Unternehmen verfuegbar.");
+      if (favoritesList) {
+        renderMessage(favoritesList, "Noch keine Favoriten gespeichert.");
+      }
       if (resultsCount) {
         resultsCount.textContent = "0 Unternehmen gefunden";
       }
@@ -457,11 +603,55 @@
     fillSelectOptions(currencyFilter, getFilterValues(companies, "currency"), "Alle Waehrungen");
     fillSelectOptions(sectorFilter, getFilterValues(companies, "sector"), "Alle Sektoren");
 
+    const sortCompanies = (entries, sortBy) => {
+      const sorted = [...entries];
+
+      if (sortBy === "price") {
+        sorted.sort((a, b) => {
+          const priceA = toNumber(a?.price) ?? 0;
+          const priceB = toNumber(b?.price) ?? 0;
+          return priceB - priceA;
+        });
+        return sorted;
+      }
+
+      if (sortBy === "marketCap") {
+        sorted.sort((a, b) => {
+          const capA = toNumber(a?.marketCap) ?? 0;
+          const capB = toNumber(b?.marketCap) ?? 0;
+          return capB - capA;
+        });
+        return sorted;
+      }
+
+      sorted.sort((a, b) => {
+        const nameA = normalizeText(a?.companyName);
+        const nameB = normalizeText(b?.companyName);
+        const hasNameA = Boolean(nameA);
+        const hasNameB = Boolean(nameB);
+
+        if (!hasNameA && !hasNameB) {
+          return 0;
+        }
+        if (!hasNameA) {
+          return 1;
+        }
+        if (!hasNameB) {
+          return -1;
+        }
+
+        return nameA.localeCompare(nameB, "de", { sensitivity: "base" });
+      });
+
+      return sorted;
+    };
+
     const applyStockFilters = () => {
       const query = normalizeForMatch(searchInput?.value || "");
       const selectedCountry = normalizeText(countryFilter?.value);
       const selectedCurrency = normalizeText(currencyFilter?.value);
       const selectedSector = normalizeText(sectorFilter?.value);
+      const selectedSort = normalizeText(sortSelect?.value) || "alphabet";
 
       const filtered = companies.filter((company) => {
         const matchesSearch = !query || createCompanySearchText(company).includes(query);
@@ -470,11 +660,16 @@
         const matchesSector = !selectedSector || normalizeText(company.sector) === selectedSector;
         return matchesSearch && matchesCountry && matchesCurrency && matchesSector;
       });
+      const sorted = sortCompanies(filtered, selectedSort);
 
-      renderStockCards(list, filtered);
+      renderStockCards(list, sorted, {
+        favoriteSymbols,
+        onToggleFavorite: persistAndRefresh
+      });
+      renderFavorites();
 
       if (resultsCount) {
-        resultsCount.textContent = `${filtered.length} von ${companies.length} Unternehmen`;
+        resultsCount.textContent = `${sorted.length} von ${companies.length} Unternehmen`;
       }
     };
 
@@ -482,6 +677,7 @@
     countryFilter?.addEventListener("change", applyStockFilters);
     currencyFilter?.addEventListener("change", applyStockFilters);
     sectorFilter?.addEventListener("change", applyStockFilters);
+    sortSelect?.addEventListener("change", applyStockFilters);
 
     applyStockFilters();
   }
@@ -500,7 +696,122 @@
     return link;
   }
 
-  function renderCompanyDetail(container, company) {
+  function resolveCompanyField(company, fallbackEntry, field) {
+    const primary = normalizeText(company?.[field]);
+    if (primary) {
+      return primary;
+    }
+    return normalizeText(fallbackEntry?.[field]);
+  }
+
+  function findSimilarCompanies(index, company, fallbackEntry, limit = 3) {
+    if (!Array.isArray(index) || !index.length) {
+      return [];
+    }
+
+    const currentSymbol = normalizeCompanySymbol(company?.symbol || fallbackEntry?.symbol);
+    const targetIndustry = normalizeForMatch(resolveCompanyField(company, fallbackEntry, "industry"));
+    const targetSector = normalizeForMatch(resolveCompanyField(company, fallbackEntry, "sector"));
+
+    if (!targetIndustry && !targetSector) {
+      return [];
+    }
+
+    return index
+      .map((entry) => {
+        const symbol = normalizeCompanySymbol(entry?.symbol);
+        if (!symbol || symbol === currentSymbol) {
+          return null;
+        }
+
+        const industry = normalizeForMatch(entry?.industry);
+        const sector = normalizeForMatch(entry?.sector);
+
+        if (targetIndustry && industry && industry === targetIndustry) {
+          return { ...entry, symbol, priority: 0 };
+        }
+
+        if (targetSector && sector && sector === targetSector) {
+          return { ...entry, symbol, priority: 1 };
+        }
+
+        return null;
+      })
+      .filter(Boolean)
+      .sort((a, b) => {
+        if (a.priority !== b.priority) {
+          return a.priority - b.priority;
+        }
+        return normalizeText(a.companyName).localeCompare(normalizeText(b.companyName), "de");
+      })
+      .slice(0, Math.max(0, limit));
+  }
+
+  function createSimilarCompaniesSection(similarCompanies) {
+    const section = document.createElement("section");
+    section.className = "card section-space company-similar-section";
+
+    const heading = document.createElement("h2");
+    heading.className = "company-info-title";
+    heading.textContent = "Aehnliche Unternehmen";
+    section.appendChild(heading);
+
+    const entries = Array.isArray(similarCompanies) ? similarCompanies : [];
+    if (!entries.length) {
+      const hint = document.createElement("p");
+      hint.className = "muted company-similar-empty";
+      hint.textContent = "Aktuell sind keine passenden Unternehmen verfuegbar.";
+      section.appendChild(hint);
+      return section;
+    }
+
+    const list = document.createElement("ul");
+    list.className = "company-similar-list";
+
+    entries.forEach((entry) => {
+      const symbol = normalizeCompanySymbol(entry?.symbol);
+      if (!symbol) {
+        return;
+      }
+
+      const companyName = normalizeText(entry?.companyName) || symbol;
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.className = "company-similar-link";
+      link.href = `${basePath}/pages/unternehmen.html?symbol=${encodeURIComponent(symbol)}`;
+      link.setAttribute("aria-label", `${companyName} (${symbol}) - zur Unternehmensseite`);
+
+      const nameNode = document.createElement("span");
+      nameNode.className = "company-similar-name";
+      nameNode.textContent = companyName;
+
+      const symbolNode = document.createElement("span");
+      symbolNode.className = "company-similar-symbol";
+      symbolNode.textContent = symbol;
+
+      link.append(nameNode, symbolNode);
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+
+    if (!list.children.length) {
+      const hint = document.createElement("p");
+      hint.className = "muted company-similar-empty";
+      hint.textContent = "Aktuell sind keine passenden Unternehmen verfuegbar.";
+      section.appendChild(hint);
+      return section;
+    }
+
+    section.appendChild(list);
+    return section;
+  }
+
+  function renderCompanyDetail(container, company, options = {}) {
+    const {
+      favoriteSymbols = new Set(),
+      onToggleFavorite = null,
+      similarCompanies = []
+    } = options;
     container.innerHTML = "";
 
     const symbol = normalizeCompanySymbol(company.symbol);
@@ -544,6 +855,12 @@
 
     const title = document.createElement("h1");
     title.textContent = companyName;
+    const titleRow = document.createElement("div");
+    titleRow.className = "company-title-row";
+    titleRow.append(
+      title,
+      createFavoriteButton(symbol, favoriteSymbols.has(symbol), onToggleFavorite)
+    );
 
     const classification = document.createElement("p");
     classification.className = "company-classification";
@@ -577,7 +894,7 @@
     changeBox.append(changeLabel, changeValue);
 
     marketSnapshot.append(priceBox, changeBox);
-    headMain.append(topMeta, title, classification, description);
+    headMain.append(topMeta, titleRow, classification, description);
     header.append(logoWrap, headMain, marketSnapshot);
 
     const addressParts = [
@@ -621,6 +938,7 @@
     const detailGrid = document.createElement("section");
     detailGrid.className = "company-detail-grid section-space";
     detailGrid.append(profileSection, marketSection, statusSection);
+    const similarSection = createSimilarCompaniesSection(similarCompanies);
 
     const futureSection = document.createElement("section");
     futureSection.className = "card section-space company-next-sections";
@@ -644,7 +962,7 @@
     );
 
     futureSection.append(futureTitle, futureIntro, futureList);
-    container.append(backLink, header, detailGrid, futureSection);
+    container.append(backLink, header, detailGrid, similarSection, futureSection);
   }
 
   async function initCompanyDetail() {
@@ -686,8 +1004,34 @@
     const companyName = normalizeText(company.companyName) || symbol;
     document.title = `${companyName} Aktie (${symbol}) | MarktWiki`;
     setMetaDescription(shortenText(company.description, 155));
+    let favoriteSymbols = new Set(readFavorites());
+    const similarCompanies = findSimilarCompanies(index, company, entry, 3);
 
-    renderCompanyDetail(article, company);
+    const persistAndRender = (nextSymbol) => {
+      const normalizedSymbol = normalizeCompanySymbol(nextSymbol);
+      if (!normalizedSymbol) {
+        return;
+      }
+
+      if (favoriteSymbols.has(normalizedSymbol)) {
+        favoriteSymbols.delete(normalizedSymbol);
+      } else {
+        favoriteSymbols.add(normalizedSymbol);
+      }
+
+      writeFavorites([...favoriteSymbols]);
+      renderCompanyDetail(article, company, {
+        favoriteSymbols,
+        onToggleFavorite: persistAndRender,
+        similarCompanies
+      });
+    };
+
+    renderCompanyDetail(article, company, {
+      favoriteSymbols,
+      onToggleFavorite: persistAndRender,
+      similarCompanies
+    });
   }
 
   function resolveTopicHref(topic) {
@@ -897,4 +1241,3 @@
 
   document.addEventListener("DOMContentLoaded", initPage);
 })();
-

@@ -38,8 +38,25 @@
             <label for="stocks-sector-filter">Sektor</label>
             <select id="stocks-sector-filter" aria-label="Nach Sektor filtern"></select>
           </div>
+          <div class="field">
+            <label for="stocks-sort">Sortieren nach</label>
+            <select id="stocks-sort" aria-label="Unternehmen sortieren">
+              <option value="alphabet">Alphabet (A-Z)</option>
+              <option value="price">Kurs (hoechster zuerst)</option>
+              <option value="marketCap">Market Cap (groesster zuerst)</option>
+            </select>
+          </div>
         </div>
-        <p id="stocks-results-count" class="muted stocks-results-count"></p>
+        <p id="stocks-results-count" class="muted stocks-results-count" role="status" aria-live="polite"></p>
+      </section>
+
+      <section class="section-space" aria-labelledby="favorites-heading">
+        <div class="watchlist-heading-wrap">
+          <h2 id="favorites-heading">Meine Aktien <span aria-hidden="true">⭐</span></h2>
+        </div>
+        <div id="stocks-favorites-list" class="card-grid stock-grid" data-error-target="stocks-favorites">
+          <p class="status-message">Favoriten werden geladen ...</p>
+        </div>
       </section>
 
       <section class="section-space" aria-labelledby="stocks-heading">
