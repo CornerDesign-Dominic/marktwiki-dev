@@ -3,6 +3,19 @@
 
   let searchDataPromise;
   let searchInitialized = false;
+  const NAV_ITEMS = [
+    { key: "wiki", label: "Wiki", path: "wiki/index.html" },
+    {
+      key: "markets",
+      label: "Maerkte",
+      path: "aktien.html",
+      aliases: ["stocks"],
+      sections: [
+        { key: "listed-companies", label: "Boersennotierte Unternehmen", path: "aktien.html" }
+      ]
+    },
+    { key: "tools", label: "Tools", path: "werkzeuge.html" }
+  ];
 
   function normalizeBasePath(value) {
     const trimmed = String(value || ".").trim();
@@ -208,13 +221,26 @@
     searchInitialized = true;
   }
 
-  function navLink(basePath, activeNav, key, label, path) {
-    const activeClass = activeNav === key ? " class=\"active\"" : "";
-    return `<li><a${activeClass} href="${href(basePath, path)}">${label}</a></li>`;
+  function isNavActive(activeNav, item) {
+    if (activeNav === item.key) {
+      return true;
+    }
+    if (Array.isArray(item.aliases) && item.aliases.includes(activeNav)) {
+      return true;
+    }
+    return false;
+  }
+
+  function navLink(basePath, activeNav, item) {
+    const activeClass = isNavActive(activeNav, item) ? " class=\"active\"" : "";
+    const keyAttr = ` data-nav-key="${escapeHtml(item.key)}"`;
+    return `<li><a${activeClass}${keyAttr} href="${href(basePath, item.path)}">${item.label}</a></li>`;
   }
 
   function renderHeader(config = {}) {
     const { basePath, activeNav } = readLayoutConfig(config);
+    const navMarkup = NAV_ITEMS.map((item) => navLink(basePath, activeNav, item)).join("");
+
     return `<header class="site-header">
     <div class="container nav-wrap">
       <a class="brand" href="${href(basePath, "index.html")}">MarktWiki</a>
@@ -224,9 +250,7 @@
       </div>
       <nav class="main-nav" aria-label="Hauptnavigation">
         <ul>
-          ${navLink(basePath, activeNav, "wiki", "Wiki", "wiki/index.html")}
-          ${navLink(basePath, activeNav, "stocks", "Aktien", "aktien.html")}
-          ${navLink(basePath, activeNav, "tools", "Werkzeuge", "werkzeuge.html")}
+          ${navMarkup}
         </ul>
       </nav>
     </div>

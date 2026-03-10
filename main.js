@@ -863,7 +863,7 @@
     const backLink = document.createElement("a");
     backLink.className = "back-link";
     backLink.href = `${basePath}/aktien.html`;
-    backLink.textContent = "\u2190 Zur Aktien-Uebersicht";
+    backLink.textContent = "\u2190 Zur Maerkte-Uebersicht";
 
     const header = document.createElement("section");
     header.className = "company-detail-header card";

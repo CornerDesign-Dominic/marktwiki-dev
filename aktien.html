@@ -3,20 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Aktien | MarktWiki</title>
-  <meta name="description" content="Uebersicht ausgewaehlter Unternehmen mit kompakten Kennzahlen, Kursveraenderung und direktem Zugang zur Detailseite.">
+  <title>Boersennotierte Unternehmen | MarktWiki</title>
+  <meta name="description" content="Uebersicht boersennotierter Unternehmen mit kompakten Eckdaten, Filtern und direktem Zugang zur Detailseite.">
   <link rel="stylesheet" href="./style.css">
   <script src="./layout.js"></script>
   <script src="./main.js" defer></script>
 </head>
-<body data-page="stocks" data-base-path="." data-nav="stocks">
+<body data-page="stocks" data-base-path="." data-nav="markets">
   <script>window.MarktWikiLayout.injectHeader();</script>
 
   <main>
     <div class="container">
       <section class="card hero">
-        <h1>Aktien</h1>
-        <p class="lead">Hier finden Sie Unternehmen mit kompakten Eckdaten zur Aktie. Die Karten zeigen zentrale Informationen auf einen Blick und markieren links den Bereich fuer den spaeteren 1-Jahres-Verlauf.</p>
+        <h1>Boersennotierte Unternehmen</h1>
       </section>
 
       <section class="card section-space stocks-controls" aria-labelledby="stocks-controls-heading">
@@ -60,7 +59,7 @@
       </section>
 
       <section class="section-space" aria-labelledby="stocks-heading">
-        <h2 id="stocks-heading" class="sr-only">Aktien-Uebersicht</h2>
+        <h2 id="stocks-heading" class="sr-only">Unternehmens-Uebersicht</h2>
         <div id="stocks-list" class="card-grid stock-grid" data-error-target="stocks">
           <p class="status-message">Unternehmen werden geladen ...</p>
         </div>
