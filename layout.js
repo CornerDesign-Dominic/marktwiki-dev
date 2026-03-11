@@ -5,12 +5,19 @@
   let searchInitialized = false;
   let navSubmenusInitialized = false;
   const NAV_ITEMS = [
-    { key: "wiki", label: "Wiki", path: "wiki/index.html" },
+    {
+      key: "wiki",
+      label: "Wiki",
+      sections: [
+        { key: "wiki-home", label: "Wiki", path: "wiki/index.html", aliases: ["wiki"] }
+      ]
+    },
     {
       key: "markets",
       label: "Märkte",
       aliases: ["stocks"],
       sections: [
+        { key: "markets-home", label: "Märkte", path: "maerkte.html", aliases: ["markets"] },
         { key: "listed-companies", label: "Börsennotierte Unternehmen", path: "aktien.html", aliases: ["stocks"] },
         { key: "indices", label: "Indizes", path: "indizes.html" },
         { key: "exchange-rates", label: "Wechselkurse", path: "wechselkurse.html" },
@@ -19,7 +26,13 @@
         { key: "etfs", label: "ETFs", path: "etfs.html" }
       ]
     },
-    { key: "tools", label: "Tools", path: "werkzeuge.html" }
+    {
+      key: "tools",
+      label: "Tools",
+      sections: [
+        { key: "tools-home", label: "Tools", path: "werkzeuge.html", aliases: ["tools"] }
+      ]
+    }
   ];
 
   function normalizeBasePath(value) {
@@ -256,7 +269,6 @@
       return `<li class="nav-item has-submenu" data-nav-group="${escapeHtml(item.key)}">
         <button type="button" class="nav-parent${activeClass}"${keyAttr} data-nav-toggle="${escapeHtml(item.key)}" aria-expanded="false" aria-haspopup="true" aria-controls="main-nav-submenu-panel">
           <span>${item.label}</span>
-          <span class="nav-chevron" aria-hidden="true"></span>
         </button>
       </li>`;
     }

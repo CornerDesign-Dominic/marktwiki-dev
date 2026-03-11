@@ -143,56 +143,50 @@ img {
   flex-wrap: nowrap;
   white-space: nowrap;
   justify-content: flex-end;
+  align-items: center;
 }
 
-.main-nav a {
+.main-nav a,
+.main-nav .nav-parent {
   color: var(--text-secondary);
   padding: 0.4rem 0.65rem;
   border-radius: 6px;
+  border: 1px solid transparent;
+  min-height: 2.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .main-nav .nav-item {
   position: static;
+  display: flex;
+  align-items: center;
 }
 
 .main-nav .nav-parent {
-  color: var(--text-secondary);
   background: transparent;
-  border: 0;
-  border-radius: 6px;
-  padding: 0.4rem 0.65rem;
   font: inherit;
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.main-nav .nav-chevron {
-  width: 0.48rem;
-  height: 0.48rem;
-  border-right: 1.5px solid currentColor;
-  border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg) translateY(-1px);
-  transition: transform 0.16s ease;
 }
 
 .main-nav a.active,
 .main-nav a:hover,
 .main-nav a:focus-visible {
   color: var(--text);
-  background: var(--bg);
+  background: color-mix(in srgb, var(--bg) 86%, #ffffff 14%);
+  border-color: color-mix(in srgb, var(--border) 65%, #ffffff 35%);
 }
 
 .main-nav .nav-parent.active,
 .main-nav .nav-parent:hover,
-.main-nav .nav-parent:focus-visible {
+.main-nav .nav-parent:focus-visible,
+.main-nav .nav-parent.is-open {
   color: var(--text);
-  background: var(--bg);
-}
-
-.main-nav .nav-parent.is-open .nav-chevron {
-  transform: rotate(-135deg) translateY(-1px);
+  background: color-mix(in srgb, var(--bg) 86%, #ffffff 14%);
+  border-color: color-mix(in srgb, var(--border) 65%, #ffffff 35%);
 }
 
 .nav-submenu-panel {
@@ -200,8 +194,7 @@ img {
   top: calc(100% - 4px);
   right: 0;
   width: min(320px, calc(100vw - 1.5rem));
-  height: auto;
-  max-height: min(70vh, 420px);
+  height: 276px;
   padding: 0.55rem;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -241,6 +234,7 @@ img {
   display: grid;
   gap: 0.2rem;
   overflow: auto;
+  flex: 1 1 auto;
 }
 
 .nav-submenu-list a {
