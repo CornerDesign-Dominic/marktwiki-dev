@@ -253,14 +253,13 @@
     return name;
   }
 
-  function getCurrencyFlag(currencyCode) {
+  function getCurrencyFlagCountryCode(currencyCode) {
     const normalizedCode = normalizeCurrencyForRates(currencyCode);
     if (!normalizedCode) {
       return "";
     }
 
-    const fallbackCountryCode = CURRENCY_FLAG_COUNTRY_BY_CODE[normalizedCode] || "";
-    return countryCodeToFlag(fallbackCountryCode);
+    return normalizeCountryCode(CURRENCY_FLAG_COUNTRY_BY_CODE[normalizedCode] || "");
   }
 
   function formatCurrencyLabel(currencyCode) {
@@ -274,27 +273,47 @@
   }
 
   function createCurrencyDisplayNode(currencyCode) {
-    const label = formatCurrencyLabel(currencyCode);
-    if (!label) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
       return null;
     }
 
     const wrapper = document.createElement("span");
     wrapper.className = "currency-with-flag";
 
-    const flag = getCurrencyFlag(currencyCode);
-    if (flag) {
-      const flagElement = document.createElement("span");
-      flagElement.className = "currency-flag";
-      flagElement.setAttribute("aria-hidden", "true");
-      flagElement.textContent = flag;
-      wrapper.appendChild(flagElement);
+    const currencyName = getCurrencyDisplayName(normalizedCode);
+    const flagCountryCode = getCurrencyFlagCountryCode(normalizedCode);
+    const flagAssetPath = getCountryFlagAssetPath(flagCountryCode);
+    if (flagAssetPath) {
+      const image = document.createElement("img");
+      image.className = "country-flag-image currency-flag-image";
+      image.src = `${basePath}/${flagAssetPath}`;
+      image.alt = `Flagge ${flagCountryCode}`;
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.width = 18;
+      image.height = 12;
+      image.addEventListener("error", () => {
+        image.remove();
+      });
+      wrapper.appendChild(image);
     }
 
-    const labelElement = document.createElement("span");
-    labelElement.className = "currency-label";
-    labelElement.textContent = label;
-    wrapper.appendChild(labelElement);
+    const labelWrapper = document.createElement("span");
+    labelWrapper.className = "currency-label";
+    const nameElement = document.createElement("span");
+    nameElement.className = "currency-label-name";
+    nameElement.textContent = currencyName || normalizedCode;
+    labelWrapper.appendChild(nameElement);
+
+    if (currencyName) {
+      const codeElement = document.createElement("span");
+      codeElement.className = "currency-label-code";
+      codeElement.textContent = normalizedCode;
+      labelWrapper.appendChild(codeElement);
+    }
+
+    wrapper.appendChild(labelWrapper);
 
     return wrapper;
   }
@@ -1368,11 +1387,23 @@
 
     const primary = document.createElement("p");
     primary.className = "exchange-rate-primary";
-    primary.textContent = `1 ${normalizedBase} = ${formatExchangeRateValue(entry?.rate)} ${currencyCode}`;
+    const primaryLabel = document.createElement("span");
+    primaryLabel.className = "exchange-rate-line-label";
+    primaryLabel.textContent = "Basis:";
+    const primaryValue = document.createElement("span");
+    primaryValue.className = "exchange-rate-line-value";
+    primaryValue.textContent = `1 ${normalizedBase} = ${formatExchangeRateValue(entry?.rate)} ${currencyCode}`;
+    primary.append(primaryLabel, primaryValue);
 
     const secondary = document.createElement("p");
     secondary.className = "muted exchange-rate-secondary";
-    secondary.textContent = `Referenzkurs: 1 ${currencyCode} = ${formatExchangeRateValue(entry?.inverseRate)} ${normalizedBase}`;
+    const secondaryLabel = document.createElement("span");
+    secondaryLabel.className = "exchange-rate-line-label";
+    secondaryLabel.textContent = "Referenzkurs:";
+    const secondaryValue = document.createElement("span");
+    secondaryValue.className = "exchange-rate-line-value";
+    secondaryValue.textContent = `1 ${currencyCode} = ${formatExchangeRateValue(entry?.inverseRate)} ${normalizedBase}`;
+    secondary.append(secondaryLabel, secondaryValue);
 
     card.append(title, primary, secondary);
     return card;
