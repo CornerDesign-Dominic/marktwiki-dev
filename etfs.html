@@ -6,9 +6,124 @@
   <title>ETFs | MarktWiki</title>
   <meta name="description" content="Übersicht ausgewählter ETFs mit statischen Beispielwerten.">
   <link rel="stylesheet" href="./style.css">
+  <style>
+    .markets-compact-page .markets-compact-grid {
+      grid-template-columns: 1fr;
+      gap: 0.8rem;
+    }
+
+    .markets-compact-page .market-compact-card {
+      padding: 0.78rem 0.82rem;
+      background: color-mix(in srgb, var(--surface) 90%, var(--bg) 10%);
+      transition: border-color 0.18s ease, background-color 0.18s ease;
+    }
+
+    .markets-compact-page .market-compact-card:hover {
+      border-color: var(--accent);
+      background: color-mix(in srgb, var(--bg-secondary) 74%, var(--surface) 26%);
+    }
+
+    .markets-compact-page .market-compact-body {
+      display: grid;
+      grid-template-columns: minmax(56px, 66px) minmax(0, 1fr);
+      gap: 0.72rem;
+      align-items: start;
+    }
+
+    .markets-compact-page .market-compact-visual {
+      min-height: 56px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.3rem;
+    }
+
+    .markets-compact-page .market-compact-symbol {
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+    }
+
+    .markets-compact-page .market-compact-details {
+      display: grid;
+      gap: 0.28rem;
+      min-width: 0;
+    }
+
+    .markets-compact-page .market-compact-title-row {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 0.62rem;
+    }
+
+    .markets-compact-page .market-compact-title-row h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    .markets-compact-page .market-compact-main-value {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .markets-compact-page .market-compact-change {
+      margin: 0;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .markets-compact-page .market-compact-change.is-positive {
+      color: var(--link);
+    }
+
+    .markets-compact-page .market-compact-change.is-negative {
+      color: var(--hover);
+    }
+
+    .markets-compact-page .market-compact-facts {
+      margin: 0.05rem 0 0;
+    }
+
+    .markets-compact-page .market-compact-facts div {
+      grid-template-columns: minmax(64px, max-content) minmax(0, 1fr);
+      gap: 0.38rem;
+    }
+
+    .markets-compact-page .market-compact-facts dt {
+      font-size: 0.68rem;
+    }
+
+    .markets-compact-page .market-compact-facts dd {
+      font-size: 0.82rem;
+    }
+
+    @media (max-width: 768px) {
+      .markets-compact-page .market-compact-body {
+        grid-template-columns: minmax(50px, 56px) minmax(0, 1fr);
+        gap: 0.6rem;
+      }
+
+      .markets-compact-page .market-compact-visual {
+        min-height: 50px;
+      }
+
+      .markets-compact-page .market-compact-facts div {
+        grid-template-columns: 1fr;
+        gap: 0.14rem;
+      }
+    }
+  </style>
   <script src="./layout.js"></script>
 </head>
-<body data-page="etfs" data-base-path="." data-nav="etfs">
+<body class="markets-compact-page" data-page="etfs" data-base-path="." data-nav="etfs">
   <script>window.MarktWikiLayout.injectHeader();</script>
 
   <main>
@@ -17,33 +132,85 @@
 
       <section class="section-space" aria-labelledby="etf-liste">
         <h2 id="etf-liste" class="sr-only">Beispielwerte für ETFs</h2>
-        <div class="card-grid">
-          <article class="card topic-card">
-            <h3>MSCI World ETF</h3>
-            <p class="muted">Kürzel: EUNL</p>
-            <p class="muted">Beispielkurs: 89,12 EUR</p>
-            <p class="muted">Beispielkategorie: Aktien weltweit</p>
+        <div class="card-grid markets-compact-grid">
+          <article class="card market-compact-card">
+            <div class="market-compact-body">
+              <div class="market-compact-visual">
+                <span class="market-compact-symbol">EUNL</span>
+              </div>
+              <div class="market-compact-details">
+                <div class="market-compact-title-row">
+                  <h3>MSCI World ETF</h3>
+                  <span class="badge">ETF</span>
+                </div>
+                <p class="market-compact-main-value">89,12 EUR</p>
+                <p class="market-compact-change is-positive">Aktien weltweit</p>
+                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
+                  <div><dt>Kürzel</dt><dd>EUNL</dd></div>
+                  <div><dt>Benchmark</dt><dd>MSCI World</dd></div>
+                </dl>
+              </div>
+            </div>
           </article>
 
-          <article class="card topic-card">
-            <h3>S&amp;P 500 ETF</h3>
-            <p class="muted">Kürzel: CSPX</p>
-            <p class="muted">Beispielkurs: 540,80 USD</p>
-            <p class="muted">Beispielkategorie: US Large Cap</p>
+          <article class="card market-compact-card">
+            <div class="market-compact-body">
+              <div class="market-compact-visual">
+                <span class="market-compact-symbol">CSPX</span>
+              </div>
+              <div class="market-compact-details">
+                <div class="market-compact-title-row">
+                  <h3>S&amp;P 500 ETF</h3>
+                  <span class="badge">ETF</span>
+                </div>
+                <p class="market-compact-main-value">540,80 USD</p>
+                <p class="market-compact-change is-positive">US Large Cap</p>
+                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
+                  <div><dt>Kürzel</dt><dd>CSPX</dd></div>
+                  <div><dt>Benchmark</dt><dd>S&amp;P 500</dd></div>
+                </dl>
+              </div>
+            </div>
           </article>
 
-          <article class="card topic-card">
-            <h3>Emerging Markets ETF</h3>
-            <p class="muted">Kürzel: EIMI</p>
-            <p class="muted">Beispielkurs: 32,45 EUR</p>
-            <p class="muted">Beispielkategorie: Schwellenländer</p>
+          <article class="card market-compact-card">
+            <div class="market-compact-body">
+              <div class="market-compact-visual">
+                <span class="market-compact-symbol">EIMI</span>
+              </div>
+              <div class="market-compact-details">
+                <div class="market-compact-title-row">
+                  <h3>Emerging Markets ETF</h3>
+                  <span class="badge">ETF</span>
+                </div>
+                <p class="market-compact-main-value">32,45 EUR</p>
+                <p class="market-compact-change is-positive">Schwellenländer</p>
+                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
+                  <div><dt>Kürzel</dt><dd>EIMI</dd></div>
+                  <div><dt>Benchmark</dt><dd>MSCI EM</dd></div>
+                </dl>
+              </div>
+            </div>
           </article>
 
-          <article class="card topic-card">
-            <h3>Stoxx Europe 600 ETF</h3>
-            <p class="muted">Kürzel: EXSA</p>
-            <p class="muted">Beispielkurs: 48,30 EUR</p>
-            <p class="muted">Beispielkategorie: Europa Aktien</p>
+          <article class="card market-compact-card">
+            <div class="market-compact-body">
+              <div class="market-compact-visual">
+                <span class="market-compact-symbol">EXSA</span>
+              </div>
+              <div class="market-compact-details">
+                <div class="market-compact-title-row">
+                  <h3>Stoxx Europe 600 ETF</h3>
+                  <span class="badge">ETF</span>
+                </div>
+                <p class="market-compact-main-value">48,30 EUR</p>
+                <p class="market-compact-change is-positive">Europa Aktien</p>
+                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
+                  <div><dt>Kürzel</dt><dd>EXSA</dd></div>
+                  <div><dt>Benchmark</dt><dd>STOXX Europe 600</dd></div>
+                </dl>
+              </div>
+            </div>
           </article>
         </div>
       </section>
