@@ -2575,16 +2575,13 @@
       logoWrap.appendChild(logoFallback);
     }
 
+    const logoSymbol = document.createElement("p");
+    logoSymbol.className = "company-logo-symbol";
+    logoSymbol.textContent = symbol || "k. A.";
+    logoWrap.appendChild(logoSymbol);
+
     const headMain = document.createElement("div");
     headMain.className = "company-head-main company-identity";
-
-    const topMeta = document.createElement("div");
-    topMeta.className = "company-inline-meta";
-    topMeta.append(
-      createBadge(`Symbol: ${symbol || "k. A."}`),
-      createBadge(`Boerse: ${normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A."}`),
-      createBadge(`Land: ${normalizeText(company.country) || "k. A."}`)
-    );
 
     const title = document.createElement("h1");
     title.textContent = companyName;
@@ -2614,27 +2611,31 @@
     const currencyField = document.createElement("div");
     currencyField.className = "field company-currency-switch";
     const currencyLabel = document.createElement("label");
-    currencyLabel.setAttribute("for", "company-display-currency");
+    currencyLabel.id = "company-display-currency-label";
     currencyLabel.textContent = "Anzeigewaehrung";
-    const currencySelect = document.createElement("select");
-    currencySelect.id = "company-display-currency";
-    currencySelect.setAttribute("aria-label", "Anzeigewaehrung");
+    const currencyToggle = document.createElement("div");
+    currencyToggle.className = "company-currency-toggle";
+    currencyToggle.setAttribute("role", "group");
+    currencyToggle.setAttribute("aria-labelledby", currencyLabel.id);
     [
-      { value: "EUR", label: "EUR" },
-      { value: "USD", label: "USD" }
+      { value: "USD", label: "USD" },
+      { value: "EUR", label: "EUR" }
     ].forEach((entry) => {
-      const option = document.createElement("option");
-      option.value = entry.value;
-      option.textContent = entry.label;
-      currencySelect.appendChild(option);
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = `company-currency-option${selectedDisplayCurrency === entry.value ? " is-active" : ""}`;
+      button.textContent = entry.label;
+      button.setAttribute("aria-pressed", selectedDisplayCurrency === entry.value ? "true" : "false");
+      if (typeof onDisplayCurrencyChange === "function") {
+        button.addEventListener("click", () => {
+          if (selectedDisplayCurrency !== entry.value) {
+            onDisplayCurrencyChange(entry.value);
+          }
+        });
+      }
+      currencyToggle.appendChild(button);
     });
-    currencySelect.value = selectedDisplayCurrency;
-    if (typeof onDisplayCurrencyChange === "function") {
-      currencySelect.addEventListener("change", () => {
-        onDisplayCurrencyChange(currencySelect.value);
-      });
-    }
-    currencyField.append(currencyLabel, currencySelect);
+    currencyField.append(currencyLabel, currencyToggle);
 
     const priceBox = document.createElement("div");
     priceBox.className = "company-price-block";
@@ -2656,7 +2657,7 @@
     changeBox.className = `company-change-row tone-${tone}`;
     const changeLabel = document.createElement("span");
     changeLabel.className = "company-metric-label";
-    changeLabel.textContent = "Veraenderung";
+    changeLabel.textContent = "Veraenderung zum Vortag";
     const changeValue = document.createElement("strong");
     changeValue.className = "company-change-value";
     const signedChange = displayChange === null
@@ -2666,7 +2667,7 @@
     changeBox.append(changeLabel, changeValue);
 
     marketSnapshot.append(currencyField, priceBox, changeBox);
-    headMain.append(topMeta, titleRow, classification, heroLead);
+    headMain.append(titleRow, classification, heroLead);
     header.append(logoWrap, headMain, marketSnapshot);
 
     const anchorNavigation = createCompanyAnchorNavigation();
@@ -2705,6 +2706,8 @@
         {
           title: "Einordnung",
           items: [
+            { label: "Boerse", value: normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A." },
+            { label: "Land", value: createCountryDisplayNode(company.country) || normalizeText(company.country) || "k. A." },
             { label: "Sitz", value: composeLocation(company) },
             { label: "CEO", value: company.ceo },
             { label: "Mitarbeitende", value: formatNumber(company.fullTimeEmployees) }
