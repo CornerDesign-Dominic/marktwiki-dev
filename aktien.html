@@ -45,12 +45,33 @@
             <select id="stocks-sector-filter" aria-label="Nach Sektor filtern"></select>
           </div>
           <div class="field">
-            <label for="stocks-sort">Sortieren nach</label>
+            <label for="stocks-industry-filter">Branche</label>
+            <select id="stocks-industry-filter" aria-label="Nach Branche filtern"></select>
+          </div>
+          <div class="field">
+            <label for="stocks-exchange-filter">Boerse</label>
+            <select id="stocks-exchange-filter" aria-label="Nach Boerse filtern"></select>
+          </div>
+          <div class="field">
+            <label for="stocks-sort">Sortierfeld</label>
             <select id="stocks-sort" aria-label="Unternehmen sortieren">
-              <option value="alphabet">Alphabet (A-Z)</option>
-              <option value="price">Kurs (hoechster zuerst)</option>
-              <option value="marketCap">Market Cap (groesster zuerst)</option>
+              <option value="marketCap" selected>Marktkapitalisierung</option>
+              <option value="name">Name</option>
+              <option value="price">Aktienkurs</option>
+              <option value="country">Land</option>
+              <option value="sector">Sektor</option>
             </select>
+          </div>
+          <div class="field">
+            <label for="stocks-sort-direction">Richtung</label>
+            <select id="stocks-sort-direction" aria-label="Sortierrichtung">
+              <option value="desc" selected>Absteigend</option>
+              <option value="asc">Aufsteigend</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="stocks-reset-filters">Filter</label>
+            <button id="stocks-reset-filters" class="btn" type="button">Zuruecksetzen</button>
           </div>
         </div>
         <p id="stocks-results-count" class="muted stocks-results-count" role="status" aria-live="polite"></p>

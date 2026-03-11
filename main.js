@@ -13,6 +13,8 @@
   const FAVORITES_STORAGE_KEY = "favorites";
   const DISPLAY_CURRENCY_STORAGE_KEY = "displayCurrency";
   const DEFAULT_DISPLAY_CURRENCY = "EUR";
+  const DEFAULT_STOCK_SORT_FIELD = "marketCap";
+  const DEFAULT_STOCK_SORT_DIRECTION = "desc";
   const SUPPORTED_DISPLAY_CURRENCIES = new Set(["EUR", "USD"]);
   const RAW_CURRENCY_ALIAS = {
     GBp: "GBX"
@@ -564,6 +566,16 @@
     return [...new Set(values)].sort((a, b) => a.localeCompare(b, "de"));
   }
 
+  function getStockExchangeLabel(company) {
+    const symbol = normalizeCompanySymbol(company?.symbol);
+    if (!symbol) {
+      return "";
+    }
+
+    const metrics = stockMarketDataCache.get(symbol);
+    return normalizeText(metrics?.exchange);
+  }
+
   function fillSelectOptions(select, values, allLabel) {
     if (!select) {
       return;
@@ -602,12 +614,14 @@
         const company = await loadJson(`data/companies/${fileName}`);
         stockMarketDataCache.set(symbol, {
           marketCap: toNumber(company?.marketCap),
-          currency: normalizeText(company?.currency) || normalizeText(entry?.currency)
+          currency: normalizeText(company?.currency) || normalizeText(entry?.currency),
+          exchange: normalizeText(company?.exchangeFullName) || normalizeText(company?.exchange)
         });
       } catch (error) {
         stockMarketDataCache.set(symbol, {
           marketCap: null,
-          currency: normalizeText(entry?.currency)
+          currency: normalizeText(entry?.currency),
+          exchange: ""
         });
       }
     }));
@@ -749,7 +763,11 @@
     const currencyFilter = document.querySelector("#stocks-currency-filter");
     const displayCurrencyFilter = document.querySelector("#stocks-display-currency");
     const sectorFilter = document.querySelector("#stocks-sector-filter");
+    const industryFilter = document.querySelector("#stocks-industry-filter");
+    const exchangeFilter = document.querySelector("#stocks-exchange-filter");
     const sortSelect = document.querySelector("#stocks-sort");
+    const sortDirectionSelect = document.querySelector("#stocks-sort-direction");
+    const resetButton = document.querySelector("#stocks-reset-filters");
     const resultsCount = document.querySelector("#stocks-results-count");
     const params = new URLSearchParams(window.location.search);
 
@@ -767,6 +785,7 @@
       loadCompanyIndex(),
       loadExchangeRates()
     ]);
+    await loadStockMarketData(companies);
     let favoriteSymbols = new Set(readFavorites());
     let displayCurrency = readDisplayCurrency();
 
@@ -823,6 +842,13 @@
     fillSelectOptions(countryFilter, getFilterValues(companies, "country"), "Alle Laender");
     fillSelectOptions(currencyFilter, getFilterValues(companies, "currency"), "Alle Waehrungen");
     fillSelectOptions(sectorFilter, getFilterValues(companies, "sector"), "Alle Sektoren");
+    fillSelectOptions(industryFilter, getFilterValues(companies, "industry"), "Alle Branchen");
+    fillSelectOptions(
+      exchangeFilter,
+      [...new Set(companies.map((company) => getStockExchangeLabel(company)).filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, "de")),
+      "Alle Boersen"
+    );
 
     const setSelectFromParam = (select, rawParamValue) => {
       if (!select) {
@@ -842,21 +868,79 @@
       }
     };
 
+    if (searchInput) {
+      searchInput.value = normalizeText(params.get("q"));
+    }
     setSelectFromParam(countryFilter, params.get("country"));
     setSelectFromParam(currencyFilter, params.get("currency"));
     setSelectFromParam(sectorFilter, params.get("sector"));
+    setSelectFromParam(industryFilter, params.get("industry"));
+    setSelectFromParam(exchangeFilter, params.get("exchange"));
     setSelectFromParam(sortSelect, params.get("sort"));
+    setSelectFromParam(sortDirectionSelect, params.get("direction"));
+    setSelectFromParam(displayCurrencyFilter, params.get("displayCurrency"));
 
-    const sortCompanies = (entries, sortBy) => {
+    if (sortSelect && !normalizeText(sortSelect.value)) {
+      sortSelect.value = DEFAULT_STOCK_SORT_FIELD;
+    }
+    if (sortDirectionSelect && !normalizeText(sortDirectionSelect.value)) {
+      sortDirectionSelect.value = DEFAULT_STOCK_SORT_DIRECTION;
+    }
+    if (displayCurrencyFilter) {
+      displayCurrency = resolveDisplayCurrency(displayCurrencyFilter.value || displayCurrency);
+      displayCurrencyFilter.value = displayCurrency;
+    }
+
+    const sortCompanies = (entries, sortBy, direction) => {
       const sorted = [...entries];
+      const isDescending = direction === "desc";
+      const directionFactor = isDescending ? -1 : 1;
+
+      const compareText = (aValue, bValue) => {
+        const valueA = normalizeText(aValue);
+        const valueB = normalizeText(bValue);
+        const hasA = Boolean(valueA);
+        const hasB = Boolean(valueB);
+
+        if (!hasA && !hasB) {
+          return 0;
+        }
+        if (!hasA) {
+          return 1;
+        }
+        if (!hasB) {
+          return -1;
+        }
+
+        const baseCompare = valueA.localeCompare(valueB, "de", { sensitivity: "base" });
+        if (baseCompare === 0) {
+          return 0;
+        }
+        return baseCompare * directionFactor;
+      };
 
       if (sortBy === "price") {
         sorted.sort((a, b) => {
           const symbolA = normalizeCompanySymbol(a?.symbol) || normalizeText(a?.companyName);
           const symbolB = normalizeCompanySymbol(b?.symbol) || normalizeText(b?.companyName);
-          const priceA = getNormalizedValue(`${symbolA}|price`, a?.price, a?.currency, ratesData) ?? 0;
-          const priceB = getNormalizedValue(`${symbolB}|price`, b?.price, b?.currency, ratesData) ?? 0;
-          return priceB - priceA;
+          const priceA = getNormalizedValue(`${symbolA}|price`, a?.price, a?.currency, ratesData);
+          const priceB = getNormalizedValue(`${symbolB}|price`, b?.price, b?.currency, ratesData);
+
+          if (priceA === null && priceB === null) {
+            return compareText(a?.companyName, b?.companyName);
+          }
+          if (priceA === null) {
+            return 1;
+          }
+          if (priceB === null) {
+            return -1;
+          }
+
+          const difference = priceA - priceB;
+          if (difference === 0) {
+            return compareText(a?.companyName, b?.companyName);
+          }
+          return difference * directionFactor;
         });
         return sorted;
       }
@@ -871,39 +955,102 @@
             `${symbolA || normalizeText(a?.companyName)}|marketCap`,
             metricsA?.marketCap,
             metricsA?.currency || a?.currency,
-            ratesData
-          ) ?? 0;
+            ratesData);
           const capB = getNormalizedValue(
             `${symbolB || normalizeText(b?.companyName)}|marketCap`,
             metricsB?.marketCap,
             metricsB?.currency || b?.currency,
-            ratesData
-          ) ?? 0;
-          return capB - capA;
+            ratesData);
+
+          if (capA === null && capB === null) {
+            return compareText(a?.companyName, b?.companyName);
+          }
+          if (capA === null) {
+            return 1;
+          }
+          if (capB === null) {
+            return -1;
+          }
+
+          const difference = capA - capB;
+          if (difference === 0) {
+            return compareText(a?.companyName, b?.companyName);
+          }
+          return difference * directionFactor;
         });
         return sorted;
       }
 
-      sorted.sort((a, b) => {
-        const nameA = normalizeText(a?.companyName);
-        const nameB = normalizeText(b?.companyName);
-        const hasNameA = Boolean(nameA);
-        const hasNameB = Boolean(nameB);
+      if (sortBy === "country") {
+        sorted.sort((a, b) => {
+          const countryCompare = compareText(a?.country, b?.country);
+          if (countryCompare !== 0) {
+            return countryCompare;
+          }
+          return compareText(a?.companyName, b?.companyName);
+        });
+        return sorted;
+      }
 
-        if (!hasNameA && !hasNameB) {
-          return 0;
-        }
-        if (!hasNameA) {
-          return 1;
-        }
-        if (!hasNameB) {
-          return -1;
-        }
+      if (sortBy === "sector") {
+        sorted.sort((a, b) => {
+          const sectorCompare = compareText(a?.sector, b?.sector);
+          if (sectorCompare !== 0) {
+            return sectorCompare;
+          }
+          return compareText(a?.companyName, b?.companyName);
+        });
+        return sorted;
+      }
 
-        return nameA.localeCompare(nameB, "de", { sensitivity: "base" });
-      });
+      sorted.sort((a, b) => compareText(a?.companyName, b?.companyName));
 
       return sorted;
+    };
+
+    const updateStocksUrlState = () => {
+      const nextParams = new URLSearchParams();
+      const query = normalizeText(searchInput?.value);
+      const selectedCountry = normalizeText(countryFilter?.value);
+      const selectedCurrency = normalizeText(currencyFilter?.value);
+      const selectedSector = normalizeText(sectorFilter?.value);
+      const selectedIndustry = normalizeText(industryFilter?.value);
+      const selectedExchange = normalizeText(exchangeFilter?.value);
+      const selectedSort = normalizeText(sortSelect?.value) || DEFAULT_STOCK_SORT_FIELD;
+      const selectedDirection = normalizeText(sortDirectionSelect?.value) || DEFAULT_STOCK_SORT_DIRECTION;
+      const selectedDisplayCurrency = resolveDisplayCurrency(displayCurrencyFilter?.value || displayCurrency);
+
+      if (query) {
+        nextParams.set("q", query);
+      }
+      if (selectedCountry) {
+        nextParams.set("country", selectedCountry);
+      }
+      if (selectedCurrency) {
+        nextParams.set("currency", selectedCurrency);
+      }
+      if (selectedSector) {
+        nextParams.set("sector", selectedSector);
+      }
+      if (selectedIndustry) {
+        nextParams.set("industry", selectedIndustry);
+      }
+      if (selectedExchange) {
+        nextParams.set("exchange", selectedExchange);
+      }
+      if (selectedSort && selectedSort !== DEFAULT_STOCK_SORT_FIELD) {
+        nextParams.set("sort", selectedSort);
+      }
+      if (selectedDirection && selectedDirection !== DEFAULT_STOCK_SORT_DIRECTION) {
+        nextParams.set("direction", selectedDirection);
+      }
+      if (selectedDisplayCurrency !== DEFAULT_DISPLAY_CURRENCY) {
+        nextParams.set("displayCurrency", selectedDisplayCurrency);
+      }
+
+      const nextQuery = nextParams.toString();
+      const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+      window.history.replaceState({}, "", nextUrl);
     };
 
     const applyStockFilters = async () => {
@@ -911,17 +1058,12 @@
       const selectedCountry = normalizeText(countryFilter?.value);
       const selectedCurrency = normalizeText(currencyFilter?.value);
       const selectedSector = normalizeText(sectorFilter?.value);
-      const selectedIndustry = normalizeText(params.get("industry"));
+      const selectedIndustry = normalizeText(industryFilter?.value);
+      const selectedExchange = normalizeText(exchangeFilter?.value);
       const normalizedIndustry = normalizeForMatch(selectedIndustry);
-      const selectedSort = normalizeText(sortSelect?.value) || "alphabet";
+      const selectedSort = normalizeText(sortSelect?.value) || DEFAULT_STOCK_SORT_FIELD;
+      const selectedDirection = normalizeText(sortDirectionSelect?.value) || DEFAULT_STOCK_SORT_DIRECTION;
       displayCurrency = resolveDisplayCurrency(displayCurrencyFilter?.value || displayCurrency);
-
-      if (selectedSort === "marketCap") {
-        if (!stockMarketDataPromise) {
-          renderMessage(list, "Market-Cap-Daten werden geladen ...");
-        }
-        await loadStockMarketData(companies);
-      }
 
       const filtered = companies.filter((company) => {
         const matchesSearch = !query || createCompanySearchText(company).includes(query);
@@ -929,9 +1071,10 @@
         const matchesCurrency = !selectedCurrency || normalizeText(company.currency) === selectedCurrency;
         const matchesSector = !selectedSector || normalizeText(company.sector) === selectedSector;
         const matchesIndustry = !normalizedIndustry || normalizeForMatch(company.industry) === normalizedIndustry;
-        return matchesSearch && matchesCountry && matchesCurrency && matchesSector && matchesIndustry;
+        const matchesExchange = !selectedExchange || getStockExchangeLabel(company) === selectedExchange;
+        return matchesSearch && matchesCountry && matchesCurrency && matchesSector && matchesIndustry && matchesExchange;
       });
-      const sorted = sortCompanies(filtered, selectedSort);
+      const sorted = sortCompanies(filtered, selectedSort, selectedDirection === "asc" ? "asc" : "desc");
 
       renderStockCards(list, sorted, {
         favoriteSymbols,
@@ -944,13 +1087,50 @@
       if (resultsCount) {
         resultsCount.textContent = `${sorted.length} von ${companies.length} Unternehmen`;
       }
+
+      updateStocksUrlState();
+    };
+
+    const resetStocksFilters = () => {
+      if (searchInput) {
+        searchInput.value = "";
+      }
+      if (countryFilter) {
+        countryFilter.value = "";
+      }
+      if (currencyFilter) {
+        currencyFilter.value = "";
+      }
+      if (sectorFilter) {
+        sectorFilter.value = "";
+      }
+      if (industryFilter) {
+        industryFilter.value = "";
+      }
+      if (exchangeFilter) {
+        exchangeFilter.value = "";
+      }
+      if (sortSelect) {
+        sortSelect.value = DEFAULT_STOCK_SORT_FIELD;
+      }
+      if (sortDirectionSelect) {
+        sortDirectionSelect.value = DEFAULT_STOCK_SORT_DIRECTION;
+      }
+      if (displayCurrencyFilter) {
+        displayCurrencyFilter.value = displayCurrency;
+      }
+      applyStockFilters();
     };
 
     searchInput?.addEventListener("input", applyStockFilters);
     countryFilter?.addEventListener("change", applyStockFilters);
     currencyFilter?.addEventListener("change", applyStockFilters);
     sectorFilter?.addEventListener("change", applyStockFilters);
+    industryFilter?.addEventListener("change", applyStockFilters);
+    exchangeFilter?.addEventListener("change", applyStockFilters);
     sortSelect?.addEventListener("change", applyStockFilters);
+    sortDirectionSelect?.addEventListener("change", applyStockFilters);
+    resetButton?.addEventListener("click", resetStocksFilters);
     displayCurrencyFilter?.addEventListener("change", () => {
       displayCurrency = writeDisplayCurrency(displayCurrencyFilter.value);
       applyStockFilters();

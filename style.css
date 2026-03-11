@@ -727,6 +727,11 @@ input[type="number"] {
   font-size: 0.92rem;
 }
 
+.stocks-controls .btn {
+  width: 100%;
+  min-height: 42px;
+}
+
 .stocks-results-count {
   margin: 0.05rem 0 0;
   font-size: 0.85rem;
