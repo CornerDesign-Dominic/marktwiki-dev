@@ -200,7 +200,8 @@ img {
   top: calc(100% - 4px);
   right: 0;
   width: min(320px, calc(100vw - 1.5rem));
-  height: 164px;
+  height: auto;
+  max-height: min(70vh, 420px);
   padding: 0.55rem;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -1083,6 +1084,18 @@ input[type="number"] {
 
 .stock-facts dd.is-missing {
   color: var(--text-secondary);
+}
+
+.country-with-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.country-flag {
+  display: inline-block;
+  font-size: 0.95em;
+  line-height: 1;
 }
 
 .stock-context {

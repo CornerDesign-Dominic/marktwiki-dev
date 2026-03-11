@@ -90,6 +90,50 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
+  function normalizeCountryCode(value) {
+    const normalized = normalizeText(value).toUpperCase();
+    return /^[A-Z]{2}$/.test(normalized) ? normalized : "";
+  }
+
+  function countryCodeToFlag(countryCode) {
+    const normalizedCode = normalizeCountryCode(countryCode);
+    if (!normalizedCode) {
+      return "";
+    }
+
+    const baseCodePoint = 127397;
+    return String.fromCodePoint(
+      normalizedCode.charCodeAt(0) + baseCodePoint,
+      normalizedCode.charCodeAt(1) + baseCodePoint
+    );
+  }
+
+  function createCountryDisplayNode(countryCode) {
+    const normalizedCode = normalizeText(countryCode).toUpperCase();
+    if (!normalizedCode) {
+      return null;
+    }
+
+    const wrapper = document.createElement("span");
+    wrapper.className = "country-with-flag";
+
+    const flag = countryCodeToFlag(normalizedCode);
+    if (flag) {
+      const flagElement = document.createElement("span");
+      flagElement.className = "country-flag";
+      flagElement.setAttribute("aria-hidden", "true");
+      flagElement.textContent = flag;
+      wrapper.appendChild(flagElement);
+    }
+
+    const codeElement = document.createElement("span");
+    codeElement.className = "country-code";
+    codeElement.textContent = normalizedCode;
+    wrapper.appendChild(codeElement);
+
+    return wrapper;
+  }
+
   function toNumber(value) {
     if (typeof value === "number" && Number.isFinite(value)) {
       return value;
@@ -829,9 +873,13 @@
       const normalizedValue = normalizeText(value);
 
       term.textContent = label;
-      detail.textContent = normalizedValue || "k. A.";
+      if (value instanceof Node) {
+        detail.appendChild(value);
+      } else {
+        detail.textContent = normalizedValue || "k. A.";
+      }
 
-      if (!normalizedValue) {
+      if (!normalizedValue && !(value instanceof Node)) {
         detail.classList.add("is-missing");
       }
 
@@ -891,7 +939,7 @@
     appendStockFact(facts, "CEO", company.ceo);
     appendStockFact(facts, "Sektor", company.sector);
     appendStockFact(facts, "Branche", company.industry);
-    appendStockFact(facts, "Land", company.country);
+    appendStockFact(facts, "Land", createCountryDisplayNode(company.country) || company.country);
 
     const teaser = document.createElement("p");
     teaser.className = "stock-context";

@@ -8,11 +8,15 @@
     { key: "wiki", label: "Wiki", path: "wiki/index.html" },
     {
       key: "markets",
-      label: "Maerkte",
+      label: "Märkte",
       aliases: ["stocks"],
       sections: [
-        { key: "listed-companies", label: "Boersennotierte Unternehmen", path: "aktien.html", aliases: ["stocks"] },
-        { key: "exchange-rates", label: "Wechselkurse", path: "wechselkurse.html" }
+        { key: "listed-companies", label: "Börsennotierte Unternehmen", path: "aktien.html", aliases: ["stocks"] },
+        { key: "indices", label: "Indizes", path: "indizes.html" },
+        { key: "exchange-rates", label: "Wechselkurse", path: "wechselkurse.html" },
+        { key: "commodities", label: "Rohstoffe", path: "rohstoffe.html" },
+        { key: "crypto", label: "Krypto", path: "krypto.html" },
+        { key: "etfs", label: "ETFs", path: "etfs.html" }
       ]
     },
     { key: "tools", label: "Tools", path: "werkzeuge.html" }
