@@ -2322,10 +2322,10 @@
 
   function createCompanyAnchorNavigation() {
     const nav = document.createElement("nav");
-    nav.className = "company-anchor-nav card";
-    nav.setAttribute("aria-label", "Inhaltsverzeichnis");
+    nav.className = "company-anchor-nav article-toc";
+    nav.setAttribute("aria-label", "Inhalt");
 
-    const title = document.createElement("h2");
+    const title = document.createElement("h3");
     title.className = "company-anchor-title";
     title.textContent = "Inhalt";
 
@@ -2797,6 +2797,7 @@
     const contentColumn = document.createElement("div");
     contentColumn.className = "company-content-column";
     contentColumn.append(
+      header,
       summarySection,
       descriptionSection,
       metricsSection,
@@ -2813,7 +2814,7 @@
     wikiLayout.append(tocColumn, contentColumn);
 
     container.classList.add("company-detail-page");
-    container.append(backLink, header, wikiLayout);
+    container.append(backLink, wikiLayout);
     setupCompanyAnchorNavigation(container);
   }
 
