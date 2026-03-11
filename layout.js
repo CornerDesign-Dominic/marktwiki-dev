@@ -248,22 +248,12 @@
   function navItemMarkup(basePath, activeNav, item) {
     if (Array.isArray(item.sections) && item.sections.length) {
       const activeClass = isNavActive(activeNav, item) ? " active" : "";
-      const openClass = isNavActive(activeNav, item) ? " is-open" : "";
       const keyAttr = ` data-nav-key="${escapeHtml(item.key)}"`;
-      const submenuMarkup = item.sections.map((section) => {
-        const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
-        const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;
-        return `<li><a${sectionActiveClass}${sectionKeyAttr} href="${href(basePath, section.path)}">${section.label}</a></li>`;
-      }).join("");
-
-      return `<li class="nav-item has-submenu${openClass}" data-nav-group="${escapeHtml(item.key)}">
-        <button type="button" class="nav-parent${activeClass}"${keyAttr} data-nav-toggle="${escapeHtml(item.key)}" aria-expanded="${activeClass ? "true" : "false"}" aria-haspopup="true">
+      return `<li class="nav-item has-submenu" data-nav-group="${escapeHtml(item.key)}">
+        <button type="button" class="nav-parent${activeClass}"${keyAttr} data-nav-toggle="${escapeHtml(item.key)}" aria-expanded="false" aria-haspopup="true" aria-controls="main-nav-submenu-panel">
           <span>${item.label}</span>
           <span class="nav-chevron" aria-hidden="true"></span>
         </button>
-        <ul class="submenu" data-nav-submenu="${escapeHtml(item.key)}">
-          ${submenuMarkup}
-        </ul>
       </li>`;
     }
 
@@ -272,56 +262,174 @@
     return `<li class="nav-item"><a${activeClass}${keyAttr} href="${href(basePath, item.path)}">${item.label}</a></li>`;
   }
 
-  function closeSubmenus(navRoot, keepOpenKey = "") {
-    const items = navRoot.querySelectorAll(".has-submenu");
-    items.forEach((item) => {
-      const key = item.getAttribute("data-nav-group");
-      const shouldStayOpen = keepOpenKey && key === keepOpenKey;
-      item.classList.toggle("is-open", shouldStayOpen);
-      const toggle = item.querySelector("[data-nav-toggle]");
-      if (toggle) {
-        toggle.setAttribute("aria-expanded", shouldStayOpen ? "true" : "false");
-      }
-    });
-  }
-
   function initNavSubmenus() {
     if (navSubmenusInitialized) {
       return;
     }
 
+    const { basePath, activeNav } = readLayoutConfig();
+    const navWrap = document.querySelector(".nav-wrap");
     const navRoot = document.querySelector(".main-nav");
-    if (!navRoot) {
+    const panel = document.querySelector("#main-nav-submenu-panel");
+    const panelTitle = panel?.querySelector("[data-submenu-title]");
+    const panelList = panel?.querySelector("[data-submenu-list]");
+    if (!navRoot || !navWrap || !panel || !panelTitle || !panelList) {
       return;
     }
 
-    const submenuItems = Array.from(navRoot.querySelectorAll(".has-submenu"));
+    const hoverCapable = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const submenuItems = NAV_ITEMS.filter((item) => Array.isArray(item.sections) && item.sections.length);
+    const submenuItemsByKey = new Map(submenuItems.map((item) => [item.key, item]));
+    const submenuToggles = Array.from(navRoot.querySelectorAll("[data-nav-toggle]"));
     if (!submenuItems.length) {
       navSubmenusInitialized = true;
       return;
     }
 
-    submenuItems.forEach((item) => {
-      const toggle = item.querySelector("[data-nav-toggle]");
-      const key = item.getAttribute("data-nav-group");
-      if (!toggle || !key) {
+    let closeTimer = 0;
+    let openKey = "";
+    let stickyOpen = false;
+
+    const clearCloseTimer = () => {
+      if (closeTimer) {
+        window.clearTimeout(closeTimer);
+        closeTimer = 0;
+      }
+    };
+
+    const setExpandedState = (expandedKey = "") => {
+      submenuToggles.forEach((toggle) => {
+        const key = String(toggle.getAttribute("data-nav-toggle") || "");
+        const isExpanded = expandedKey && key === expandedKey;
+        toggle.setAttribute("aria-expanded", isExpanded ? "true" : "false");
+        toggle.classList.toggle("is-open", !!isExpanded);
+      });
+    };
+
+    const closeMenu = (restoreFocus = false) => {
+      clearCloseTimer();
+      const previousOpenKey = openKey;
+      openKey = "";
+      stickyOpen = false;
+      navWrap.classList.remove("submenu-open");
+      panel.hidden = true;
+      panel.setAttribute("aria-hidden", "true");
+      panelTitle.textContent = "";
+      panelList.innerHTML = "";
+      setExpandedState("");
+
+      if (restoreFocus && previousOpenKey) {
+        const focusTarget = navRoot.querySelector(`[data-nav-toggle="${previousOpenKey}"]`);
+        if (focusTarget instanceof HTMLElement) {
+          focusTarget.focus();
+        }
+      }
+    };
+
+    const renderPanelContent = (item) => {
+      panelTitle.textContent = item.label;
+      panelList.innerHTML = item.sections.map((section) => {
+        const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
+        const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;
+        return `<li><a${sectionActiveClass}${sectionKeyAttr} href="${href(basePath, section.path)}">${section.label}</a></li>`;
+      }).join("");
+    };
+
+    const openMenu = (key, options = {}) => {
+      const item = submenuItemsByKey.get(key);
+      if (!item) {
+        closeMenu(false);
+        return;
+      }
+
+      const { sticky = false } = options;
+      clearCloseTimer();
+      openKey = key;
+      stickyOpen = !!sticky;
+      renderPanelContent(item);
+      navWrap.classList.add("submenu-open");
+      panel.hidden = false;
+      panel.setAttribute("aria-hidden", "false");
+      setExpandedState(key);
+    };
+
+    const scheduleClose = () => {
+      clearCloseTimer();
+      closeTimer = window.setTimeout(() => {
+        closeMenu(false);
+      }, 170);
+    };
+
+    submenuToggles.forEach((toggle) => {
+      const key = String(toggle.getAttribute("data-nav-toggle") || "");
+      if (!key) {
         return;
       }
 
       toggle.addEventListener("click", (event) => {
         event.preventDefault();
-        const isOpen = item.classList.contains("is-open");
-        closeSubmenus(navRoot);
-        if (!isOpen) {
-          item.classList.add("is-open");
-          toggle.setAttribute("aria-expanded", "true");
+        if (openKey === key) {
+          closeMenu(false);
+          return;
+        }
+        openMenu(key, { sticky: true });
+      });
+
+      if (hoverCapable) {
+        toggle.addEventListener("mouseenter", () => {
+          openMenu(key, { sticky: false });
+        });
+      }
+
+      toggle.addEventListener("focus", () => {
+        openMenu(key, { sticky: false });
+      });
+
+      toggle.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          openMenu(key, { sticky: true });
+          const firstLink = panelList.querySelector("a");
+          if (firstLink instanceof HTMLElement) {
+            firstLink.focus();
+          }
         }
       });
     });
 
+    if (hoverCapable) {
+      navWrap.addEventListener("mouseleave", () => {
+        if (!openKey) {
+          return;
+        }
+        if (stickyOpen) {
+          return;
+        }
+        scheduleClose();
+      });
+
+      navWrap.addEventListener("mouseenter", () => {
+        clearCloseTimer();
+      });
+    }
+
+    panel.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closeMenu(true);
+      }
+    });
+
     document.addEventListener("click", (event) => {
-      if (!navRoot.contains(event.target)) {
-        closeSubmenus(navRoot);
+      if (!openKey) {
+        return;
+      }
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (!navWrap.contains(target)) {
+        closeMenu(false);
       }
     });
 
@@ -329,10 +437,22 @@
       if (event.key !== "Escape") {
         return;
       }
-      const openToggle = navRoot.querySelector(".has-submenu.is-open [data-nav-toggle]");
-      closeSubmenus(navRoot);
-      if (openToggle) {
-        openToggle.focus();
+      if (openKey) {
+        event.preventDefault();
+        closeMenu(true);
+      }
+    });
+
+    document.addEventListener("focusin", (event) => {
+      if (!openKey) {
+        return;
+      }
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (!navWrap.contains(target)) {
+        closeMenu(false);
       }
     });
 
@@ -355,6 +475,10 @@
           ${navMarkup}
         </ul>
       </nav>
+      <div id="main-nav-submenu-panel" class="nav-submenu-panel" hidden aria-hidden="true">
+        <p class="nav-submenu-title" data-submenu-title></p>
+        <ul class="nav-submenu-list" data-submenu-list></ul>
+      </div>
     </div>
   </header>`;
   }

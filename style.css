@@ -96,6 +96,7 @@ img {
   align-items: center;
   gap: 1rem;
   min-height: 72px;
+  position: relative;
 }
 
 .header-search {
@@ -151,7 +152,7 @@ img {
 }
 
 .main-nav .nav-item {
-  position: relative;
+  position: static;
 }
 
 .main-nav .nav-parent {
@@ -176,28 +177,6 @@ img {
   transition: transform 0.16s ease;
 }
 
-.main-nav .submenu {
-  list-style: none;
-  position: absolute;
-  top: calc(100% + 0.25rem);
-  right: 0;
-  min-width: 240px;
-  margin: 0;
-  padding: 0.35rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg-secondary);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26);
-  display: none;
-  flex-direction: column;
-  gap: 0.15rem;
-  z-index: 20;
-}
-
-.main-nav .submenu a {
-  display: block;
-}
-
 .main-nav a.active,
 .main-nav a:hover,
 .main-nav a:focus-visible {
@@ -212,16 +191,69 @@ img {
   background: var(--bg);
 }
 
-.main-nav .has-submenu:hover > .submenu,
-.main-nav .has-submenu:focus-within > .submenu,
-.main-nav .has-submenu.is-open > .submenu {
-  display: flex;
+.main-nav .nav-parent.is-open .nav-chevron {
+  transform: rotate(-135deg) translateY(-1px);
 }
 
-.main-nav .has-submenu:hover > .nav-parent .nav-chevron,
-.main-nav .has-submenu:focus-within > .nav-parent .nav-chevron,
-.main-nav .has-submenu.is-open > .nav-parent .nav-chevron {
-  transform: rotate(-135deg) translateY(-1px);
+.nav-submenu-panel {
+  position: absolute;
+  top: calc(100% - 4px);
+  right: 0;
+  width: min(320px, calc(100vw - 1.5rem));
+  height: 164px;
+  padding: 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-secondary);
+  background: color-mix(in srgb, var(--bg-secondary) 92%, #ffffff 8%);
+  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.38);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
+  pointer-events: none;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-wrap.submenu-open .nav-submenu-panel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.nav-submenu-title {
+  margin: 0 0 0.35rem;
+  padding: 0 0.25rem;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.nav-submenu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.2rem;
+  overflow: auto;
+}
+
+.nav-submenu-list a {
+  display: block;
+  padding: 0.5rem 0.6rem;
+  border-radius: 7px;
+  color: var(--text-secondary);
+}
+
+.nav-submenu-list a:hover,
+.nav-submenu-list a:focus-visible,
+.nav-submenu-list a.active {
+  color: var(--text);
+  background: color-mix(in srgb, var(--bg) 90%, #ffffff 10%);
 }
 
 main {
@@ -735,6 +767,72 @@ input[type="number"] {
 .stocks-results-count {
   margin: 0.05rem 0 0;
   font-size: 0.85rem;
+}
+
+.exchange-rates-page-title {
+  margin: 0;
+}
+
+.exchange-rates-controls {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.exchange-rates-controls-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.exchange-rates-controls .field {
+  min-width: 0;
+  display: grid;
+  gap: 0.3rem;
+  align-content: start;
+}
+
+.exchange-rates-controls .field label {
+  margin: 0;
+  font-size: 0.81rem;
+  line-height: 1.25;
+  color: var(--text-secondary);
+}
+
+.exchange-rates-controls select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  box-sizing: border-box;
+  font-size: 0.92rem;
+}
+
+.exchange-rates-meta {
+  margin: 0.05rem 0 0;
+  font-size: 0.85rem;
+}
+
+.exchange-rates-grid {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.exchange-rate-card {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.exchange-rate-card-title {
+  margin: 0;
+}
+
+.exchange-rate-primary {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.exchange-rate-secondary {
+  margin: 0;
 }
 
 .stock-card {
@@ -1775,6 +1873,10 @@ input[type="number"] {
     row-gap: 0.65rem;
   }
 
+  .exchange-rates-controls-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .stocks-controls-grid > .field {
     grid-column: auto;
   }
@@ -1819,10 +1921,9 @@ input[type="number"] {
     overflow-x: auto;
   }
 
-  .main-nav .submenu {
-    position: static;
-    min-width: 210px;
-    margin-top: 0.25rem;
+  .nav-submenu-panel {
+    right: 0;
+    width: min(320px, calc(100vw - 1rem));
   }
 
   main {
@@ -1844,6 +1945,11 @@ input[type="number"] {
   }
 
   .stocks-controls-grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .exchange-rates-controls-grid {
     grid-template-columns: 1fr;
     gap: 0.6rem;
   }

@@ -22,6 +22,7 @@
   const jsonPromiseCache = new Map();
   const convertedValueCache = new Map();
   const normalizedValueCache = new Map();
+  const exchangeRateDisplayCache = new Map();
   const stockMarketDataCache = new Map();
   let stockMarketDataPromise = null;
   let exchangeRatesPromise = null;
@@ -151,18 +152,56 @@
     }
 
     exchangeRatesPromise = loadJson(`data/${DATA_FILES.exchangeRates}`).then((payload) => {
-      if (!payload || typeof payload !== "object" || !payload.usdPerUnit || typeof payload.usdPerUnit !== "object") {
+      if (!payload || typeof payload !== "object") {
         throw new Error("Ungueltige Wechselkurs-Struktur.");
       }
 
       const rates = {};
-      Object.entries(payload.usdPerUnit).forEach(([code, rawValue]) => {
-        const normalizedCode = normalizeCurrencyForRates(code);
-        const numericRate = toNumber(rawValue);
-        if (normalizedCode && numericRate && numericRate > 0) {
-          rates[normalizedCode] = numericRate;
+      if (payload.usdPerUnit && typeof payload.usdPerUnit === "object") {
+        Object.entries(payload.usdPerUnit).forEach(([code, rawValue]) => {
+          const normalizedCode = normalizeCurrencyForRates(code);
+          const numericRate = toNumber(rawValue);
+          if (normalizedCode && numericRate && numericRate > 0) {
+            rates[normalizedCode] = numericRate;
+          }
+        });
+      } else if (payload.rates && typeof payload.rates === "object") {
+        const baseCode = normalizeCurrencyForRates(payload.base || "USD");
+        const ratesByBase = {};
+        Object.entries(payload.rates).forEach(([code, rawValue]) => {
+          const normalizedCode = normalizeCurrencyForRates(code);
+          const numericRate = toNumber(rawValue);
+          if (normalizedCode && numericRate && numericRate > 0) {
+            ratesByBase[normalizedCode] = numericRate;
+          }
+        });
+        ratesByBase[baseCode] = 1;
+
+        if (baseCode === "USD") {
+          Object.entries(ratesByBase).forEach(([code, perUsd]) => {
+            const rateNumber = toNumber(perUsd);
+            if (rateNumber && rateNumber > 0) {
+              rates[code] = 1 / rateNumber;
+            }
+          });
+        } else {
+          const usdPerBase = toNumber(ratesByBase.USD);
+          if (!usdPerBase || usdPerBase <= 0) {
+            throw new Error("Wechselkursdaten ohne USD-Anker sind nicht nutzbar.");
+          }
+
+          Object.entries(ratesByBase).forEach(([code, perBase]) => {
+            const rateNumber = toNumber(perBase);
+            if (rateNumber && rateNumber > 0) {
+              rates[code] = usdPerBase / rateNumber;
+            }
+          });
+          rates[baseCode] = usdPerBase;
+          rates.USD = 1;
         }
-      });
+      } else {
+        throw new Error("Ungueltige Wechselkurs-Struktur.");
+      }
 
       if (!rates.USD) {
         rates.USD = 1;
@@ -594,6 +633,120 @@
       option.textContent = value;
       select.appendChild(option);
     });
+  }
+
+  function formatExchangeRateValue(value) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "k. A.";
+    }
+
+    return formatNumber(number, {
+      minimumFractionDigits: number >= 1 ? 2 : 4,
+      maximumFractionDigits: 6
+    });
+  }
+
+  function getExchangeRateEntries(baseCurrency, ratesData) {
+    const normalizedBase = resolveDisplayCurrency(baseCurrency);
+    const cacheKey = `${normalizedBase}|${normalizeText(ratesData?.updatedAt)}`;
+    if (exchangeRateDisplayCache.has(cacheKey)) {
+      return exchangeRateDisplayCache.get(cacheKey);
+    }
+
+    const entries = Object.keys(ratesData?.usdPerUnit || {})
+      .map((currencyCode) => normalizeCurrencyForRates(currencyCode))
+      .filter(Boolean)
+      .map((currencyCode) => {
+        const rate = convertCurrencyValue(1, normalizedBase, currencyCode, ratesData);
+        const inverseRate = convertCurrencyValue(1, currencyCode, normalizedBase, ratesData);
+        return {
+          currencyCode,
+          rate,
+          inverseRate
+        };
+      })
+      .filter((entry) => toNumber(entry.rate) !== null);
+
+    exchangeRateDisplayCache.set(cacheKey, entries);
+    return entries;
+  }
+
+  function createExchangeRateCard(entry, baseCurrency) {
+    const currencyCode = normalizeCurrencyForRates(entry?.currencyCode);
+    const normalizedBase = resolveDisplayCurrency(baseCurrency);
+    const card = document.createElement("article");
+    card.className = "card exchange-rate-card";
+
+    const title = document.createElement("h2");
+    title.className = "exchange-rate-card-title";
+    title.textContent = currencyCode || "k. A.";
+
+    const primary = document.createElement("p");
+    primary.className = "exchange-rate-primary";
+    primary.textContent = `1 ${normalizedBase} = ${formatExchangeRateValue(entry?.rate)} ${currencyCode}`;
+
+    const secondary = document.createElement("p");
+    secondary.className = "muted exchange-rate-secondary";
+    secondary.textContent = `1 ${currencyCode} = ${formatExchangeRateValue(entry?.inverseRate)} ${normalizedBase}`;
+
+    card.append(title, primary, secondary);
+    return card;
+  }
+
+  async function initExchangeRates() {
+    const list = document.querySelector("#exchange-rates-list");
+    const baseSelect = document.querySelector("#exchange-base-currency");
+    const sortSelect = document.querySelector("#exchange-sort-direction");
+    const meta = document.querySelector("#exchange-rates-meta");
+
+    if (!list) {
+      return;
+    }
+
+    renderMessage(list, "Wechselkurse werden geladen ...");
+    const ratesData = await loadExchangeRates();
+    let selectedBaseCurrency = readDisplayCurrency();
+
+    if (baseSelect) {
+      baseSelect.value = selectedBaseCurrency;
+    }
+
+    const applyExchangeFilters = () => {
+      selectedBaseCurrency = resolveDisplayCurrency(baseSelect?.value || selectedBaseCurrency);
+      const selectedDirection = normalizeText(sortSelect?.value) === "asc" ? "asc" : "desc";
+      const entries = getExchangeRateEntries(selectedBaseCurrency, ratesData);
+      const sortedEntries = [...entries].sort((a, b) => {
+        const rateA = toNumber(a?.rate) ?? Number.POSITIVE_INFINITY;
+        const rateB = toNumber(b?.rate) ?? Number.POSITIVE_INFINITY;
+        return selectedDirection === "asc" ? rateA - rateB : rateB - rateA;
+      });
+
+      list.innerHTML = "";
+
+      if (!sortedEntries.length) {
+        renderMessage(list, "Es sind keine Wechselkurse verfuegbar.");
+      } else {
+        sortedEntries.forEach((entry) => {
+          list.appendChild(createExchangeRateCard(entry, selectedBaseCurrency));
+        });
+      }
+
+      if (meta) {
+        const updateLabel = normalizeText(ratesData.updatedAt)
+          ? ` | Stand: ${formatDate(ratesData.updatedAt)}`
+          : "";
+        meta.textContent = `${sortedEntries.length} Wechselkurse | Basis: ${selectedBaseCurrency}${updateLabel}`;
+      }
+    };
+
+    baseSelect?.addEventListener("change", () => {
+      selectedBaseCurrency = writeDisplayCurrency(baseSelect.value);
+      applyExchangeFilters();
+    });
+    sortSelect?.addEventListener("change", applyExchangeFilters);
+
+    applyExchangeFilters();
   }
 
   async function loadStockMarketData(indexCompanies) {
@@ -1783,6 +1936,11 @@
 
       if (page === "company-detail") {
         await initCompanyDetail();
+        return;
+      }
+
+      if (page === "exchange-rates") {
+        await initExchangeRates();
         return;
       }
 
