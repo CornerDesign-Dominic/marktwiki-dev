@@ -2805,16 +2805,12 @@
       similarSection
     );
 
-    const tocColumn = document.createElement("aside");
-    tocColumn.className = "company-toc-column";
-    tocColumn.appendChild(anchorNavigation);
-
-    const wikiLayout = document.createElement("div");
-    wikiLayout.className = "company-wiki-layout";
-    wikiLayout.append(tocColumn, contentColumn);
+    const detailWithToc = document.createElement("div");
+    detailWithToc.className = "company-detail-with-toc article-with-toc";
+    detailWithToc.append(anchorNavigation, contentColumn);
 
     container.classList.add("company-detail-page");
-    container.append(backLink, wikiLayout);
+    container.append(backLink, detailWithToc);
     setupCompanyAnchorNavigation(container);
   }
 
