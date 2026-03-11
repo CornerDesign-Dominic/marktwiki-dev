@@ -21,7 +21,29 @@
     GBp: "GBX"
   };
   const COUNTRY_FLAG_ASSET_BY_CODE = {
-    US: "assets/flags/us.svg"
+    AU: "assets/flags/au.svg",
+    BE: "assets/flags/be.svg",
+    BR: "assets/flags/br.svg",
+    CA: "assets/flags/ca.svg",
+    CH: "assets/flags/ch.svg",
+    CN: "assets/flags/cn.svg",
+    DE: "assets/flags/de.svg",
+    DK: "assets/flags/dk.svg",
+    ES: "assets/flags/es.svg",
+    FR: "assets/flags/fr.svg",
+    GB: "assets/flags/gb.svg",
+    IE: "assets/flags/ie.svg",
+    IN: "assets/flags/in.svg",
+    IT: "assets/flags/it.svg",
+    JP: "assets/flags/jp.svg",
+    NL: "assets/flags/nl.svg",
+    NO: "assets/flags/no.svg",
+    SA: "assets/flags/sa.svg",
+    SE: "assets/flags/se.svg",
+    TH: "assets/flags/th.svg",
+    TW: "assets/flags/tw.svg",
+    US: "assets/flags/us.svg",
+    UY: "assets/flags/uy.svg"
   };
   const CURRENCY_FLAG_COUNTRY_BY_CODE = {
     AUD: "AU",
@@ -842,27 +864,60 @@
       });
   }
 
-  function fillCurrencySelectOptions(select, currencies, selectedValue = "") {
+  function formatCurrencyOptionLabel(currencyCode) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
+      return "";
+    }
+    const currencyName = getCurrencyDisplayName(normalizedCode);
+    return currencyName ? `${normalizedCode} — ${currencyName}` : normalizedCode;
+  }
+
+  function fillCurrencySelectOptions(select, currencies, options = {}) {
     if (!select) {
-      return;
+      return 0;
     }
 
+    const { selectedValue = "", query = "" } = options;
     const normalizedSelected = normalizeCurrencyForRates(selectedValue);
+    const normalizedQuery = normalizeForMatch(query);
+    const filteredCurrencies = currencies.filter((currencyCode) => {
+      if (!normalizedQuery) {
+        return true;
+      }
+      const codeText = normalizeForMatch(currencyCode);
+      const nameText = normalizeForMatch(getCurrencyDisplayName(currencyCode));
+      const optionText = normalizeForMatch(formatCurrencyOptionLabel(currencyCode));
+      return codeText.includes(normalizedQuery) || nameText.includes(normalizedQuery) || optionText.includes(normalizedQuery);
+    });
+
     select.innerHTML = "";
 
-    currencies.forEach((currencyCode) => {
+    if (!filteredCurrencies.length) {
+      const emptyOption = document.createElement("option");
+      emptyOption.value = "";
+      emptyOption.textContent = "Keine Treffer";
+      emptyOption.disabled = true;
+      emptyOption.selected = true;
+      select.appendChild(emptyOption);
+      return 0;
+    }
+
+    filteredCurrencies.forEach((currencyCode) => {
       const option = document.createElement("option");
       option.value = currencyCode;
-      option.textContent = formatCurrencyLabel(currencyCode) || currencyCode;
+      option.textContent = formatCurrencyOptionLabel(currencyCode);
       if (currencyCode === normalizedSelected) {
         option.selected = true;
       }
       select.appendChild(option);
     });
 
-    if (!select.value && currencies.length) {
-      select.value = currencies[0];
+    if (!select.value && filteredCurrencies.length) {
+      select.value = filteredCurrencies[0];
     }
+
+    return filteredCurrencies.length;
   }
 
   function formatConverterCurrencyValue(value, currencyCode) {
@@ -880,15 +935,64 @@
     });
   }
 
+  function formatConverterNumber(value) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "k. A.";
+    }
+
+    const abs = Math.abs(number);
+    return formatNumber(number, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: abs > 0 && abs < 1 ? 6 : 2
+    });
+  }
+
+  function toInputNumberString(value) {
+    const number = toNumber(value);
+    if (number === null) {
+      return "";
+    }
+
+    const abs = Math.abs(number);
+    const decimals = abs > 0 && abs < 1 ? 6 : 4;
+    let text = number.toFixed(decimals);
+    text = text.replace(/\.?0+$/, "");
+    if (text === "-0") {
+      return "0";
+    }
+    return text;
+  }
+
+  function parseConverterInputValue(input) {
+    const raw = normalizeText(input?.value);
+    if (!raw) {
+      return { status: "empty", value: null };
+    }
+
+    const number = toNumber(raw);
+    if (number === null) {
+      return { status: "invalid", value: null };
+    }
+
+    if (number < 0) {
+      return { status: "negative", value: null };
+    }
+
+    return { status: "valid", value: number };
+  }
+
   function initExchangeConverter(ratesData, preferredBaseCurrency = DEFAULT_DISPLAY_CURRENCY) {
-    const amountInput = document.querySelector("#exchange-converter-amount");
+    const amountInputLeft = document.querySelector("#exchange-converter-amount-left");
+    const amountInputRight = document.querySelector("#exchange-converter-amount-right");
+    const fromSearchInput = document.querySelector("#exchange-converter-from-search");
+    const toSearchInput = document.querySelector("#exchange-converter-to-search");
     const fromSelect = document.querySelector("#exchange-converter-from");
     const toSelect = document.querySelector("#exchange-converter-to");
-    const swapButton = document.querySelector("#exchange-converter-swap");
     const output = document.querySelector("#exchange-converter-output");
     const rateOutput = document.querySelector("#exchange-converter-rate");
 
-    if (!amountInput || !fromSelect || !toSelect || !output || !rateOutput) {
+    if (!amountInputLeft || !amountInputRight || !fromSearchInput || !toSearchInput || !fromSelect || !toSelect || !output || !rateOutput) {
       return;
     }
 
@@ -896,12 +1000,12 @@
     if (!currencyCodes.length) {
       output.textContent = "Keine Wechselkurse verfuegbar.";
       rateOutput.textContent = "";
+      fromSearchInput.disabled = true;
+      toSearchInput.disabled = true;
       fromSelect.disabled = true;
       toSelect.disabled = true;
-      amountInput.disabled = true;
-      if (swapButton) {
-        swapButton.disabled = true;
-      }
+      amountInputLeft.disabled = true;
+      amountInputRight.disabled = true;
       return;
     }
 
@@ -911,53 +1015,137 @@
       : currencyCodes[0];
     const preferredTo = currencyCodes.find((code) => code !== preferredFrom) || preferredFrom;
 
-    fillCurrencySelectOptions(fromSelect, currencyCodes, preferredFrom);
-    fillCurrencySelectOptions(toSelect, currencyCodes, preferredTo);
+    let activeSide = "left";
+
+    const applySelectFilter = (select, queryInput, fallbackCurrency) => {
+      const previousValue = normalizeCurrencyForRates(select.value || select.dataset.selectedCurrency || fallbackCurrency);
+      const hitCount = fillCurrencySelectOptions(select, currencyCodes, {
+        selectedValue: previousValue,
+        query: queryInput.value
+      });
+
+      if (hitCount > 0) {
+        select.dataset.selectedCurrency = normalizeCurrencyForRates(select.value);
+      } else {
+        select.dataset.selectedCurrency = "";
+      }
+    };
+
+    applySelectFilter(fromSelect, fromSearchInput, preferredFrom);
+    applySelectFilter(toSelect, toSearchInput, preferredTo);
 
     const applyConversion = () => {
-      const rawAmount = amountInput.value;
-      const amount = toNumber(rawAmount);
       const fromCurrency = normalizeCurrencyForRates(fromSelect.value);
       const toCurrency = normalizeCurrencyForRates(toSelect.value);
-      const hasValidAmount = normalizeText(rawAmount) !== "" && amount !== null;
+      const leftInput = parseConverterInputValue(amountInputLeft);
+      const rightInput = parseConverterInputValue(amountInputRight);
 
-      if (!hasValidAmount) {
+      if (!fromCurrency || !toCurrency) {
+        output.textContent = "Bitte waehlen Sie eine gueltige Waehrung aus.";
+        rateOutput.textContent = "";
+        return;
+      }
+
+      if (leftInput.status === "invalid" || rightInput.status === "invalid") {
         output.textContent = "Bitte einen gueltigen Betrag eingeben.";
         rateOutput.textContent = "";
         return;
       }
 
-      if (amount < 0) {
+      if (leftInput.status === "negative" || rightInput.status === "negative") {
         output.textContent = "Bitte einen Betrag groesser oder gleich 0 eingeben.";
         rateOutput.textContent = "";
         return;
       }
 
-      const converted = convertCurrencyValue(amount, fromCurrency, toCurrency, ratesData);
+      const leaderSide = activeSide === "right"
+        ? (rightInput.status === "valid" ? "right" : (leftInput.status === "valid" ? "left" : "right"))
+        : (leftInput.status === "valid" ? "left" : (rightInput.status === "valid" ? "right" : "left"));
+
+      if (leftInput.status !== "valid" && rightInput.status !== "valid") {
+        output.textContent = "Bitte einen Betrag eingeben.";
+        rateOutput.textContent = "";
+        return;
+      }
+
+      let leftValue = leftInput.value;
+      let rightValue = rightInput.value;
+      if (leaderSide === "left") {
+        rightValue = convertCurrencyValue(leftInput.value, fromCurrency, toCurrency, ratesData);
+        amountInputRight.value = toInputNumberString(rightValue);
+      } else {
+        leftValue = convertCurrencyValue(rightInput.value, toCurrency, fromCurrency, ratesData);
+        amountInputLeft.value = toInputNumberString(leftValue);
+      }
+
+      const sourceAmount = leaderSide === "left" ? leftValue : rightValue;
+      const sourceCurrency = leaderSide === "left" ? fromCurrency : toCurrency;
+      const targetAmount = leaderSide === "left" ? rightValue : leftValue;
+      const targetCurrency = leaderSide === "left" ? toCurrency : fromCurrency;
       const unitRate = convertCurrencyValue(1, fromCurrency, toCurrency, ratesData);
 
-      if (converted === null || unitRate === null) {
+      if (sourceAmount === null || targetAmount === null || unitRate === null) {
         output.textContent = "Umrechnung aktuell nicht verfuegbar.";
         rateOutput.textContent = "";
         return;
       }
 
-      output.textContent = `${formatConverterCurrencyValue(amount, fromCurrency)} entspricht ${formatConverterCurrencyValue(converted, toCurrency)}.`;
-      rateOutput.textContent = `1 ${formatCurrencyLabel(fromCurrency) || fromCurrency} = ${formatExchangeRateValue(unitRate)} ${toCurrency}`;
+      output.textContent = `${formatConverterNumber(sourceAmount)} ${sourceCurrency} = ${formatConverterNumber(targetAmount)} ${targetCurrency}`;
+      rateOutput.textContent = `1 ${fromCurrency} = ${formatExchangeRateValue(unitRate)} ${toCurrency}`;
     };
 
-    amountInput.addEventListener("input", applyConversion);
-    fromSelect.addEventListener("change", applyConversion);
-    toSelect.addEventListener("change", applyConversion);
-
-    swapButton?.addEventListener("click", () => {
-      const fromValue = fromSelect.value;
-      fromSelect.value = toSelect.value;
-      toSelect.value = fromValue;
+    amountInputLeft.addEventListener("input", () => {
+      activeSide = "left";
       applyConversion();
     });
 
-    applyConversion();
+    amountInputRight.addEventListener("input", () => {
+      activeSide = "right";
+      applyConversion();
+    });
+
+    fromSearchInput.addEventListener("input", () => {
+      applySelectFilter(fromSelect, fromSearchInput, preferredFrom);
+      applyConversion();
+    });
+
+    toSearchInput.addEventListener("input", () => {
+      applySelectFilter(toSelect, toSearchInput, preferredTo);
+      applyConversion();
+    });
+
+    fromSelect.addEventListener("change", () => {
+      fromSelect.dataset.selectedCurrency = normalizeCurrencyForRates(fromSelect.value);
+      applyConversion();
+    });
+
+    toSelect.addEventListener("change", () => {
+      toSelect.dataset.selectedCurrency = normalizeCurrencyForRates(toSelect.value);
+      applyConversion();
+    });
+
+    fromSearchInput.addEventListener("blur", () => {
+      const selectedLabel = formatCurrencyOptionLabel(fromSelect.value);
+      if (selectedLabel) {
+        fromSearchInput.value = selectedLabel;
+      }
+    });
+
+    toSearchInput.addEventListener("blur", () => {
+      const selectedLabel = formatCurrencyOptionLabel(toSelect.value);
+      if (selectedLabel) {
+        toSearchInput.value = selectedLabel;
+      }
+    });
+
+    fromSearchInput.value = formatCurrencyOptionLabel(fromSelect.value);
+    toSearchInput.value = formatCurrencyOptionLabel(toSelect.value);
+    amountInputLeft.value = toInputNumberString(parseConverterInputValue(amountInputLeft).value ?? 1);
+    activeSide = "left";
+    amountInputRight.value = "";
+    requestAnimationFrame(() => {
+      applyConversion();
+    });
   }
 
   function createExchangeRateCard(entry, baseCurrency) {
