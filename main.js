@@ -2181,6 +2181,10 @@
     nav.className = "company-anchor-nav card";
     nav.setAttribute("aria-label", "Inhaltsverzeichnis");
 
+    const title = document.createElement("h2");
+    title.className = "company-anchor-title";
+    title.textContent = "Inhalt";
+
     const list = document.createElement("ul");
     list.className = "company-anchor-list";
 
@@ -2201,7 +2205,7 @@
       list.appendChild(item);
     });
 
-    nav.appendChild(list);
+    nav.append(title, list);
     return nav;
   }
 
@@ -2635,17 +2639,26 @@
       title: "Aehnliche Unternehmen"
     });
 
-    container.classList.add("company-detail-page");
-    container.append(
-      backLink,
-      header,
-      anchorNavigation,
+    const contentColumn = document.createElement("div");
+    contentColumn.className = "company-content-column";
+    contentColumn.append(
       summarySection,
       descriptionSection,
       metricsSection,
       analysisSection,
       similarSection
     );
+
+    const tocColumn = document.createElement("aside");
+    tocColumn.className = "company-toc-column";
+    tocColumn.appendChild(anchorNavigation);
+
+    const wikiLayout = document.createElement("div");
+    wikiLayout.className = "company-wiki-layout";
+    wikiLayout.append(tocColumn, contentColumn);
+
+    container.classList.add("company-detail-page");
+    container.append(backLink, header, wikiLayout);
     setupCompanyAnchorNavigation(container);
   }
 
