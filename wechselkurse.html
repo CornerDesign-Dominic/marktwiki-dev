@@ -16,27 +16,6 @@
     <div class="container">
       <h1 class="exchange-rates-page-title">Wechselkurse</h1>
 
-      <section class="card section-space exchange-rates-controls" aria-labelledby="exchange-rates-controls-heading">
-        <h2 id="exchange-rates-controls-heading" class="sr-only">Wechselkurse filtern und sortieren</h2>
-        <div class="exchange-rates-controls-grid">
-          <div class="field">
-            <label for="exchange-base-currency">Anzeige relativ zu</label>
-            <select id="exchange-base-currency" aria-label="Basiswaehrung auswaehlen">
-              <option value="EUR">EUR</option>
-              <option value="USD">USD</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="exchange-sort-direction">Sortierung nach Wechselkurswert</label>
-            <select id="exchange-sort-direction" aria-label="Sortierung nach Wechselkurswert">
-              <option value="asc">Aufsteigend</option>
-              <option value="desc">Absteigend</option>
-            </select>
-          </div>
-        </div>
-        <p id="exchange-rates-meta" class="muted exchange-rates-meta" role="status" aria-live="polite"></p>
-      </section>
-
       <section class="card section-space exchange-converter" aria-labelledby="exchange-converter-heading">
         <h2 id="exchange-converter-heading">Wechselkurs-Rechner</h2>
         <div class="exchange-converter-grid">
@@ -115,6 +94,27 @@
         <p class="muted exchange-converter-disclaimer">
           Haftungsausschluss: Die angezeigten Wechselkurse dienen nur zur Orientierung. Keine Gewaehr fuer Aktualitaet, Richtigkeit oder Vollstaendigkeit.
         </p>
+      </section>
+
+      <section class="card section-space exchange-rates-controls" aria-labelledby="exchange-rates-controls-heading">
+        <h2 id="exchange-rates-controls-heading" class="sr-only">Wechselkurse filtern und sortieren</h2>
+        <div class="exchange-rates-controls-grid">
+          <div class="field">
+            <label for="exchange-base-currency">Anzeige relativ zu</label>
+            <select id="exchange-base-currency" aria-label="Basiswaehrung auswaehlen">
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="exchange-sort-direction">Sortierung nach Wechselkurswert</label>
+            <select id="exchange-sort-direction" aria-label="Sortierung nach Wechselkurswert">
+              <option value="asc">Aufsteigend</option>
+              <option value="desc">Absteigend</option>
+            </select>
+          </div>
+        </div>
+        <p id="exchange-rates-meta" class="muted exchange-rates-meta" role="status" aria-live="polite"></p>
       </section>
 
       <section class="section-space" aria-labelledby="exchange-rates-list-heading">

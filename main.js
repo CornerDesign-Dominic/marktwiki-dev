@@ -1372,7 +1372,7 @@
 
     const secondary = document.createElement("p");
     secondary.className = "muted exchange-rate-secondary";
-    secondary.textContent = `1 ${currencyCode} = ${formatExchangeRateValue(entry?.inverseRate)} ${normalizedBase}`;
+    secondary.textContent = `Referenzkurs: 1 ${currencyCode} = ${formatExchangeRateValue(entry?.inverseRate)} ${normalizedBase}`;
 
     card.append(title, primary, secondary);
     return card;
