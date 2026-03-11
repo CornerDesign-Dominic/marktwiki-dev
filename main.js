@@ -2353,20 +2353,41 @@
     return nav;
   }
 
-  function createCompanyFactsGroup(title, items) {
+  function createCompanyFactsGroup(title, itemsOrGroups) {
     const group = document.createElement("section");
     group.className = "company-fact-group";
 
     const heading = document.createElement("h3");
     heading.textContent = title;
 
-    const list = document.createElement("dl");
-    list.className = "stock-meta detail-facts";
-    items.forEach((item) => {
-      appendFact(list, item.label, item.value);
+    const body = document.createElement("div");
+    body.className = "company-fact-body";
+    const groups = Array.isArray(itemsOrGroups) ? itemsOrGroups : [];
+    const normalizedGroups = groups.length && Array.isArray(groups[0]?.items)
+      ? groups
+      : [{ items: groups }];
+
+    normalizedGroups.forEach((entry) => {
+      const subgroup = document.createElement("section");
+      subgroup.className = "company-fact-subgroup";
+
+      if (normalizeText(entry?.title)) {
+        const subtitle = document.createElement("h4");
+        subtitle.className = "company-fact-subtitle";
+        subtitle.textContent = entry.title;
+        subgroup.appendChild(subtitle);
+      }
+
+      const list = document.createElement("dl");
+      list.className = "stock-meta detail-facts";
+      (Array.isArray(entry?.items) ? entry.items : []).forEach((item) => {
+        appendFact(list, item.label, item.value);
+      });
+      subgroup.appendChild(list);
+      body.appendChild(subgroup);
     });
 
-    group.append(heading, list);
+    group.append(heading, body);
     return group;
   }
 
@@ -2650,38 +2671,66 @@
     summaryGrid.className = "company-summary-grid";
     summaryGrid.append(
       createCompanyFactsGroup("Unternehmensprofil kompakt", [
-        { label: "CEO", value: company.ceo },
-        { label: "Mitarbeitende", value: formatNumber(company.fullTimeEmployees) },
-        { label: "Sitz", value: composeLocation(company) },
-        { label: "Website", value: createWebsiteLink(company.website) }
+        {
+          title: "Einordnung",
+          items: [
+            { label: "Sitz", value: composeLocation(company) },
+            { label: "CEO", value: company.ceo },
+            { label: "Mitarbeitende", value: formatNumber(company.fullTimeEmployees) }
+          ]
+        },
+        {
+          title: "Kontakt",
+          items: [
+            { label: "Website", value: createWebsiteLink(company.website) }
+          ]
+        }
       ]),
       createCompanyFactsGroup("Status / Klassifikation", [
-        { label: "ETF", value: createStatusPill(company.isEtf) },
-        { label: "Fund", value: createStatusPill(company.isFund) },
-        { label: "ADR", value: createStatusPill(company.isAdr) },
-        { label: "Aktiv gehandelt", value: createStatusPill(company.isActivelyTrading) }
+        {
+          title: "Handelsstatus",
+          items: [
+            { label: "Aktiv gehandelt", value: createStatusPill(company.isActivelyTrading) }
+          ]
+        },
+        {
+          title: "Instrumenttyp",
+          items: [
+            { label: "ETF", value: createStatusPill(company.isEtf) },
+            { label: "Fund", value: createStatusPill(company.isFund) },
+            { label: "ADR", value: createStatusPill(company.isAdr) }
+          ]
+        }
       ]),
       createCompanyFactsGroup("Wichtigste Kennzahlen", [
         {
-          label: "Kurs",
-          value: formatCurrencyWithOptionalBase(company.price, {
-            sourceCurrency: companyCurrency,
-            displayCurrency: selectedDisplayCurrency,
-            ratesData,
-            formatter: formatCurrency
-          })
+          title: "Marktueberblick",
+          items: [
+            {
+              label: "Market Cap",
+              value: formatCurrencyWithOptionalBase(company.marketCap, {
+                sourceCurrency: companyCurrency,
+                displayCurrency: selectedDisplayCurrency,
+                ratesData,
+                formatter: formatCompactCurrency
+              })
+            },
+            {
+              label: "Kurs",
+              value: formatCurrencyWithOptionalBase(company.price, {
+                sourceCurrency: companyCurrency,
+                displayCurrency: selectedDisplayCurrency,
+                ratesData,
+                formatter: formatCurrency
+              })
+            },
+            { label: "Volume", value: formatCompactNumber(company.volume) }
+          ]
         },
         {
-          label: "Market Cap",
-          value: formatCurrencyWithOptionalBase(company.marketCap, {
-            sourceCurrency: companyCurrency,
-            displayCurrency: selectedDisplayCurrency,
-            ratesData,
-            formatter: formatCompactCurrency
-          })
-        },
-        ...rangeFactItems.slice(0, 2),
-        { label: "Volume", value: formatCompactNumber(company.volume) }
+          title: "52W-Range",
+          items: rangeFactItems.slice(0, 2)
+        }
       ])
     );
     summarySection.append(summaryTitle, summaryIntro, summaryGrid);
@@ -2716,42 +2765,87 @@
     metricsGroups.append(
       createCompanyFactsGroup("Boersen- und Handelsdaten", [
         {
-          label: "Market Cap",
-          value: formatCurrencyWithOptionalBase(company.marketCap, {
-            sourceCurrency: companyCurrency,
-            displayCurrency: selectedDisplayCurrency,
-            ratesData,
-            formatter: formatCompactCurrency
-          })
+          title: "Kurs und Groesse",
+          items: [
+            {
+              label: "Market Cap",
+              value: formatCurrencyWithOptionalBase(company.marketCap, {
+                sourceCurrency: companyCurrency,
+                displayCurrency: selectedDisplayCurrency,
+                ratesData,
+                formatter: formatCompactCurrency
+              })
+            },
+            {
+              label: "Kurs",
+              value: formatCurrencyWithOptionalBase(company.price, {
+                sourceCurrency: companyCurrency,
+                displayCurrency: selectedDisplayCurrency,
+                ratesData,
+                formatter: formatCurrency
+              })
+            },
+            {
+              label: "Veraenderung",
+              value: `${displayChange === null
+                ? formatSignedCurrency(company.change, companyCurrency)
+                : formatSignedCurrency(displayChange, selectedDisplayCurrency)} (${formatPercent(company.changePercentage)})`
+            }
+          ]
         },
-        { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
         {
-          label: "Dividende",
-          value: formatCurrencyWithOptionalBase(company.lastDividend, {
-            sourceCurrency: companyCurrency,
-            displayCurrency: selectedDisplayCurrency,
-            ratesData,
-            formatter: formatCurrency
-          })
+          title: "Handelsaktivitaet",
+          items: [
+            { label: "Volume", value: formatCompactNumber(company.volume) },
+            { label: "Average Volume", value: formatCompactNumber(company.averageVolume) }
+          ]
         },
-        ...rangeFactItems,
-        { label: "Volume", value: formatCompactNumber(company.volume) },
-        { label: "Average Volume", value: formatCompactNumber(company.averageVolume) }
+        {
+          title: "Bandbreite und Profil",
+          items: [
+            ...rangeFactItems,
+            { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
+            {
+              label: "Dividende",
+              value: formatCurrencyWithOptionalBase(company.lastDividend, {
+                sourceCurrency: companyCurrency,
+                displayCurrency: selectedDisplayCurrency,
+                ratesData,
+                formatter: formatCurrency
+              })
+            }
+          ]
+        }
       ]),
       createCompanyFactsGroup("Unternehmens- und Stammdaten", [
-        { label: "Symbol", value: symbol || "k. A." },
-        { label: "Boerse", value: normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A." },
-        { label: "Waehrung", value: createCurrencyDisplayNode(company.currency) || normalizeText(company.currency) || "k. A." },
-        { label: "Land", value: createCountryDisplayNode(company.country) || normalizeText(company.country) || "k. A." },
-        { label: "IPO-Datum", value: formatDate(company.ipoDate) },
-        { label: "Adresse", value: addressParts.join(", ") || "k. A." },
-        { label: "Telefon", value: company.phone },
-        { label: "Website", value: createWebsiteLink(company.website) }
+        {
+          title: "Kernangaben",
+          items: [
+            { label: "Symbol", value: symbol || "k. A." },
+            { label: "Boerse", value: normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A." },
+            { label: "Land", value: createCountryDisplayNode(company.country) || normalizeText(company.country) || "k. A." },
+            { label: "Waehrung", value: createCurrencyDisplayNode(company.currency) || normalizeText(company.currency) || "k. A." },
+            { label: "IPO-Datum", value: formatDate(company.ipoDate) }
+          ]
+        },
+        {
+          title: "Kontakt",
+          items: [
+            { label: "Website", value: createWebsiteLink(company.website) },
+            { label: "Telefon", value: company.phone },
+            { label: "Adresse", value: addressParts.join(", ") || "k. A." }
+          ]
+        }
       ]),
       createCompanyFactsGroup("Identifikatoren", [
-        { label: "CIK", value: company.cik },
-        { label: "ISIN", value: company.isin },
-        { label: "CUSIP", value: company.cusip }
+        {
+          title: "Wertpapierkennung",
+          items: [
+            { label: "ISIN", value: company.isin },
+            { label: "CUSIP", value: company.cusip },
+            { label: "CIK", value: company.cik }
+          ]
+        }
       ])
     );
     metricsSection.append(metricsTitle, metricsGroups);

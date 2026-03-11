@@ -1557,6 +1557,7 @@ input[type="number"] {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 0.9rem;
+  align-items: stretch;
 }
 
 .company-summary-grid > *,
@@ -1567,18 +1568,44 @@ input[type="number"] {
 .company-fact-group {
   border: 1px solid color-mix(in srgb, var(--border) 82%, #ffffff 18%);
   border-radius: 10px;
-  padding: 0.75rem;
+  padding: 0.78rem;
   background: color-mix(in srgb, var(--bg) 86%, var(--surface) 14%);
   min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
 }
 
 .company-fact-group h3 {
-  margin: 0 0 0.56rem;
+  margin: 0;
   font-size: 0.98rem;
 }
 
+.company-fact-body {
+  display: grid;
+  gap: 0.56rem;
+  margin-top: 0.58rem;
+}
+
+.company-fact-subgroup {
+  min-width: 0;
+}
+
+.company-fact-subgroup + .company-fact-subgroup {
+  border-top: 1px solid color-mix(in srgb, var(--border) 76%, #ffffff 24%);
+  padding-top: 0.55rem;
+}
+
+.company-fact-subtitle {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--text-secondary) 84%, var(--text) 16%);
+}
+
 .company-fact-group .detail-facts {
-  gap: 0.32rem;
+  gap: 0.27rem;
 }
 
 .value-stack {
@@ -1736,16 +1763,27 @@ input[type="number"] {
 }
 
 .detail-facts {
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .detail-facts div {
-  grid-template-columns: minmax(132px, 185px) minmax(0, 1fr);
+  grid-template-columns: minmax(108px, 146px) minmax(0, 1fr);
+  gap: 0.42rem;
   align-items: start;
 }
 
+.detail-facts dt {
+  margin: 0;
+  color: color-mix(in srgb, var(--text-secondary) 90%, var(--text) 10%);
+  font-size: 0.79rem;
+  line-height: 1.35;
+}
+
 .detail-facts dd {
+  margin: 0;
   min-width: 0;
+  color: var(--text);
+  line-height: 1.38;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
