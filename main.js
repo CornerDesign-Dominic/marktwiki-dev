@@ -1378,40 +1378,62 @@
 
     const title = document.createElement("h2");
     title.className = "exchange-rate-card-title";
-    const currencyDisplay = createCurrencyDisplayNode(currencyCode);
-    if (currencyDisplay) {
-      title.appendChild(currencyDisplay);
-    } else {
-      title.textContent = "k. A.";
+    const flagCountryCode = getCurrencyFlagCountryCode(currencyCode);
+    const flagAssetPath = getCountryFlagAssetPath(flagCountryCode);
+    if (flagAssetPath) {
+      const flagImage = document.createElement("img");
+      flagImage.className = "country-flag-image exchange-rate-title-flag";
+      flagImage.src = `${basePath}/${flagAssetPath}`;
+      flagImage.alt = `Flagge ${flagCountryCode}`;
+      flagImage.loading = "lazy";
+      flagImage.decoding = "async";
+      flagImage.width = 18;
+      flagImage.height = 12;
+      flagImage.addEventListener("error", () => {
+        flagImage.remove();
+      });
+      title.appendChild(flagImage);
     }
+
+    const currencyName = getCurrencyDisplayName(currencyCode);
+    const titleText = document.createElement("span");
+    titleText.textContent = currencyName
+      ? `${currencyCode} - ${currencyName}`
+      : (currencyCode || "k. A.");
+    title.appendChild(titleText);
+
+    const primaryCurrency = document.createElement("strong");
+    primaryCurrency.className = "exchange-rate-primary-currency";
+    primaryCurrency.textContent = currencyCode || "k. A.";
+
+    const primaryValue = document.createElement("span");
+    primaryValue.className = "exchange-rate-primary-value";
+    primaryValue.textContent = `1 ${normalizedBase} = ${formatExchangeRateValue(entry?.rate)} ${currencyCode}`;
 
     const primary = document.createElement("p");
     primary.className = "exchange-rate-primary";
-    const primaryLabel = document.createElement("span");
-    primaryLabel.className = "exchange-rate-line-label";
-    primaryLabel.textContent = "Basis:";
-    const primaryValue = document.createElement("span");
-    primaryValue.className = "exchange-rate-line-value";
-    primaryValue.textContent = `1 ${normalizedBase} = ${formatExchangeRateValue(entry?.rate)} ${currencyCode}`;
-    primary.append(primaryLabel, primaryValue);
+    primary.append(primaryCurrency, primaryValue);
 
-    const secondary = document.createElement("p");
-    secondary.className = "muted exchange-rate-secondary";
-    const secondaryLabel = document.createElement("span");
-    secondaryLabel.className = "exchange-rate-line-label";
-    secondaryLabel.textContent = "Referenzkurs:";
-    const secondaryValue = document.createElement("span");
-    secondaryValue.className = "exchange-rate-line-value";
-    secondaryValue.textContent = `1 ${currencyCode} = ${formatExchangeRateValue(entry?.inverseRate)} ${normalizedBase}`;
-    secondary.append(secondaryLabel, secondaryValue);
-
-    card.append(title, primary, secondary);
+    card.append(title, primary);
     return card;
+  }
+
+  function setExchangeBaseCurrencyToggleState(toggle, selectedCurrency) {
+    if (!toggle) {
+      return;
+    }
+    const selected = resolveDisplayCurrency(selectedCurrency);
+    const buttons = toggle.querySelectorAll("[data-currency]");
+    buttons.forEach((button) => {
+      const isActive = resolveDisplayCurrency(button.getAttribute("data-currency")) === selected;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
   }
 
   async function initExchangeRates() {
     const list = document.querySelector("#exchange-rates-list");
-    const baseSelect = document.querySelector("#exchange-base-currency");
+    const baseToggle = document.querySelector("#exchange-base-currency");
     const sortSelect = document.querySelector("#exchange-sort-direction");
     const meta = document.querySelector("#exchange-rates-meta");
 
@@ -1423,13 +1445,10 @@
     const ratesData = await loadExchangeRates();
     let selectedBaseCurrency = readDisplayCurrency();
     initExchangeConverter(ratesData, selectedBaseCurrency);
-
-    if (baseSelect) {
-      baseSelect.value = selectedBaseCurrency;
-    }
+    setExchangeBaseCurrencyToggleState(baseToggle, selectedBaseCurrency);
 
     const applyExchangeFilters = () => {
-      selectedBaseCurrency = resolveDisplayCurrency(baseSelect?.value || selectedBaseCurrency);
+      selectedBaseCurrency = resolveDisplayCurrency(selectedBaseCurrency);
       const selectedDirection = normalizeText(sortSelect?.value) === "asc" ? "asc" : "desc";
       const entries = getExchangeRateEntries(selectedBaseCurrency, ratesData);
       const sortedEntries = [...entries].sort((a, b) => {
@@ -1456,9 +1475,12 @@
       }
     };
 
-    baseSelect?.addEventListener("change", () => {
-      selectedBaseCurrency = writeDisplayCurrency(baseSelect.value);
-      applyExchangeFilters();
+    baseToggle?.querySelectorAll("[data-currency]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedBaseCurrency = writeDisplayCurrency(button.getAttribute("data-currency"));
+        setExchangeBaseCurrencyToggleState(baseToggle, selectedBaseCurrency);
+        applyExchangeFilters();
+      });
     });
     sortSelect?.addEventListener("change", applyExchangeFilters);
 

@@ -100,11 +100,11 @@
         <h2 id="exchange-rates-controls-heading" class="sr-only">Wechselkurse filtern und sortieren</h2>
         <div class="exchange-rates-controls-grid">
           <div class="field">
-            <label for="exchange-base-currency">Anzeige relativ zu</label>
-            <select id="exchange-base-currency" aria-label="Basiswaehrung auswaehlen">
-              <option value="EUR">EUR</option>
-              <option value="USD">USD</option>
-            </select>
+            <label id="exchange-base-currency-label">Anzeige relativ zu</label>
+            <div id="exchange-base-currency" class="company-currency-toggle exchange-base-currency-toggle" role="group" aria-labelledby="exchange-base-currency-label">
+              <button type="button" class="company-currency-option" data-currency="USD" aria-pressed="false">USD</button>
+              <button type="button" class="company-currency-option" data-currency="EUR" aria-pressed="false">EUR</button>
+            </div>
           </div>
           <div class="field">
             <label for="exchange-sort-direction">Sortierung nach Wechselkurswert</label>
