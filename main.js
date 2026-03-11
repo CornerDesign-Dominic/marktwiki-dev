@@ -11,6 +11,7 @@
     exchangeRates: "exchange-rates.json"
   };
   const FAVORITES_STORAGE_KEY = "favorites";
+  const WATCHLIST_VISIBILITY_STORAGE_KEY = "watchlistVisible";
   const DISPLAY_CURRENCY_STORAGE_KEY = "displayCurrency";
   const DEFAULT_DISPLAY_CURRENCY = "EUR";
   const DEFAULT_STOCK_SORT_FIELD = "marketCap";
@@ -1208,6 +1209,7 @@
   async function initStocks() {
     const list = document.querySelector("#stocks-list");
     const favoritesList = document.querySelector("#stocks-favorites-list");
+    const watchlistToggle = document.querySelector("#stocks-watchlist-toggle");
     const searchInput = document.querySelector("#stocks-search");
     const countryFilter = document.querySelector("#stocks-country-filter");
     const currencyFilter = document.querySelector("#stocks-currency-filter");
@@ -1238,10 +1240,35 @@
     await loadStockMarketData(companies);
     let favoriteSymbols = new Set(readFavorites());
     let displayCurrency = readDisplayCurrency();
+    let watchlistVisible = favoriteSymbols.size > 0;
+    let hasStoredWatchlistPreference = false;
+
+    if (favoritesList) {
+      try {
+        const storedVisibility = normalizeText(window.localStorage.getItem(WATCHLIST_VISIBILITY_STORAGE_KEY));
+        if (storedVisibility === "true" || storedVisibility === "false") {
+          watchlistVisible = storedVisibility === "true";
+          hasStoredWatchlistPreference = true;
+        }
+      } catch (error) {
+        console.warn("Sichtbarkeit der Beobachtungsliste konnte nicht gelesen werden.", error);
+      }
+    }
 
     if (displayCurrencyFilter) {
       displayCurrencyFilter.value = displayCurrency;
     }
+
+    const updateWatchlistVisibility = () => {
+      if (favoritesList) {
+        favoritesList.hidden = !watchlistVisible;
+      }
+
+      if (watchlistToggle) {
+        watchlistToggle.textContent = watchlistVisible ? "Ausblenden" : "Einblenden";
+        watchlistToggle.setAttribute("aria-expanded", String(watchlistVisible));
+      }
+    };
 
     const persistAndRefresh = (symbol) => {
       const normalizedSymbol = normalizeCompanySymbol(symbol);
@@ -1276,13 +1303,32 @@
         ratesData,
         emptyMessage: "Sie koennen Unternehmen als Favoriten markieren, um sie hier schnell wiederzufinden."
       });
+
+      if (!hasStoredWatchlistPreference) {
+        watchlistVisible = favoriteCompanies.length > 0;
+      }
+      updateWatchlistVisibility();
     };
+
+    watchlistToggle?.addEventListener("click", () => {
+      watchlistVisible = !watchlistVisible;
+      hasStoredWatchlistPreference = true;
+
+      try {
+        window.localStorage.setItem(WATCHLIST_VISIBILITY_STORAGE_KEY, String(watchlistVisible));
+      } catch (error) {
+        console.warn("Sichtbarkeit der Beobachtungsliste konnte nicht gespeichert werden.", error);
+      }
+
+      updateWatchlistVisibility();
+    });
 
     if (!companies.length) {
       renderMessage(list, "Derzeit sind noch keine Unternehmen verfuegbar.");
       if (favoritesList) {
         renderMessage(favoritesList, "Sie koennen Unternehmen als Favoriten markieren, um sie hier schnell wiederzufinden.");
       }
+      updateWatchlistVisibility();
       if (resultsCount) {
         resultsCount.textContent = "0 Unternehmen gefunden";
       }

@@ -955,8 +955,35 @@ input[type="number"] {
   background: var(--bg-secondary);
 }
 
-.watchlist-heading-wrap h2 {
+.watchlist-heading-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
   margin-bottom: 0.7rem;
+}
+
+.watchlist-heading-wrap h2 {
+  margin: 0;
+}
+
+.watchlist-visibility-toggle {
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 88%, var(--surface) 12%);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  padding: 0.32rem 0.7rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.watchlist-visibility-toggle:hover,
+.watchlist-visibility-toggle:focus-visible {
+  color: var(--text);
+  border-color: var(--accent);
 }
 
 .favorite-toggle {
@@ -2099,6 +2126,11 @@ input[type="number"] {
   .stocks-controls-grid > .field,
   .stocks-controls-grid > .field:first-child {
     grid-column: auto;
+  }
+
+  .watchlist-heading-wrap {
+    align-items: flex-start;
+    gap: 0.5rem;
   }
 
   .stock-card {
