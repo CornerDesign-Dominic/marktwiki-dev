@@ -1,0 +1,38 @@
+﻿{
+    "code":  "THB",
+    "name":  "Thailaendischer Baht",
+    "symbol":  "฿",
+    "regions":  [
+                    "Thailand"
+                ],
+    "centralBank":  "Bank of Thailand",
+    "introduced":  "Historisch, moderne Notierung fortlaufend",
+    "subunit":  "1 Baht = 100 Satang",
+    "banknotes":  [
+                      "20",
+                      "50",
+                      "100",
+                      "500",
+                      "1000 THB"
+                  ],
+    "coins":  [
+                  "25,50 Satang",
+                  "1,2,5,10 Baht"
+              ],
+    "overview":  "Der Baht ist eine wichtige Suedostasien-Waehrung und reagiert auf Tourismus, Handel und globale Kapitalstroeme.",
+    "historicalBackground":  "Der Baht entwickelte sich aus historischen Silbergewichten hin zu einer modernen Zentralbankwaehrung.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Tourismus, Industrieexporte und regionale Nachfrage beeinflussen den Baht stark.",
+    "policyRate":  "Die Bank of Thailand steuert den geldpolitischen Kurs mit Blick auf Wachstum und Preisstabilitaet.",
+    "inflation":  "Energie- und Lebensmittelpreise sind wichtige kurzfristige Treiber.",
+    "role":  "Regionale Handelswaehrung",
+    "importantPairs":  [
+                           "USD/THB",
+                           "EUR/THB"
+                       ],
+    "facts":  [
+                  "Der Baht ist stark mit der Konjunktur im ASEAN-Raum verbunden."
+              ]
+}

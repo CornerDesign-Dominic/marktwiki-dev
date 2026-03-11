@@ -1,0 +1,33 @@
+﻿{
+    "code":  "GBX",
+    "name":  "Pence Sterling",
+    "symbol":  "p",
+    "regions":  [
+                    "Vereinigtes Koenigreich (Boersennotierung)"
+                ],
+    "centralBank":  "Bank of England",
+    "introduced":  "Als Untereinheit des GBP",
+    "subunit":  "100 GBX = 1 GBP",
+    "banknotes":  [
+
+                  ],
+    "coins":  [
+
+              ],
+    "overview":  "GBX wird vor allem fuer britische Aktienkurse als Notierung in Pence statt Pfund verwendet.",
+    "historicalBackground":  "Die Notierung in Pence ist boersenpraktisch gewachsen und bei UK-Aktien weit verbreitet.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Die Einheit ist insbesondere fuer LSE-notierte Titel relevant.",
+    "policyRate":  "Geldpolitische Einordnung entspricht dem GBP-Raum.",
+    "inflation":  "Inflationseinordnung entspricht dem Vereinigten Koenigreich.",
+    "role":  "Notierungseinheit",
+    "importantPairs":  [
+                           "GBX/GBP",
+                           "GBX/USD"
+                       ],
+    "facts":  [
+                  "GBX ist keine eigenstaendige Landeswaehrung, sondern die Pence-Notierung."
+              ]
+}

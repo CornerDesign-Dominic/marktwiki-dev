@@ -1,0 +1,48 @@
+﻿{
+    "code":  "USD",
+    "name":  "US-Dollar",
+    "symbol":  "$",
+    "regions":  [
+                    "USA",
+                    "US-Territorien"
+                ],
+    "centralBank":  "Federal Reserve System (Fed)",
+    "introduced":  "1792",
+    "subunit":  "1 Dollar = 100 Cent",
+    "banknotes":  [
+                      "$1",
+                      "$2",
+                      "$5",
+                      "$10",
+                      "$20",
+                      "$50",
+                      "$100"
+                  ],
+    "coins":  [
+                  "1c",
+                  "5c",
+                  "10c",
+                  "25c",
+                  "50c",
+                  "$1"
+              ],
+    "overview":  "Der US-Dollar ist die weltweit wichtigste Leit- und Reservewaehrung und dient in vielen Maerkten als Standard fuer Preisbildung.",
+    "historicalBackground":  "Der US-Dollar wurde mit dem Coinage Act von 1792 als offizielle Waehrung eingefuehrt und entwickelte sich im 20. Jahrhundert zur dominierenden Handels- und Reservewaehrung.",
+    "predecessorCurrencies":  [
+                                  "Koloniale Einzelwaehrungen"
+                              ],
+    "economicContext":  "Die Waehrung repraesentiert den groessten Volkswirtschaftsraum der Welt und ist zentral fuer Rohstoff- und Kapitalmaerkte.",
+    "policyRate":  "Leitzinsentscheidungen der Fed praegen globales Zinsniveau und Finanzierungsbedingungen.",
+    "inflation":  "Die US-Inflation beeinflusst die weltweite Geldpolitik und Risikobewertungen.",
+    "role":  "Globale Reservewaehrung",
+    "importantPairs":  [
+                           "EUR/USD",
+                           "USD/JPY",
+                           "GBP/USD",
+                           "USD/CHF"
+                       ],
+    "facts":  [
+                  "Viele Rohstoffe werden in USD gepreist.",
+                  "USD ist Referenzwaehrung zahlreicher Notenbanken."
+              ]
+}

@@ -1,0 +1,44 @@
+﻿{
+    "code":  "AUD",
+    "name":  "Australischer Dollar",
+    "symbol":  "A$",
+    "regions":  [
+                    "Australien",
+                    "Einige Pazifikstaaten als Referenz"
+                ],
+    "centralBank":  "Reserve Bank of Australia (RBA)",
+    "introduced":  "1966",
+    "subunit":  "1 Dollar = 100 Cent",
+    "banknotes":  [
+                      "5",
+                      "10",
+                      "20",
+                      "50",
+                      "100 AUD"
+                  ],
+    "coins":  [
+                  "5c",
+                  "10c",
+                  "20c",
+                  "50c",
+                  "1",
+                  "2 AUD"
+              ],
+    "overview":  "Der AUD wird oft als rohstoffnahe Waerung betrachtet und reagiert auf globale Konjunktur- und Risikotrends.",
+    "historicalBackground":  "Der AUD ersetzte 1966 das australische Pfund im dezimalen System.",
+    "predecessorCurrencies":  [
+                                  "Australisches Pfund"
+                              ],
+    "economicContext":  "Rohstoffexporte und Handel mit Asien spielen eine zentrale Rolle.",
+    "policyRate":  "RBA-Entscheidungen wirken stark auf AUD-Bewertungen.",
+    "inflation":  "Inflation und Immobilienpreise sind wichtige Treiber der Geldpolitik.",
+    "role":  "Rohstoffwaehrung",
+    "importantPairs":  [
+                           "AUD/USD",
+                           "EUR/AUD",
+                           "AUD/JPY"
+                       ],
+    "facts":  [
+                  "AUD ist im Carry-Trade-Kontext bekannt."
+              ]
+}

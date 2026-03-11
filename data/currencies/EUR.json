@@ -1,0 +1,51 @@
+﻿{
+    "code":  "EUR",
+    "name":  "Euro",
+    "symbol":  "€",
+    "regions":  [
+                    "Eurozone",
+                    "EU-Mitgliedstaaten mit Euro"
+                ],
+    "centralBank":  "Europaeische Zentralbank (EZB)",
+    "introduced":  "1999 (Buchgeld), 2002 (Bargeld)",
+    "subunit":  "1 Euro = 100 Cent",
+    "banknotes":  [
+                      "5 €",
+                      "10 €",
+                      "20 €",
+                      "50 €",
+                      "100 €",
+                      "200 €"
+                  ],
+    "coins":  [
+                  "1c",
+                  "2c",
+                  "5c",
+                  "10c",
+                  "20c",
+                  "50c",
+                  "1 €",
+                  "2 €"
+              ],
+    "overview":  "Der Euro ist die gemeinsame Waehrung der Eurozone und eine der wichtigsten Reservewaehrungen weltweit.",
+    "historicalBackground":  "Der Euro entstand aus der Wirtschafts- und Waehrungsunion Europas und ersetzte schrittweise nationale Waehrungen wie D-Mark oder Franc.",
+    "predecessorCurrencies":  [
+                                  "D-Mark",
+                                  "Franzoesischer Franc",
+                                  "Italienische Lira"
+                              ],
+    "economicContext":  "Der Euro repraesentiert einen grossen Binnenmarkt mit starker industrieller Basis und bedeutendem Kapitalmarkt.",
+    "policyRate":  "Die EZB steuert den geldpolitischen Kurs fuer den Euroraum ueber ihre Leitzinsen.",
+    "inflation":  "Inflationsentwicklung im Euroraum ist zentral fuer Zinsentscheidungen und Wechselkursdynamik.",
+    "role":  "Grosse Reservewaehrung",
+    "importantPairs":  [
+                           "EUR/USD",
+                           "EUR/GBP",
+                           "EUR/CHF",
+                           "EUR/JPY"
+                       ],
+    "facts":  [
+                  "Euro-Banknoten sind europaweit einheitlich.",
+                  "Muenzen besitzen eine nationale Rueckseite."
+              ]
+}

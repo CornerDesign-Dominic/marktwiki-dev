@@ -1,0 +1,41 @@
+﻿{
+    "code":  "SEK",
+    "name":  "Schwedische Krone",
+    "symbol":  "kr",
+    "regions":  [
+                    "Schweden"
+                ],
+    "centralBank":  "Sveriges Riksbank",
+    "introduced":  "1873",
+    "subunit":  "1 Krone = 100 Oere",
+    "banknotes":  [
+                      "20",
+                      "50",
+                      "100",
+                      "200",
+                      "500",
+                      "1000 SEK"
+                  ],
+    "coins":  [
+                  "1",
+                  "2",
+                  "5",
+                  "10 Kronen"
+              ],
+    "overview":  "Die SEK ist eine nordische Industrie- und Handelswaehrung mit freiem Wechselkurs.",
+    "historicalBackground":  "Die Krone entstand in der Skandinavischen Muenzunion und blieb in Schweden erhalten.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Schwedens offene Volkswirtschaft macht die Krone sensibel fuer globale Konjunkturzyklen.",
+    "policyRate":  "Die Riksbank steuert die Leitzinsen zur Inflationsstabilisierung.",
+    "inflation":  "Inflation und Energiepreise beeinflussen die schwedische Geldpolitik stark.",
+    "role":  "Kleinere Industrielaenderwaehrung",
+    "importantPairs":  [
+                           "EUR/SEK",
+                           "USD/SEK"
+                       ],
+    "facts":  [
+                  "Schweden nutzt nicht den Euro, obwohl es EU-Mitglied ist."
+              ]
+}

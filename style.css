@@ -996,6 +996,24 @@ input[type="number"] {
   width: 100%;
 }
 
+.exchange-rate-card-link {
+  display: grid;
+  gap: 0.35rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.exchange-rate-card-link:hover,
+.exchange-rate-card-link:focus-visible {
+  color: var(--text);
+}
+
+.exchange-rate-card:hover,
+.exchange-rate-card:focus-within {
+  border-color: var(--accent);
+  background: var(--bg-secondary);
+}
+
 .exchange-rate-card-title {
   margin: 0;
   display: inline-flex;
@@ -1061,6 +1079,43 @@ input[type="number"] {
 
 .exchange-base-currency-toggle {
   width: 100%;
+}
+
+.currency-detail-shell {
+  display: grid;
+  gap: 0.95rem;
+}
+
+.currency-detail-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.currency-detail-heading h1 {
+  margin: 0.55rem 0 0.5rem;
+}
+
+.currency-detail-heading .lead {
+  margin: 0;
+}
+
+.currency-detail-snapshot h2 {
+  margin: 0 0 0.55rem;
+  font-size: 1.02rem;
+}
+
+.currency-detail-snapshot .stock-meta div {
+  grid-template-columns: minmax(160px, 200px) minmax(0, 1fr);
+}
+
+.currency-detail-section h2 {
+  margin-bottom: 0.7rem;
+}
+
+.currency-detail-section h3 {
+  margin: 0.8rem 0 0.45rem;
 }
 
 .stock-card {
@@ -2555,6 +2610,11 @@ input[type="number"] {
   }
 
   .company-detail-header {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .currency-detail-hero {
     grid-template-columns: 1fr;
     gap: 0.75rem;
   }

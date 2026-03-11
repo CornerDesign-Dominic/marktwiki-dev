@@ -1,0 +1,41 @@
+﻿{
+    "code":  "JPY",
+    "name":  "Japanischer Yen",
+    "symbol":  "¥",
+    "regions":  [
+                    "Japan"
+                ],
+    "centralBank":  "Bank of Japan (BoJ)",
+    "introduced":  "1871",
+    "subunit":  "1 Yen = 100 Sen (historisch), Sen im Alltag nicht genutzt",
+    "banknotes":  [
+                      "1000",
+                      "5000",
+                      "10000 Yen"
+                  ],
+    "coins":  [
+                  "1",
+                  "5",
+                  "10",
+                  "50",
+                  "100",
+                  "500 Yen"
+              ],
+    "overview":  "Der Yen ist eine zentrale asiatische Handelswaehrung und wird oft als Finanzierungs- und Sicherheitswaehrung gesehen.",
+    "historicalBackground":  "Der Yen wurde in der Meiji-Zeit eingefuehrt und in das moderne dezimale Waehrungssystem ueberfuehrt.",
+    "predecessorCurrencies":  [
+                                  "Vor-Meiji Waehrungssysteme"
+                              ],
+    "economicContext":  "Japans Industrie- und Exportstruktur sowie BoJ-Politik praegen die Yen-Entwicklung.",
+    "policyRate":  "Die BoJ war lange fuer sehr niedrige bzw. negative Zinsen bekannt.",
+    "inflation":  "Nach langen Deflationsphasen rueckte zuletzt wieder Inflation in den Fokus.",
+    "role":  "Sicherheits- und Finanzierungswaehrung",
+    "importantPairs":  [
+                           "USD/JPY",
+                           "EUR/JPY",
+                           "GBP/JPY"
+                       ],
+    "facts":  [
+                  "JPY ist im Devisenhandel eines der am haeufigsten gehandelten Paare."
+              ]
+}

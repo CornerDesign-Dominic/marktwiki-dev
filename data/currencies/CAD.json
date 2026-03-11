@@ -1,0 +1,42 @@
+﻿{
+    "code":  "CAD",
+    "name":  "Kanadischer Dollar",
+    "symbol":  "C$",
+    "regions":  [
+                    "Kanada"
+                ],
+    "centralBank":  "Bank of Canada",
+    "introduced":  "1858",
+    "subunit":  "1 Dollar = 100 Cent",
+    "banknotes":  [
+                      "5",
+                      "10",
+                      "20",
+                      "50",
+                      "100 CAD"
+                  ],
+    "coins":  [
+                  "5c",
+                  "10c",
+                  "25c",
+                  "1",
+                  "2 CAD"
+              ],
+    "overview":  "Der CAD gilt als rohstoff- und konjunktursensible Waerung, besonders im Kontext von Energiepreisen.",
+    "historicalBackground":  "Der kanadische Dollar wurde im 19. Jahrhundert eingefuehrt und ersetzte fruehere koloniale Systeme.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Kanadas Exportstruktur, insbesondere Energie und Rohstoffe, beeinflusst den CAD deutlich.",
+    "policyRate":  "Die Bank of Canada reagiert stark datengetrieben auf Inflation und Arbeitsmarkt.",
+    "inflation":  "Inflation und Immobilienmarkt sind wichtige Einflussfaktoren.",
+    "role":  "Rohstoffwaehrung",
+    "importantPairs":  [
+                           "USD/CAD",
+                           "EUR/CAD",
+                           "CAD/JPY"
+                       ],
+    "facts":  [
+                  "CAD wird am Markt oft als \"Loonie\" bezeichnet."
+              ]
+}

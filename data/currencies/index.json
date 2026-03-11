@@ -1,0 +1,70 @@
+﻿{
+    "updatedAt":  "2026-03-11",
+    "currencies":  [
+                       {
+                           "code":  "USD",
+                           "file":  "USD.json",
+                           "title":  "USD - US-Dollar"
+                       },
+                       {
+                           "code":  "EUR",
+                           "file":  "EUR.json",
+                           "title":  "EUR - Euro"
+                       },
+                       {
+                           "code":  "CHF",
+                           "file":  "CHF.json",
+                           "title":  "CHF - Schweizer Franken"
+                       },
+                       {
+                           "code":  "GBP",
+                           "file":  "GBP.json",
+                           "title":  "GBP - Britisches Pfund"
+                       },
+                       {
+                           "code":  "GBX",
+                           "file":  "GBX.json",
+                           "title":  "GBX - Pence Sterling"
+                       },
+                       {
+                           "code":  "JPY",
+                           "file":  "JPY.json",
+                           "title":  "JPY - Japanischer Yen"
+                       },
+                       {
+                           "code":  "INR",
+                           "file":  "INR.json",
+                           "title":  "INR - Indische Rupie"
+                       },
+                       {
+                           "code":  "AUD",
+                           "file":  "AUD.json",
+                           "title":  "AUD - Australischer Dollar"
+                       },
+                       {
+                           "code":  "SEK",
+                           "file":  "SEK.json",
+                           "title":  "SEK - Schwedische Krone"
+                       },
+                       {
+                           "code":  "CAD",
+                           "file":  "CAD.json",
+                           "title":  "CAD - Kanadischer Dollar"
+                       },
+                       {
+                           "code":  "TWD",
+                           "file":  "TWD.json",
+                           "title":  "TWD - Neuer Taiwan-Dollar"
+                       },
+                       {
+                           "code":  "SAR",
+                           "file":  "SAR.json",
+                           "title":  "SAR - Saudi-Riyal"
+                       },
+                       {
+                           "code":  "THB",
+                           "file":  "THB.json",
+                           "title":  "THB - Thailaendischer Baht"
+                       }
+                   ]
+}

@@ -1,0 +1,41 @@
+﻿{
+    "code":  "CHF",
+    "name":  "Schweizer Franken",
+    "symbol":  "CHF",
+    "regions":  [
+                    "Schweiz",
+                    "Liechtenstein"
+                ],
+    "centralBank":  "Schweizerische Nationalbank (SNB)",
+    "introduced":  "1850",
+    "subunit":  "1 Franken = 100 Rappen",
+    "banknotes":  [
+                      "10",
+                      "20",
+                      "50",
+                      "100",
+                      "200",
+                      "1000 CHF"
+                  ],
+    "coins":  [
+                  "5,10,20 Rappen",
+                  "1/2/5 Franken"
+              ],
+    "overview":  "Der Schweizer Franken gilt als klassische Sicherheitswaehrung in Marktphasen mit hoher Unsicherheit.",
+    "historicalBackground":  "Der Franken wurde im 19. Jahrhundert als einheitliche Landeswaehrung eingefuehrt und ist heute fuer seine Stabilitaet bekannt.",
+    "predecessorCurrencies":  [
+                                  "Kantonale Waerungen vor 1850"
+                              ],
+    "economicContext":  "Die Schweiz besitzt eine exportstarke Volkswirtschaft mit Fokus auf Pharma, Maschinenbau und Finanzdienstleistungen.",
+    "policyRate":  "Die SNB agiert oft mit starkem Fokus auf Wechselkursstabilitaet.",
+    "inflation":  "Die Inflation in der Schweiz ist historisch haeufig niedriger als in vielen Industrielaendern.",
+    "role":  "Sicherheitswaehrung",
+    "importantPairs":  [
+                           "USD/CHF",
+                           "EUR/CHF",
+                           "CHF/JPY"
+                       ],
+    "facts":  [
+                  "CHF wird in Krisenzeiten oft nachgefragt."
+              ]
+}

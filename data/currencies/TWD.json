@@ -1,0 +1,41 @@
+﻿{
+    "code":  "TWD",
+    "name":  "Neuer Taiwan-Dollar",
+    "symbol":  "NT$",
+    "regions":  [
+                    "Taiwan"
+                ],
+    "centralBank":  "Central Bank of the Republic of China (Taiwan)",
+    "introduced":  "1949",
+    "subunit":  "1 Dollar = 100 Cents",
+    "banknotes":  [
+                      "100",
+                      "200",
+                      "500",
+                      "1000",
+                      "2000 TWD"
+                  ],
+    "coins":  [
+                  "1",
+                  "5",
+                  "10",
+                  "20",
+                  "50 TWD"
+              ],
+    "overview":  "Der TWD ist eng mit Taiwans exportorientierter Technologie- und Industrieproduktion verbunden.",
+    "historicalBackground":  "Der Neue Taiwan-Dollar wurde nach dem Zweiten Weltkrieg als neue stabile Waehrung eingefuehrt.",
+    "predecessorCurrencies":  [
+                                  "Alter Taiwan-Dollar"
+                              ],
+    "economicContext":  "Halbleiter- und Elektronikexporte praegen die Waehrungsdynamik stark.",
+    "policyRate":  "Die taiwanische Zentralbank agiert oft mit Fokus auf Wechselkurs- und Preisstabilitaet.",
+    "inflation":  "Inflation bewegt sich historisch oft moderater als in vielen Schwellenlaendern.",
+    "role":  "Asiatische Handelswaehrung",
+    "importantPairs":  [
+                           "USD/TWD",
+                           "EUR/TWD"
+                       ],
+    "facts":  [
+                  "Taiwan ist ein zentraler Knoten der globalen Halbleiterindustrie."
+              ]
+}

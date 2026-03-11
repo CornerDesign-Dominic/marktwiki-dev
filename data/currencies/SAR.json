@@ -1,0 +1,39 @@
+﻿{
+    "code":  "SAR",
+    "name":  "Saudi-Riyal",
+    "symbol":  "ر.س",
+    "regions":  [
+                    "Saudi-Arabien"
+                ],
+    "centralBank":  "Saudi Central Bank (SAMA)",
+    "introduced":  "1960er Jahre (moderne Form)",
+    "subunit":  "1 Riyal = 100 Halala",
+    "banknotes":  [
+                      "1",
+                      "5",
+                      "10",
+                      "50",
+                      "100",
+                      "500 SAR"
+                  ],
+    "coins":  [
+                  "1,5,10,25,50 Halala",
+                  "1,2 Riyal"
+              ],
+    "overview":  "Der SAR ist durch die Oelwirtschaft Saudi-Arabiens gepraegt und traditionell eng an den US-Dollar gekoppelt.",
+    "historicalBackground":  "Der moderne Riyal entwickelte sich aus frueheren regionalen Silber- und Handelswaehrungen.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Energieexporte und Oelpreise sind zentrale Einflussfaktoren.",
+    "policyRate":  "Die Geldpolitik orientiert sich wegen des Pegs stark am US-Zinsumfeld.",
+    "inflation":  "Importpreise und Energieeffekte wirken auf die Inflationsentwicklung.",
+    "role":  "Peg-Waehrung",
+    "importantPairs":  [
+                           "USD/SAR",
+                           "EUR/SAR"
+                       ],
+    "facts":  [
+                  "Der SAR ist in der Regel eng an den USD gebunden."
+              ]
+}

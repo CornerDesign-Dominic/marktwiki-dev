@@ -1,0 +1,44 @@
+﻿{
+    "code":  "GBP",
+    "name":  "Britisches Pfund",
+    "symbol":  "£",
+    "regions":  [
+                    "Vereinigtes Koenigreich"
+                ],
+    "centralBank":  "Bank of England",
+    "introduced":  "Historisch seit dem Mittelalter, moderne Struktur fortlaufend",
+    "subunit":  "1 Pfund = 100 Pence",
+    "banknotes":  [
+                      "5 £",
+                      "10 £",
+                      "20 £",
+                      "50 £"
+                  ],
+    "coins":  [
+                  "1p",
+                  "2p",
+                  "5p",
+                  "10p",
+                  "20p",
+                  "50p",
+                  "1 £",
+                  "2 £"
+              ],
+    "overview":  "Das britische Pfund ist eine der aeltesten noch genutzten Waerungen und bleibt ein wichtiger Handels- und Finanzmarktanker.",
+    "historicalBackground":  "Das Pfund hat eine lange Geschichte und war im britischen Empire international stark verbreitet.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Der Finanzplatz London und die UK-Dienstleistungswirtschaft praegen die Waehrung stark.",
+    "policyRate":  "Die Bank of England steuert den geldpolitischen Kurs ueber den Bank Rate.",
+    "inflation":  "Inflationsdaten aus Grossbritannien beeinflussen GBP oft kurzfristig stark.",
+    "role":  "Globale Handelswaehrung",
+    "importantPairs":  [
+                           "GBP/USD",
+                           "EUR/GBP",
+                           "GBP/JPY"
+                       ],
+    "facts":  [
+                  "Im FX-Markt wird GBP/USD oft als \"Cable\" bezeichnet."
+              ]
+}

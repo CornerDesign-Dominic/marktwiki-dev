@@ -1,0 +1,41 @@
+﻿{
+    "code":  "INR",
+    "name":  "Indische Rupie",
+    "symbol":  "₹",
+    "regions":  [
+                    "Indien"
+                ],
+    "centralBank":  "Reserve Bank of India (RBI)",
+    "introduced":  "Moderne Rupie seit 1947, Wurzeln aelter",
+    "subunit":  "1 Rupie = 100 Paise",
+    "banknotes":  [
+                      "10",
+                      "20",
+                      "50",
+                      "100",
+                      "200",
+                      "500 Rupien"
+                  ],
+    "coins":  [
+                  "1",
+                  "2",
+                  "5",
+                  "10 Rupien"
+              ],
+    "overview":  "Die indische Rupie spiegelt die Dynamik einer schnell wachsenden Schwellenlandwirtschaft wider.",
+    "historicalBackground":  "Die Rupie hat eine lange Geschichte und wurde nach der Unabhaengigkeit modern neu organisiert.",
+    "predecessorCurrencies":  [
+
+                              ],
+    "economicContext":  "Indiens Binnenmarkt, Importkosten und Kapitalfluesse wirken stark auf die Rupie.",
+    "policyRate":  "Die RBI steuert Geldpolitik mit Fokus auf Preisstabilitaet und Wachstum.",
+    "inflation":  "Inflation und Lebensmittelpreise beeinflussen die RBI-Politik besonders.",
+    "role":  "Schwellenlaenderwaehrung",
+    "importantPairs":  [
+                           "USD/INR",
+                           "EUR/INR"
+                       ],
+    "facts":  [
+                  "INR ist in Suedasien eine wichtige Referenzwaehrung."
+              ]
+}

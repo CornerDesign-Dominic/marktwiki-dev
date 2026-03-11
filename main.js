@@ -1414,7 +1414,13 @@
     primary.className = "exchange-rate-primary";
     primary.append(primaryCurrency, primaryValue);
 
-    card.append(title, primary);
+    const link = document.createElement("a");
+    link.className = "exchange-rate-card-link";
+    link.href = `${basePath}/pages/waehrung.html?code=${encodeURIComponent(currencyCode)}`;
+    link.setAttribute("aria-label", `${currencyCode || "Waehrung"} - zur Waehrungsdetailseite`);
+    link.append(title, primary);
+
+    card.append(link);
     return card;
   }
 
@@ -1485,6 +1491,188 @@
     sortSelect?.addEventListener("change", applyExchangeFilters);
 
     applyExchangeFilters();
+  }
+
+  async function loadCurrencyIndex() {
+    const payload = await loadJson("data/currencies/index.json");
+    const entries = Array.isArray(payload?.currencies) ? payload.currencies : [];
+    return entries.map((entry) => ({
+      code: normalizeCurrencyForRates(entry?.code),
+      file: normalizeText(entry?.file),
+      title: normalizeText(entry?.title)
+    })).filter((entry) => entry.code);
+  }
+
+  async function loadCurrencyProfile(currencyCode, indexEntries) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
+      return null;
+    }
+
+    const indexEntry = (Array.isArray(indexEntries) ? indexEntries : []).find((entry) => {
+      return normalizeCurrencyForRates(entry?.code) === normalizedCode;
+    });
+    const fileName = normalizeText(indexEntry?.file) || `${normalizedCode}.json`;
+
+    try {
+      return await loadJson(`data/currencies/${fileName}`);
+    } catch (_) {
+      return await loadJson(`data/currencies/${normalizedCode}.json`);
+    }
+  }
+
+  function createPlainList(items = []) {
+    const entries = (Array.isArray(items) ? items : []).map((entry) => normalizeText(entry)).filter(Boolean);
+    if (!entries.length) {
+      return "k. A.";
+    }
+    return entries.join(", ");
+  }
+
+  function getCurrencyRateText(baseCode, targetCode, ratesData) {
+    const normalizedBase = normalizeCurrencyForRates(baseCode);
+    const normalizedTarget = normalizeCurrencyForRates(targetCode);
+    const rateValue = convertCurrencyValue(1, normalizedBase, normalizedTarget, ratesData);
+    if (rateValue === null || !normalizedBase || !normalizedTarget) {
+      return "k. A.";
+    }
+    return `1 ${normalizedBase} = ${formatExchangeRateValue(rateValue)} ${normalizedTarget}`;
+  }
+
+  function renderCurrencyDetail(container, profile, ratesData) {
+    const code = normalizeCurrencyForRates(profile?.code);
+    const name = normalizeText(profile?.name) || code || "Waehrung";
+    const symbol = normalizeText(profile?.symbol) || "k. A.";
+    const titleText = code ? `${code} - ${name}` : name;
+    container.innerHTML = "";
+
+    const backLink = document.createElement("a");
+    backLink.className = "back-link";
+    backLink.href = `${basePath}/wechselkurse.html`;
+    backLink.textContent = "\u2190 Zur Wechselkurs-Uebersicht";
+
+    const headerCard = document.createElement("section");
+    headerCard.className = "card currency-detail-hero";
+
+    const headingWrap = document.createElement("div");
+    headingWrap.className = "currency-detail-heading";
+    const currencyDisplay = createCurrencyDisplayNode(code);
+    if (currencyDisplay) {
+      headingWrap.appendChild(currencyDisplay);
+    }
+
+    const h1 = document.createElement("h1");
+    h1.textContent = titleText;
+    const lead = document.createElement("p");
+    lead.className = "lead";
+    lead.textContent = normalizeText(profile?.overview) || "Keine Kurzbeschreibung vorhanden.";
+    headingWrap.append(h1, lead);
+
+    const snapshot = document.createElement("div");
+    snapshot.className = "currency-detail-snapshot";
+    const snapshotTitle = document.createElement("h2");
+    snapshotTitle.textContent = "Marktbezug (aktuell)";
+    const snapshotList = document.createElement("dl");
+    snapshotList.className = "stock-meta detail-facts";
+    appendFact(snapshotList, "Code", code || "k. A.");
+    appendFact(snapshotList, "Symbol", symbol);
+    appendFact(snapshotList, "Bezug zu EUR", getCurrencyRateText("EUR", code, ratesData));
+    appendFact(snapshotList, "Bezug zu USD", getCurrencyRateText("USD", code, ratesData));
+    appendFact(snapshotList, "Wichtige Paare", createPlainList(profile?.importantPairs));
+    snapshot.append(snapshotTitle, snapshotList);
+
+    headerCard.append(headingWrap, snapshot);
+
+    const sectionA = document.createElement("section");
+    sectionA.className = "card currency-detail-section";
+    const sectionATitle = document.createElement("h2");
+    sectionATitle.textContent = "Stammdaten";
+    const sectionAFacts = document.createElement("dl");
+    sectionAFacts.className = "stock-meta detail-facts";
+    appendFact(sectionAFacts, "Name", name);
+    appendFact(sectionAFacts, "ISO 4217", code || "k. A.");
+    appendFact(sectionAFacts, "Symbol", symbol);
+    appendFact(sectionAFacts, "Laender / Regionen", createPlainList(profile?.regions));
+    appendFact(sectionAFacts, "Zentralbank / Emittent", normalizeText(profile?.centralBank) || "k. A.");
+    appendFact(sectionAFacts, "Einfuehrung", normalizeText(profile?.introduced) || "k. A.");
+    appendFact(sectionAFacts, "Untereinheit", normalizeText(profile?.subunit) || "k. A.");
+    appendFact(sectionAFacts, "Banknoten", createPlainList(profile?.banknotes));
+    appendFact(sectionAFacts, "Muenzen", createPlainList(profile?.coins));
+    sectionA.append(sectionATitle, sectionAFacts);
+
+    const sectionB = document.createElement("section");
+    sectionB.className = "card currency-detail-section";
+    const sectionBTitle = document.createElement("h2");
+    sectionBTitle.textContent = "Geldpolitik und Marktrolle";
+    const sectionBFacts = document.createElement("dl");
+    sectionBFacts.className = "stock-meta detail-facts";
+    appendFact(sectionBFacts, "Leitzins / Geldpolitik", normalizeText(profile?.policyRate) || "k. A.");
+    appendFact(sectionBFacts, "Inflation / Preise", normalizeText(profile?.inflation) || "k. A.");
+    appendFact(sectionBFacts, "Rolle", normalizeText(profile?.role) || "k. A.");
+    sectionB.append(sectionBTitle, sectionBFacts);
+
+    const sectionC = document.createElement("section");
+    sectionC.className = "card currency-detail-section";
+    const sectionCTitle = document.createElement("h2");
+    sectionCTitle.textContent = "Historie und Kontext";
+    const history = document.createElement("p");
+    history.textContent = normalizeText(profile?.historicalBackground) || "Keine historischen Angaben vorhanden.";
+    const predecessor = document.createElement("p");
+    predecessor.className = "muted";
+    predecessor.textContent = `Vorgaengerwaehrungen / Reformen: ${createPlainList(profile?.predecessorCurrencies)}`;
+    const economy = document.createElement("p");
+    economy.textContent = normalizeText(profile?.economicContext) || "Keine wirtschaftliche Einordnung vorhanden.";
+    const factsHeadline = document.createElement("h3");
+    factsHeadline.textContent = "Besonderheiten";
+    const factList = document.createElement("ul");
+    factList.className = "link-list";
+    const quickFacts = Array.isArray(profile?.facts) ? profile.facts.map((entry) => normalizeText(entry)).filter(Boolean) : [];
+    if (!quickFacts.length) {
+      const empty = document.createElement("li");
+      empty.textContent = "Keine Besonderheiten hinterlegt.";
+      factList.appendChild(empty);
+    } else {
+      quickFacts.forEach((entry) => {
+        const li = document.createElement("li");
+        li.textContent = entry;
+        factList.appendChild(li);
+      });
+    }
+    sectionC.append(sectionCTitle, history, predecessor, economy, factsHeadline, factList);
+
+    container.append(backLink, headerCard, sectionA, sectionB, sectionC);
+  }
+
+  async function initCurrencyDetail() {
+    const container = document.querySelector("#currency-detail");
+    if (!container) {
+      return;
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const code = normalizeCurrencyForRates(params.get("code"));
+    if (!code) {
+      renderMessage(container, "Kein Waehrungscode uebergeben.", true);
+      return;
+    }
+
+    renderMessage(container, "Waehrungsdaten werden geladen ...");
+    const [indexEntries, ratesData] = await Promise.all([
+      loadCurrencyIndex(),
+      loadExchangeRates()
+    ]);
+    const profile = await loadCurrencyProfile(code, indexEntries);
+
+    if (!profile || typeof profile !== "object") {
+      renderMessage(container, `Keine Detaildaten fuer ${code} gefunden.`, true);
+      return;
+    }
+
+    const resolvedCode = normalizeCurrencyForRates(profile.code) || code;
+    const resolvedName = normalizeText(profile.name) || resolvedCode;
+    document.title = `${resolvedCode} - ${resolvedName} | MarktWiki`;
+    setMetaDescription(normalizeText(profile.overview) || `${resolvedCode} Waehrungsprofil im MarktWiki.`);
+    renderCurrencyDetail(container, { ...profile, code: resolvedCode, name: resolvedName }, ratesData);
   }
 
   async function loadStockMarketData(indexCompanies) {
@@ -3245,6 +3433,11 @@
 
       if (page === "company-detail") {
         await initCompanyDetail();
+        return;
+      }
+
+      if (page === "currency-detail") {
+        await initCurrencyDetail();
         return;
       }
 
