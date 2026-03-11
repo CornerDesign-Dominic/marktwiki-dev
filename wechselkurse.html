@@ -40,22 +40,70 @@
       <section class="card section-space exchange-converter" aria-labelledby="exchange-converter-heading">
         <h2 id="exchange-converter-heading">Wechselkurs-Rechner</h2>
         <div class="exchange-converter-grid">
-          <div class="field exchange-converter-side">
-            <label for="exchange-converter-amount-left">Betrag links</label>
-            <input id="exchange-converter-amount-left" type="number" inputmode="decimal" step="any" value="1" aria-label="Betrag links eingeben">
-            <label for="exchange-converter-from-search">Waehrung links suchen</label>
-            <input id="exchange-converter-from-search" type="search" placeholder="Code oder Name suchen" aria-label="Linke Waehrung suchen">
-            <label for="exchange-converter-from">Waehrung links</label>
-            <select id="exchange-converter-from" aria-label="Linke Waehrung auswaehlen"></select>
+          <div class="exchange-converter-side">
+            <div class="field">
+              <label for="exchange-converter-amount-left">Betrag</label>
+              <input id="exchange-converter-amount-left" type="number" inputmode="decimal" step="any" value="1" aria-label="Ausgangsbetrag eingeben">
+            </div>
+            <div class="field">
+              <label for="exchange-converter-from-input">Ausgangswaehrung</label>
+              <div class="currency-combobox" data-role="combobox" data-side="from">
+                <input
+                  id="exchange-converter-from-input"
+                  class="currency-combobox-input"
+                  type="search"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="false"
+                  aria-controls="exchange-converter-from-listbox"
+                  aria-label="Ausgangswaehrung suchen und auswaehlen"
+                  autocomplete="off"
+                  placeholder="z. B. EUR, USD oder Dollar"
+                >
+                <button
+                  type="button"
+                  class="currency-combobox-toggle"
+                  data-role="toggle"
+                  aria-label="Ausgangswaehrungsliste oeffnen"
+                >
+                  ▼
+                </button>
+                <ul id="exchange-converter-from-listbox" class="currency-combobox-list" role="listbox" hidden></ul>
+              </div>
+            </div>
           </div>
 
-          <div class="field exchange-converter-side">
-            <label for="exchange-converter-amount-right">Betrag rechts</label>
-            <input id="exchange-converter-amount-right" type="number" inputmode="decimal" step="any" value="" aria-label="Betrag rechts eingeben">
-            <label for="exchange-converter-to-search">Waehrung rechts suchen</label>
-            <input id="exchange-converter-to-search" type="search" placeholder="Code oder Name suchen" aria-label="Rechte Waehrung suchen">
-            <label for="exchange-converter-to">Waehrung rechts</label>
-            <select id="exchange-converter-to" aria-label="Rechte Waehrung auswaehlen"></select>
+          <div class="exchange-converter-side">
+            <div class="field">
+              <label for="exchange-converter-amount-right">Betrag</label>
+              <input id="exchange-converter-amount-right" type="number" inputmode="decimal" step="any" value="" aria-label="Zielbetrag eingeben">
+            </div>
+            <div class="field">
+              <label for="exchange-converter-to-input">Zielwaehrung</label>
+              <div class="currency-combobox" data-role="combobox" data-side="to">
+                <input
+                  id="exchange-converter-to-input"
+                  class="currency-combobox-input"
+                  type="search"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded="false"
+                  aria-controls="exchange-converter-to-listbox"
+                  aria-label="Zielwaehrung suchen und auswaehlen"
+                  autocomplete="off"
+                  placeholder="z. B. USD, EUR oder Euro"
+                >
+                <button
+                  type="button"
+                  class="currency-combobox-toggle"
+                  data-role="toggle"
+                  aria-label="Zielwaehrungsliste oeffnen"
+                >
+                  ▼
+                </button>
+                <ul id="exchange-converter-to-listbox" class="currency-combobox-list" role="listbox" hidden></ul>
+              </div>
+            </div>
           </div>
         </div>
 

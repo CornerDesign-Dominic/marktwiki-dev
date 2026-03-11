@@ -647,7 +647,7 @@
     section.className = "card company-info-card";
 
     const heading = document.createElement("h2");
-    heading.className = "company-info-title";
+    heading.className = "company-section-title";
     heading.textContent = title;
 
     const list = document.createElement("dl");
@@ -873,51 +873,275 @@
     return currencyName ? `${normalizedCode} — ${currencyName}` : normalizedCode;
   }
 
-  function fillCurrencySelectOptions(select, currencies, options = {}) {
-    if (!select) {
-      return 0;
+  function createCurrencyCombobox(options = {}) {
+    const {
+      input,
+      listbox,
+      toggleButton,
+      currencies = [],
+      initialCurrency = "",
+      onChange = null
+    } = options;
+
+    if (!input || !listbox) {
+      return null;
     }
 
-    const { selectedValue = "", query = "" } = options;
-    const normalizedSelected = normalizeCurrencyForRates(selectedValue);
-    const normalizedQuery = normalizeForMatch(query);
-    const filteredCurrencies = currencies.filter((currencyCode) => {
+    const normalizedCurrencies = currencies
+      .map((currencyCode) => normalizeCurrencyForRates(currencyCode))
+      .filter(Boolean)
+      .filter((code, index, list) => list.indexOf(code) === index);
+
+    const fallbackCurrency = normalizedCurrencies[0] || "";
+    let selectedCurrency = normalizeCurrencyForRates(initialCurrency);
+    if (!normalizedCurrencies.includes(selectedCurrency)) {
+      selectedCurrency = fallbackCurrency;
+    }
+
+    const ariaControls = normalizeText(input.getAttribute("aria-controls"));
+    if (!normalizeText(listbox.id) && ariaControls) {
+      listbox.id = ariaControls;
+    }
+    if (!normalizeText(input.getAttribute("aria-controls")) && listbox.id) {
+      input.setAttribute("aria-controls", listbox.id);
+    }
+
+    const getFilteredCurrencies = (query = "") => {
+      const normalizedQuery = normalizeForMatch(query);
       if (!normalizedQuery) {
-        return true;
+        return normalizedCurrencies;
       }
-      const codeText = normalizeForMatch(currencyCode);
-      const nameText = normalizeForMatch(getCurrencyDisplayName(currencyCode));
-      const optionText = normalizeForMatch(formatCurrencyOptionLabel(currencyCode));
-      return codeText.includes(normalizedQuery) || nameText.includes(normalizedQuery) || optionText.includes(normalizedQuery);
-    });
 
-    select.innerHTML = "";
+      return normalizedCurrencies
+        .map((currencyCode) => {
+          const codeText = normalizeForMatch(currencyCode);
+          const nameText = normalizeForMatch(getCurrencyDisplayName(currencyCode));
+          const optionText = normalizeForMatch(formatCurrencyOptionLabel(currencyCode));
+          const matches = codeText.includes(normalizedQuery) || nameText.includes(normalizedQuery) || optionText.includes(normalizedQuery);
+          if (!matches) {
+            return null;
+          }
 
-    if (!filteredCurrencies.length) {
-      const emptyOption = document.createElement("option");
-      emptyOption.value = "";
-      emptyOption.textContent = "Keine Treffer";
-      emptyOption.disabled = true;
-      emptyOption.selected = true;
-      select.appendChild(emptyOption);
-      return 0;
+          let score = 6;
+          if (codeText === normalizedQuery) {
+            score = 0;
+          } else if (codeText.startsWith(normalizedQuery)) {
+            score = 1;
+          } else if (nameText.startsWith(normalizedQuery)) {
+            score = 2;
+          } else if (optionText.startsWith(normalizedQuery)) {
+            score = 3;
+          } else if (codeText.includes(normalizedQuery)) {
+            score = 4;
+          } else if (nameText.includes(normalizedQuery)) {
+            score = 5;
+          }
+
+          return { currencyCode, score };
+        })
+        .filter(Boolean)
+        .sort((a, b) => {
+          if (a.score !== b.score) {
+            return a.score - b.score;
+          }
+          return formatCurrencyOptionLabel(a.currencyCode).localeCompare(formatCurrencyOptionLabel(b.currencyCode), "de");
+        })
+        .map((entry) => entry.currencyCode);
+    };
+
+    const closeList = () => {
+      listbox.hidden = true;
+      input.setAttribute("aria-expanded", "false");
+      input.removeAttribute("aria-activedescendant");
+    };
+
+    const renderList = (query = "", activeCurrency = "") => {
+      const filtered = getFilteredCurrencies(query);
+      listbox.innerHTML = "";
+
+      if (!filtered.length) {
+        const emptyItem = document.createElement("li");
+        emptyItem.className = "currency-combobox-option currency-combobox-empty";
+        emptyItem.textContent = "Keine Treffer";
+        emptyItem.setAttribute("role", "option");
+        emptyItem.setAttribute("aria-disabled", "true");
+        listbox.appendChild(emptyItem);
+        return { filtered, activeCode: "" };
+      }
+
+      const preferredActive = normalizeCurrencyForRates(activeCurrency);
+      const activeCode = filtered.includes(preferredActive) ? preferredActive : filtered[0];
+
+      filtered.forEach((currencyCode) => {
+        const item = document.createElement("li");
+        item.className = "currency-combobox-option";
+        item.textContent = formatCurrencyOptionLabel(currencyCode);
+        item.setAttribute("role", "option");
+        item.dataset.currencyCode = currencyCode;
+        item.id = `${listbox.id || "exchange-converter-list"}-${currencyCode.toLowerCase()}`;
+        const isSelected = currencyCode === selectedCurrency;
+        const isActive = currencyCode === activeCode;
+        item.setAttribute("aria-selected", isSelected ? "true" : "false");
+        if (isActive) {
+          item.classList.add("is-active");
+        }
+        item.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          setSelectedCurrency(currencyCode, { emit: true, keepListOpen: false });
+          input.focus();
+        });
+        listbox.appendChild(item);
+      });
+
+      const activeItem = listbox.querySelector(".currency-combobox-option.is-active");
+      if (activeItem?.id) {
+        input.setAttribute("aria-activedescendant", activeItem.id);
+      }
+
+      return { filtered, activeCode };
+    };
+
+    const openList = (query = "", activeCurrency = "") => {
+      renderList(query, activeCurrency);
+      listbox.hidden = false;
+      input.setAttribute("aria-expanded", "true");
+    };
+
+    function setSelectedCurrency(currencyCode, config = {}) {
+      const { emit = true, keepListOpen = false } = config;
+      const normalizedCode = normalizeCurrencyForRates(currencyCode);
+      if (!normalizedCode || !normalizedCurrencies.includes(normalizedCode)) {
+        return false;
+      }
+
+      selectedCurrency = normalizedCode;
+      input.value = formatCurrencyOptionLabel(selectedCurrency);
+
+      if (!keepListOpen) {
+        closeList();
+      }
+
+      if (typeof onChange === "function" && emit) {
+        onChange(selectedCurrency);
+      }
+      return true;
     }
 
-    filteredCurrencies.forEach((currencyCode) => {
-      const option = document.createElement("option");
-      option.value = currencyCode;
-      option.textContent = formatCurrencyOptionLabel(currencyCode);
-      if (currencyCode === normalizedSelected) {
-        option.selected = true;
+    const setActiveOption = (nextCode) => {
+      const normalizedCode = normalizeCurrencyForRates(nextCode);
+      if (!normalizedCode) {
+        return;
       }
-      select.appendChild(option);
+
+      const optionsList = [...listbox.querySelectorAll(".currency-combobox-option[data-currency-code]")];
+      optionsList.forEach((optionElement) => {
+        const isActive = optionElement.dataset.currencyCode === normalizedCode;
+        optionElement.classList.toggle("is-active", isActive);
+        if (isActive && optionElement.id) {
+          input.setAttribute("aria-activedescendant", optionElement.id);
+          optionElement.scrollIntoView({ block: "nearest" });
+        }
+      });
+    };
+
+    const moveActive = (step) => {
+      const visibleOptions = [...listbox.querySelectorAll(".currency-combobox-option[data-currency-code]")];
+      if (!visibleOptions.length) {
+        return;
+      }
+      const currentIndex = visibleOptions.findIndex((option) => option.classList.contains("is-active"));
+      const nextIndex = currentIndex < 0
+        ? 0
+        : Math.max(0, Math.min(visibleOptions.length - 1, currentIndex + step));
+      setActiveOption(visibleOptions[nextIndex].dataset.currencyCode);
+    };
+
+    input.addEventListener("focus", () => {
+      openList(input.value, selectedCurrency);
     });
 
-    if (!select.value && filteredCurrencies.length) {
-      select.value = filteredCurrencies[0];
+    input.addEventListener("input", () => {
+      openList(input.value, selectedCurrency);
+    });
+
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        if (listbox.hidden) {
+          openList(input.value, selectedCurrency);
+        }
+        moveActive(1);
+        return;
+      }
+
+      if (event.key === "ArrowUp") {
+        event.preventDefault();
+        if (listbox.hidden) {
+          openList(input.value, selectedCurrency);
+        }
+        moveActive(-1);
+        return;
+      }
+
+      if (event.key === "Enter") {
+        const activeOption = listbox.querySelector(".currency-combobox-option.is-active[data-currency-code]");
+        if (activeOption) {
+          event.preventDefault();
+          setSelectedCurrency(activeOption.dataset.currencyCode, { emit: true, keepListOpen: false });
+          return;
+        }
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        setSelectedCurrency(selectedCurrency, { emit: false, keepListOpen: false });
+      }
+    });
+
+    input.addEventListener("blur", () => {
+      window.setTimeout(() => {
+        if (document.activeElement === input || document.activeElement === toggleButton) {
+          return;
+        }
+        if (!listbox.contains(document.activeElement)) {
+          setSelectedCurrency(selectedCurrency, { emit: false, keepListOpen: false });
+        }
+      }, 100);
+    });
+
+    if (toggleButton) {
+      toggleButton.addEventListener("click", () => {
+        if (listbox.hidden) {
+          openList("", selectedCurrency);
+          input.focus();
+        } else {
+          closeList();
+          input.focus();
+        }
+      });
     }
 
-    return filteredCurrencies.length;
+    document.addEventListener("click", (event) => {
+      if (event.target === input || event.target === toggleButton) {
+        return;
+      }
+      if (listbox.contains(event.target)) {
+        return;
+      }
+      if (!listbox.hidden) {
+        setSelectedCurrency(selectedCurrency, { emit: false, keepListOpen: false });
+      }
+    });
+
+    if (selectedCurrency) {
+      input.value = formatCurrencyOptionLabel(selectedCurrency);
+    }
+    closeList();
+
+    return {
+      getSelectedCurrency: () => selectedCurrency,
+      setSelectedCurrency
+    };
   }
 
   function formatConverterCurrencyValue(value, currencyCode) {
@@ -985,14 +1209,16 @@
   function initExchangeConverter(ratesData, preferredBaseCurrency = DEFAULT_DISPLAY_CURRENCY) {
     const amountInputLeft = document.querySelector("#exchange-converter-amount-left");
     const amountInputRight = document.querySelector("#exchange-converter-amount-right");
-    const fromSearchInput = document.querySelector("#exchange-converter-from-search");
-    const toSearchInput = document.querySelector("#exchange-converter-to-search");
-    const fromSelect = document.querySelector("#exchange-converter-from");
-    const toSelect = document.querySelector("#exchange-converter-to");
+    const fromInput = document.querySelector("#exchange-converter-from-input");
+    const toInput = document.querySelector("#exchange-converter-to-input");
+    const fromListbox = document.querySelector("#exchange-converter-from-listbox");
+    const toListbox = document.querySelector("#exchange-converter-to-listbox");
+    const fromToggle = document.querySelector(".currency-combobox[data-side='from'] [data-role='toggle']");
+    const toToggle = document.querySelector(".currency-combobox[data-side='to'] [data-role='toggle']");
     const output = document.querySelector("#exchange-converter-output");
     const rateOutput = document.querySelector("#exchange-converter-rate");
 
-    if (!amountInputLeft || !amountInputRight || !fromSearchInput || !toSearchInput || !fromSelect || !toSelect || !output || !rateOutput) {
+    if (!amountInputLeft || !amountInputRight || !fromInput || !toInput || !fromListbox || !toListbox || !output || !rateOutput) {
       return;
     }
 
@@ -1000,10 +1226,14 @@
     if (!currencyCodes.length) {
       output.textContent = "Keine Wechselkurse verfuegbar.";
       rateOutput.textContent = "";
-      fromSearchInput.disabled = true;
-      toSearchInput.disabled = true;
-      fromSelect.disabled = true;
-      toSelect.disabled = true;
+      fromInput.disabled = true;
+      toInput.disabled = true;
+      if (fromToggle) {
+        fromToggle.disabled = true;
+      }
+      if (toToggle) {
+        toToggle.disabled = true;
+      }
       amountInputLeft.disabled = true;
       amountInputRight.disabled = true;
       return;
@@ -1017,26 +1247,9 @@
 
     let activeSide = "left";
 
-    const applySelectFilter = (select, queryInput, fallbackCurrency) => {
-      const previousValue = normalizeCurrencyForRates(select.value || select.dataset.selectedCurrency || fallbackCurrency);
-      const hitCount = fillCurrencySelectOptions(select, currencyCodes, {
-        selectedValue: previousValue,
-        query: queryInput.value
-      });
-
-      if (hitCount > 0) {
-        select.dataset.selectedCurrency = normalizeCurrencyForRates(select.value);
-      } else {
-        select.dataset.selectedCurrency = "";
-      }
-    };
-
-    applySelectFilter(fromSelect, fromSearchInput, preferredFrom);
-    applySelectFilter(toSelect, toSearchInput, preferredTo);
-
     const applyConversion = () => {
-      const fromCurrency = normalizeCurrencyForRates(fromSelect.value);
-      const toCurrency = normalizeCurrencyForRates(toSelect.value);
+      const fromCurrency = normalizeCurrencyForRates(fromCombobox.getSelectedCurrency());
+      const toCurrency = normalizeCurrencyForRates(toCombobox.getSelectedCurrency());
       const leftInput = parseConverterInputValue(amountInputLeft);
       const rightInput = parseConverterInputValue(amountInputRight);
 
@@ -1094,6 +1307,32 @@
       rateOutput.textContent = `1 ${fromCurrency} = ${formatExchangeRateValue(unitRate)} ${toCurrency}`;
     };
 
+    const fromCombobox = createCurrencyCombobox({
+      input: fromInput,
+      listbox: fromListbox,
+      toggleButton: fromToggle,
+      currencies: currencyCodes,
+      initialCurrency: preferredFrom,
+      onChange: () => {
+        applyConversion();
+      }
+    });
+
+    const toCombobox = createCurrencyCombobox({
+      input: toInput,
+      listbox: toListbox,
+      toggleButton: toToggle,
+      currencies: currencyCodes,
+      initialCurrency: preferredTo,
+      onChange: () => {
+        applyConversion();
+      }
+    });
+
+    if (!fromCombobox || !toCombobox) {
+      return;
+    }
+
     amountInputLeft.addEventListener("input", () => {
       activeSide = "left";
       applyConversion();
@@ -1104,42 +1343,6 @@
       applyConversion();
     });
 
-    fromSearchInput.addEventListener("input", () => {
-      applySelectFilter(fromSelect, fromSearchInput, preferredFrom);
-      applyConversion();
-    });
-
-    toSearchInput.addEventListener("input", () => {
-      applySelectFilter(toSelect, toSearchInput, preferredTo);
-      applyConversion();
-    });
-
-    fromSelect.addEventListener("change", () => {
-      fromSelect.dataset.selectedCurrency = normalizeCurrencyForRates(fromSelect.value);
-      applyConversion();
-    });
-
-    toSelect.addEventListener("change", () => {
-      toSelect.dataset.selectedCurrency = normalizeCurrencyForRates(toSelect.value);
-      applyConversion();
-    });
-
-    fromSearchInput.addEventListener("blur", () => {
-      const selectedLabel = formatCurrencyOptionLabel(fromSelect.value);
-      if (selectedLabel) {
-        fromSearchInput.value = selectedLabel;
-      }
-    });
-
-    toSearchInput.addEventListener("blur", () => {
-      const selectedLabel = formatCurrencyOptionLabel(toSelect.value);
-      if (selectedLabel) {
-        toSearchInput.value = selectedLabel;
-      }
-    });
-
-    fromSearchInput.value = formatCurrencyOptionLabel(fromSelect.value);
-    toSearchInput.value = formatCurrencyOptionLabel(toSelect.value);
     amountInputLeft.value = toInputNumberString(parseConverterInputValue(amountInputLeft).value ?? 1);
     activeSide = "left";
     amountInputRight.value = "";
@@ -1903,13 +2106,24 @@
       .slice(0, Math.max(0, limit));
   }
 
-  function createSimilarCompaniesSection(similarCompanies) {
+  function createSimilarCompaniesSection(similarCompanies, options = {}) {
+    const {
+      sectionId = "",
+      title = "Aehnliche Unternehmen",
+      extraClassName = ""
+    } = options;
+
     const section = document.createElement("section");
-    section.className = "card section-space company-similar-section";
+    section.className = `card company-wiki-section company-similar-section ${normalizeText(extraClassName)}`.trim();
+    if (sectionId) {
+      section.id = sectionId;
+    }
+    section.setAttribute("aria-labelledby", `${sectionId || "aehnliche-unternehmen"}-title`);
 
     const heading = document.createElement("h2");
-    heading.className = "company-info-title";
-    heading.textContent = "Aehnliche Unternehmen";
+    heading.id = `${sectionId || "aehnliche-unternehmen"}-title`;
+    heading.className = "company-section-title";
+    heading.textContent = title;
     section.appendChild(heading);
 
     const entries = Array.isArray(similarCompanies) ? similarCompanies : [];
@@ -1962,6 +2176,158 @@
     return section;
   }
 
+  function createCompanyAnchorNavigation() {
+    const nav = document.createElement("nav");
+    nav.className = "company-anchor-nav card";
+    nav.setAttribute("aria-label", "Inhaltsverzeichnis");
+
+    const list = document.createElement("ul");
+    list.className = "company-anchor-list";
+
+    [
+      { id: "summary", label: "Summary" },
+      { id: "beschreibung", label: "Beschreibung" },
+      { id: "kennzahlen", label: "Kennzahlen" },
+      { id: "analyse", label: "Analyse" },
+      { id: "aehnliche-unternehmen", label: "Aehnliche Unternehmen" }
+    ].forEach((entry) => {
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.className = "company-anchor-link";
+      link.href = `#${entry.id}`;
+      link.dataset.targetSection = entry.id;
+      link.textContent = entry.label;
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+
+    nav.appendChild(list);
+    return nav;
+  }
+
+  function createCompanyFactsGroup(title, items) {
+    const group = document.createElement("section");
+    group.className = "company-fact-group";
+
+    const heading = document.createElement("h3");
+    heading.textContent = title;
+
+    const list = document.createElement("dl");
+    list.className = "stock-meta detail-facts";
+    items.forEach((item) => {
+      appendFact(list, item.label, item.value);
+    });
+
+    group.append(heading, list);
+    return group;
+  }
+
+  function appendParagraphs(target, text) {
+    const normalized = normalizeText(text);
+    if (!normalized) {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = "Keine Beschreibung vorhanden.";
+      target.appendChild(paragraph);
+      return;
+    }
+
+    const parts = normalized.split(/\n+/).map((part) => part.trim()).filter(Boolean);
+    const paragraphs = parts.length ? parts : [normalized];
+    paragraphs.forEach((part) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = part;
+      target.appendChild(paragraph);
+    });
+  }
+
+  function setupCompanyAnchorNavigation(container) {
+    const nav = container.querySelector(".company-anchor-nav");
+    if (!nav) {
+      return;
+    }
+
+    const links = [...nav.querySelectorAll(".company-anchor-link")];
+    if (!links.length) {
+      return;
+    }
+
+    const sections = links
+      .map((link) => normalizeText(link.dataset.targetSection))
+      .map((id) => id ? document.getElementById(id) : null)
+      .filter((section) => section && container.contains(section));
+    const sectionById = new Map(sections.map((section) => [section.id, section]));
+
+    const setActiveLink = (sectionId) => {
+      links.forEach((link) => {
+        const isActive = normalizeText(link.dataset.targetSection) === sectionId;
+        link.classList.toggle("is-active", isActive);
+        if (isActive) {
+          link.setAttribute("aria-current", "true");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      });
+    };
+
+    links.forEach((link) => {
+      link.addEventListener("click", () => {
+        const targetSection = normalizeText(link.dataset.targetSection);
+        if (!targetSection) {
+          return;
+        }
+        setActiveLink(targetSection);
+      });
+    });
+
+    const activeHash = normalizeText(window.location.hash).replace(/^#/, "");
+    if (activeHash && sectionById.has(activeHash)) {
+      setActiveLink(activeHash);
+    } else if (sections.length) {
+      setActiveLink(sections[0].id);
+    }
+
+    const previousObserver = container.__companySectionObserver;
+    if (previousObserver && typeof previousObserver.disconnect === "function") {
+      previousObserver.disconnect();
+    }
+
+    if ("IntersectionObserver" in window && sections.length) {
+      const observer = new IntersectionObserver((entries) => {
+        let topEntry = null;
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            return;
+          }
+          if (!topEntry || entry.intersectionRatio > topEntry.intersectionRatio) {
+            topEntry = entry;
+          }
+        });
+
+        if (topEntry?.target?.id) {
+          setActiveLink(topEntry.target.id);
+        }
+      }, {
+        rootMargin: "-35% 0px -52% 0px",
+        threshold: [0.2, 0.35, 0.5, 0.75]
+      });
+
+      sections.forEach((section) => observer.observe(section));
+      container.__companySectionObserver = observer;
+    }
+
+    window.requestAnimationFrame(() => {
+      const hashId = normalizeText(window.location.hash).replace(/^#/, "");
+      if (!hashId || !sectionById.has(hashId)) {
+        return;
+      }
+      sectionById.get(hashId).scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+      setActiveLink(hashId);
+    });
+  }
+
   function renderCompanyDetail(container, company, options = {}) {
     const {
       favoriteSymbols = new Set(),
@@ -1975,6 +2341,7 @@
 
     const symbol = normalizeCompanySymbol(company.symbol);
     const companyName = normalizeText(company.companyName) || symbol || "Unternehmen";
+    const fullDescription = normalizeText(company.description) || "Keine Beschreibung vorhanden.";
     const tone = getChangeTone(company.changePercentage);
     const selectedDisplayCurrency = resolveDisplayCurrency(displayCurrency);
     const companyCurrency = normalizeText(company.currency);
@@ -2044,9 +2411,9 @@
     classification.appendChild(document.createTextNode(" | Branche: "));
     classification.appendChild(industryLink || document.createTextNode("k. A."));
 
-    const description = document.createElement("p");
-    description.className = "company-description";
-    description.textContent = normalizeText(company.description) || "Keine Beschreibung vorhanden.";
+    const heroLead = document.createElement("p");
+    heroLead.className = "company-hero-lead";
+    heroLead.textContent = shortenText(fullDescription, 240);
 
     const marketSnapshot = document.createElement("aside");
     marketSnapshot.className = "company-market-snapshot";
@@ -2105,8 +2472,10 @@
     changeBox.append(changeLabel, changeValue);
 
     marketSnapshot.append(currencyField, priceBox, changeBox);
-    headMain.append(topMeta, titleRow, classification, description);
+    headMain.append(topMeta, titleRow, classification, heroLead);
     header.append(logoWrap, headMain, marketSnapshot);
+
+    const anchorNavigation = createCompanyAnchorNavigation();
 
     const addressParts = [
       normalizeText(company.address),
@@ -2116,74 +2485,168 @@
       normalizeText(company.country)
     ].filter(Boolean);
 
-    const profileSection = createDataSection("Unternehmensprofil", [
-      { label: "CEO", value: company.ceo },
-      { label: "Mitarbeitende", value: formatNumber(company.fullTimeEmployees) },
-      { label: "IPO-Datum", value: formatDate(company.ipoDate) },
-      { label: "Website", value: createWebsiteLink(company.website) },
-      { label: "Telefon", value: company.phone },
-      { label: "Adresse", value: addressParts.join(", ") || "k. A." }
-    ]);
+    const summarySection = document.createElement("section");
+    summarySection.id = "summary";
+    summarySection.className = "card company-wiki-section";
+    summarySection.setAttribute("aria-labelledby", "summary-title");
 
-    const marketSection = createDataSection("Boersen- und Stammdaten", [
-      {
-        label: "Market Cap",
-        value: displayMarketCap === null
-          ? formatCompactCurrency(company.marketCap, companyCurrency)
-          : `${formatCompactCurrency(displayMarketCap, selectedDisplayCurrency)} (Original: ${formatCompactCurrency(company.marketCap, companyCurrency)})`
-      },
-      { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
-      {
-        label: "Last Dividend",
-        value: displayDividend === null
-          ? formatCurrency(company.lastDividend, companyCurrency)
-          : `${formatCurrency(displayDividend, selectedDisplayCurrency)} (Original: ${formatCurrency(company.lastDividend, companyCurrency)})`
-      },
-      { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
-      { label: "Volume", value: formatCompactNumber(company.volume) },
-      { label: "Average Volume", value: formatCompactNumber(company.averageVolume) },
-      { label: "CIK", value: company.cik },
-      { label: "ISIN", value: company.isin },
-      { label: "CUSIP", value: company.cusip },
-      { label: "Exchange Full Name", value: company.exchangeFullName }
-    ]);
+    const summaryTitle = document.createElement("h2");
+    summaryTitle.id = "summary-title";
+    summaryTitle.className = "company-section-title";
+    summaryTitle.textContent = "Summary";
 
-    const statusSection = createDataSection("Status / Klassifikation", [
-      { label: "ETF", value: createStatusPill(company.isEtf) },
-      { label: "Fund", value: createStatusPill(company.isFund) },
-      { label: "ADR", value: createStatusPill(company.isAdr) },
-      { label: "Aktiv gehandelt", value: createStatusPill(company.isActivelyTrading) }
-    ]);
-    statusSection.classList.add("company-status-card");
+    const summaryIntro = document.createElement("p");
+    summaryIntro.className = "company-section-lead";
+    summaryIntro.textContent = `Kompakter Ueberblick zu ${companyName} mit den wichtigsten Einordnungen und Kennzahlen.`;
 
-    const detailGrid = document.createElement("section");
-    detailGrid.className = "company-detail-grid section-space";
-    detailGrid.append(profileSection, marketSection, statusSection);
-    const similarSection = createSimilarCompaniesSection(similarCompanies);
-
-    const futureSection = document.createElement("section");
-    futureSection.className = "card section-space company-next-sections";
-    futureSection.setAttribute("aria-label", "Weiterfuehrende Analyse");
-
-    const futureTitle = document.createElement("h2");
-    futureTitle.className = "company-info-title";
-    futureTitle.textContent = "Weiterfuehrende Analyse (in Vorbereitung)";
-
-    const futureIntro = document.createElement("p");
-    futureIntro.className = "muted";
-    futureIntro.textContent = "Dieser Bereich ist fuer spaetere Vertiefungen vorbereitet.";
-
-    const futureList = document.createElement("div");
-    futureList.className = "company-future-topics";
-    futureList.append(
-      createBadge("Chancen"),
-      createBadge("Risiken"),
-      createBadge("Konkurrenz"),
-      createBadge("Marktmacht")
+    const summaryGrid = document.createElement("div");
+    summaryGrid.className = "company-summary-grid";
+    summaryGrid.append(
+      createCompanyFactsGroup("Unternehmensprofil kompakt", [
+        { label: "CEO", value: company.ceo },
+        { label: "Mitarbeitende", value: formatNumber(company.fullTimeEmployees) },
+        { label: "Sitz", value: composeLocation(company) },
+        { label: "Website", value: createWebsiteLink(company.website) }
+      ]),
+      createCompanyFactsGroup("Status / Klassifikation", [
+        { label: "ETF", value: createStatusPill(company.isEtf) },
+        { label: "Fund", value: createStatusPill(company.isFund) },
+        { label: "ADR", value: createStatusPill(company.isAdr) },
+        { label: "Aktiv gehandelt", value: createStatusPill(company.isActivelyTrading) }
+      ]),
+      createCompanyFactsGroup("Wichtigste Kennzahlen", [
+        {
+          label: "Kurs",
+          value: displayPrice === null
+            ? formatCurrency(company.price, companyCurrency)
+            : `${formatCurrency(displayPrice, selectedDisplayCurrency)} (Original: ${formatCurrency(company.price, companyCurrency)})`
+        },
+        {
+          label: "Market Cap",
+          value: displayMarketCap === null
+            ? formatCompactCurrency(company.marketCap, companyCurrency)
+            : `${formatCompactCurrency(displayMarketCap, selectedDisplayCurrency)} (Original: ${formatCompactCurrency(company.marketCap, companyCurrency)})`
+        },
+        { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
+        { label: "Volume", value: formatCompactNumber(company.volume) }
+      ])
     );
+    summarySection.append(summaryTitle, summaryIntro, summaryGrid);
 
-    futureSection.append(futureTitle, futureIntro, futureList);
-    container.append(backLink, header, detailGrid, similarSection, futureSection);
+    const descriptionSection = document.createElement("section");
+    descriptionSection.id = "beschreibung";
+    descriptionSection.className = "card company-wiki-section";
+    descriptionSection.setAttribute("aria-labelledby", "beschreibung-title");
+
+    const descriptionTitle = document.createElement("h2");
+    descriptionTitle.id = "beschreibung-title";
+    descriptionTitle.className = "company-section-title";
+    descriptionTitle.textContent = "Beschreibung";
+
+    const descriptionBody = document.createElement("div");
+    descriptionBody.className = "company-text-content";
+    appendParagraphs(descriptionBody, fullDescription);
+    descriptionSection.append(descriptionTitle, descriptionBody);
+
+    const metricsSection = document.createElement("section");
+    metricsSection.id = "kennzahlen";
+    metricsSection.className = "card company-wiki-section";
+    metricsSection.setAttribute("aria-labelledby", "kennzahlen-title");
+
+    const metricsTitle = document.createElement("h2");
+    metricsTitle.id = "kennzahlen-title";
+    metricsTitle.className = "company-section-title";
+    metricsTitle.textContent = "Kennzahlen";
+
+    const metricsGroups = document.createElement("div");
+    metricsGroups.className = "company-fact-groups";
+    metricsGroups.append(
+      createCompanyFactsGroup("Boersen- und Handelsdaten", [
+        {
+          label: "Market Cap",
+          value: displayMarketCap === null
+            ? formatCompactCurrency(company.marketCap, companyCurrency)
+            : `${formatCompactCurrency(displayMarketCap, selectedDisplayCurrency)} (Original: ${formatCompactCurrency(company.marketCap, companyCurrency)})`
+        },
+        { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
+        {
+          label: "Dividende",
+          value: displayDividend === null
+            ? formatCurrency(company.lastDividend, companyCurrency)
+            : `${formatCurrency(displayDividend, selectedDisplayCurrency)} (Original: ${formatCurrency(company.lastDividend, companyCurrency)})`
+        },
+        { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
+        { label: "Volume", value: formatCompactNumber(company.volume) },
+        { label: "Average Volume", value: formatCompactNumber(company.averageVolume) }
+      ]),
+      createCompanyFactsGroup("Unternehmens- und Stammdaten", [
+        { label: "Symbol", value: symbol || "k. A." },
+        { label: "Boerse", value: normalizeText(company.exchangeFullName) || normalizeText(company.exchange) || "k. A." },
+        { label: "Waehrung", value: createCurrencyDisplayNode(company.currency) || normalizeText(company.currency) || "k. A." },
+        { label: "Land", value: createCountryDisplayNode(company.country) || normalizeText(company.country) || "k. A." },
+        { label: "IPO-Datum", value: formatDate(company.ipoDate) },
+        { label: "Adresse", value: addressParts.join(", ") || "k. A." },
+        { label: "Telefon", value: company.phone },
+        { label: "Website", value: createWebsiteLink(company.website) }
+      ]),
+      createCompanyFactsGroup("Identifikatoren", [
+        { label: "CIK", value: company.cik },
+        { label: "ISIN", value: company.isin },
+        { label: "CUSIP", value: company.cusip }
+      ])
+    );
+    metricsSection.append(metricsTitle, metricsGroups);
+
+    const analysisSection = document.createElement("section");
+    analysisSection.id = "analyse";
+    analysisSection.className = "card company-wiki-section";
+    analysisSection.setAttribute("aria-labelledby", "analyse-title");
+
+    const analysisTitle = document.createElement("h2");
+    analysisTitle.id = "analyse-title";
+    analysisTitle.className = "company-section-title";
+    analysisTitle.textContent = "Analyse";
+
+    const analysisIntro = document.createElement("p");
+    analysisIntro.className = "company-section-lead";
+    analysisIntro.textContent = "Dieser Bereich ist fuer weiterfuehrende, strukturierte Einschaetzungen vorbereitet.";
+
+    const analysisGrid = document.createElement("div");
+    analysisGrid.className = "company-analysis-grid";
+    [
+      { title: "Chancen", text: "Treiber wie Innovation, Expansion und neue Produktlinien koennen hier bewertet werden." },
+      { title: "Risiken", text: "Risiken wie Regulierung, Nachfragezyklen, Kostenentwicklung oder operative Abhaengigkeiten." },
+      { title: "Konkurrenz", text: "Einordnung direkter Wettbewerber sowie Differenzierungsmerkmale im Marktumfeld." },
+      { title: "Marktmacht", text: "Bewertung von Preissetzungsspielraum, Netzwerkeffekten und strukturellen Wettbewerbsvorteilen." }
+    ].forEach((entry) => {
+      const card = document.createElement("article");
+      card.className = "company-analysis-item";
+      const title = document.createElement("h3");
+      title.textContent = entry.title;
+      const text = document.createElement("p");
+      text.textContent = entry.text;
+      card.append(title, text);
+      analysisGrid.appendChild(card);
+    });
+    analysisSection.append(analysisTitle, analysisIntro, analysisGrid);
+
+    const similarSection = createSimilarCompaniesSection(similarCompanies, {
+      sectionId: "aehnliche-unternehmen",
+      title: "Aehnliche Unternehmen"
+    });
+
+    container.classList.add("company-detail-page");
+    container.append(
+      backLink,
+      header,
+      anchorNavigation,
+      summarySection,
+      descriptionSection,
+      metricsSection,
+      analysisSection,
+      similarSection
+    );
+    setupCompanyAnchorNavigation(container);
   }
 
   async function initCompanyDetail() {
@@ -2196,7 +2659,7 @@
     const symbol = normalizeCompanySymbol(params.get("symbol"));
 
     if (!symbol) {
-      renderMessage(article, "Kein Unternehmenssymbol uebergeben. Bitte waehlen Sie ein Unternehmen aus der Aktien-Uebersicht.", true);
+      renderMessage(article, "Kein Unternehmenssymbol uebergeben. Bitte waehlen Sie ein Unternehmen aus der Maerkte-Uebersicht.", true);
       return;
     }
 
