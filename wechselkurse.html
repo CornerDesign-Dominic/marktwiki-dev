@@ -37,6 +37,36 @@
         <p id="exchange-rates-meta" class="muted exchange-rates-meta" role="status" aria-live="polite"></p>
       </section>
 
+      <section class="card section-space exchange-converter" aria-labelledby="exchange-converter-heading">
+        <h2 id="exchange-converter-heading">Wechselkurs-Rechner</h2>
+        <div class="exchange-converter-grid">
+          <div class="field exchange-converter-amount">
+            <label for="exchange-converter-amount">Betrag</label>
+            <input id="exchange-converter-amount" type="number" inputmode="decimal" min="0" step="any" value="1" aria-label="Betrag eingeben">
+          </div>
+          <div class="field">
+            <label for="exchange-converter-from">Von Waehrung</label>
+            <select id="exchange-converter-from" aria-label="Ausgangswaehrung auswaehlen"></select>
+          </div>
+          <div class="exchange-converter-swap-wrap">
+            <button id="exchange-converter-swap" class="btn exchange-converter-swap" type="button" aria-label="Waehrungen tauschen">Tauschen</button>
+          </div>
+          <div class="field">
+            <label for="exchange-converter-to">Zu Waehrung</label>
+            <select id="exchange-converter-to" aria-label="Zielwaehrung auswaehlen"></select>
+          </div>
+        </div>
+
+        <div class="exchange-converter-result" role="status" aria-live="polite">
+          <p id="exchange-converter-output" class="exchange-converter-output">Bitte Betrag und Waehrungen auswaehlen.</p>
+          <p id="exchange-converter-rate" class="muted exchange-converter-rate"></p>
+        </div>
+
+        <p class="muted exchange-converter-disclaimer">
+          Haftungsausschluss: Die angezeigten Wechselkurse dienen nur zur Orientierung. Keine Gewaehr fuer Aktualitaet, Richtigkeit oder Vollstaendigkeit.
+        </p>
+      </section>
+
       <section class="section-space" aria-labelledby="exchange-rates-list-heading">
         <h2 id="exchange-rates-list-heading" class="sr-only">Wechselkursliste</h2>
         <div id="exchange-rates-list" class="card-grid exchange-rates-grid" data-error-target="exchange-rates">

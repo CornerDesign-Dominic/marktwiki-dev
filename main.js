@@ -19,6 +19,9 @@
   const RAW_CURRENCY_ALIAS = {
     GBp: "GBX"
   };
+  const COUNTRY_FLAG_ASSET_BY_CODE = {
+    US: "assets/flags/us.svg"
+  };
   const CURRENCY_FLAG_COUNTRY_BY_CODE = {
     AUD: "AU",
     CAD: "CA",
@@ -125,8 +128,17 @@
     );
   }
 
+  function getCountryFlagAssetPath(countryCode) {
+    const normalizedCode = normalizeCountryCode(countryCode);
+    if (!normalizedCode) {
+      return "";
+    }
+
+    return COUNTRY_FLAG_ASSET_BY_CODE[normalizedCode] || "";
+  }
+
   function createCountryDisplayNode(countryCode) {
-    const normalizedCode = normalizeText(countryCode).toUpperCase();
+    const normalizedCode = normalizeCountryCode(countryCode);
     if (!normalizedCode) {
       return null;
     }
@@ -134,13 +146,20 @@
     const wrapper = document.createElement("span");
     wrapper.className = "country-with-flag";
 
-    const flag = countryCodeToFlag(normalizedCode);
-    if (flag) {
-      const flagElement = document.createElement("span");
-      flagElement.className = "country-flag";
-      flagElement.setAttribute("aria-hidden", "true");
-      flagElement.textContent = flag;
-      wrapper.appendChild(flagElement);
+    const assetPath = getCountryFlagAssetPath(normalizedCode);
+    if (assetPath) {
+      const image = document.createElement("img");
+      image.className = "country-flag-image";
+      image.src = `${basePath}/${assetPath}`;
+      image.alt = `Flagge ${normalizedCode}`;
+      image.loading = "lazy";
+      image.decoding = "async";
+      image.width = 18;
+      image.height = 12;
+      image.addEventListener("error", () => {
+        image.remove();
+      });
+      wrapper.appendChild(image);
     }
 
     const codeElement = document.createElement("span");
@@ -810,6 +829,136 @@
     return entries;
   }
 
+  function getExchangeRateCurrencyCodes(ratesData) {
+    return Object.keys(ratesData?.usdPerUnit || {})
+      .map((currencyCode) => normalizeCurrencyForRates(currencyCode))
+      .filter(Boolean)
+      .filter((code, index, list) => list.indexOf(code) === index)
+      .sort((a, b) => {
+        const labelA = formatCurrencyLabel(a) || a;
+        const labelB = formatCurrencyLabel(b) || b;
+        return labelA.localeCompare(labelB, "de");
+      });
+  }
+
+  function fillCurrencySelectOptions(select, currencies, selectedValue = "") {
+    if (!select) {
+      return;
+    }
+
+    const normalizedSelected = normalizeCurrencyForRates(selectedValue);
+    select.innerHTML = "";
+
+    currencies.forEach((currencyCode) => {
+      const option = document.createElement("option");
+      option.value = currencyCode;
+      option.textContent = formatCurrencyLabel(currencyCode) || currencyCode;
+      if (currencyCode === normalizedSelected) {
+        option.selected = true;
+      }
+      select.appendChild(option);
+    });
+
+    if (!select.value && currencies.length) {
+      select.value = currencies[0];
+    }
+  }
+
+  function formatConverterCurrencyValue(value, currencyCode) {
+    const number = toNumber(value);
+    const normalizedCurrency = normalizeCurrencyForRates(currencyCode);
+    if (number === null || !normalizedCurrency) {
+      return "k. A.";
+    }
+
+    const abs = Math.abs(number);
+    const maxFractionDigits = abs > 0 && abs < 1 ? 6 : 2;
+    return formatCurrency(number, normalizedCurrency, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: maxFractionDigits
+    });
+  }
+
+  function initExchangeConverter(ratesData, preferredBaseCurrency = DEFAULT_DISPLAY_CURRENCY) {
+    const amountInput = document.querySelector("#exchange-converter-amount");
+    const fromSelect = document.querySelector("#exchange-converter-from");
+    const toSelect = document.querySelector("#exchange-converter-to");
+    const swapButton = document.querySelector("#exchange-converter-swap");
+    const output = document.querySelector("#exchange-converter-output");
+    const rateOutput = document.querySelector("#exchange-converter-rate");
+
+    if (!amountInput || !fromSelect || !toSelect || !output || !rateOutput) {
+      return;
+    }
+
+    const currencyCodes = getExchangeRateCurrencyCodes(ratesData);
+    if (!currencyCodes.length) {
+      output.textContent = "Keine Wechselkurse verfuegbar.";
+      rateOutput.textContent = "";
+      fromSelect.disabled = true;
+      toSelect.disabled = true;
+      amountInput.disabled = true;
+      if (swapButton) {
+        swapButton.disabled = true;
+      }
+      return;
+    }
+
+    const normalizedPreferredBase = normalizeCurrencyForRates(preferredBaseCurrency);
+    const preferredFrom = currencyCodes.includes(normalizedPreferredBase)
+      ? normalizedPreferredBase
+      : currencyCodes[0];
+    const preferredTo = currencyCodes.find((code) => code !== preferredFrom) || preferredFrom;
+
+    fillCurrencySelectOptions(fromSelect, currencyCodes, preferredFrom);
+    fillCurrencySelectOptions(toSelect, currencyCodes, preferredTo);
+
+    const applyConversion = () => {
+      const rawAmount = amountInput.value;
+      const amount = toNumber(rawAmount);
+      const fromCurrency = normalizeCurrencyForRates(fromSelect.value);
+      const toCurrency = normalizeCurrencyForRates(toSelect.value);
+      const hasValidAmount = normalizeText(rawAmount) !== "" && amount !== null;
+
+      if (!hasValidAmount) {
+        output.textContent = "Bitte einen gueltigen Betrag eingeben.";
+        rateOutput.textContent = "";
+        return;
+      }
+
+      if (amount < 0) {
+        output.textContent = "Bitte einen Betrag groesser oder gleich 0 eingeben.";
+        rateOutput.textContent = "";
+        return;
+      }
+
+      const converted = convertCurrencyValue(amount, fromCurrency, toCurrency, ratesData);
+      const unitRate = convertCurrencyValue(1, fromCurrency, toCurrency, ratesData);
+
+      if (converted === null || unitRate === null) {
+        output.textContent = "Umrechnung aktuell nicht verfuegbar.";
+        rateOutput.textContent = "";
+        return;
+      }
+
+      output.textContent = `${formatConverterCurrencyValue(amount, fromCurrency)} entspricht ${formatConverterCurrencyValue(converted, toCurrency)}.`;
+      rateOutput.textContent = `1 ${formatCurrencyLabel(fromCurrency) || fromCurrency} = ${formatExchangeRateValue(unitRate)} ${toCurrency}`;
+    };
+
+    amountInput.addEventListener("input", applyConversion);
+    fromSelect.addEventListener("change", applyConversion);
+    toSelect.addEventListener("change", applyConversion);
+
+    swapButton?.addEventListener("click", () => {
+      const fromValue = fromSelect.value;
+      fromSelect.value = toSelect.value;
+      toSelect.value = fromValue;
+      applyConversion();
+    });
+
+    applyConversion();
+  }
+
   function createExchangeRateCard(entry, baseCurrency) {
     const currencyCode = normalizeCurrencyForRates(entry?.currencyCode);
     const normalizedBase = resolveDisplayCurrency(baseCurrency);
@@ -850,6 +999,7 @@
     renderMessage(list, "Wechselkurse werden geladen ...");
     const ratesData = await loadExchangeRates();
     let selectedBaseCurrency = readDisplayCurrency();
+    initExchangeConverter(ratesData, selectedBaseCurrency);
 
     if (baseSelect) {
       baseSelect.value = selectedBaseCurrency;

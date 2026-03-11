@@ -1,0 +1,46 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 48" role="img" aria-label="Flag of US">
+  <rect width="64" height="48" fill="#fff"/>
+  <rect y="0" width="64" height="3.692" fill="#b22234"/>
+  <rect y="7.384" width="64" height="3.692" fill="#b22234"/>
+  <rect y="14.768" width="64" height="3.692" fill="#b22234"/>
+  <rect y="22.152" width="64" height="3.692" fill="#b22234"/>
+  <rect y="29.536" width="64" height="3.692" fill="#b22234"/>
+  <rect y="36.92" width="64" height="3.692" fill="#b22234"/>
+  <rect y="44.304" width="64" height="3.696" fill="#b22234"/>
+  <rect width="28" height="25.846" fill="#3c3b6e"/>
+  <g fill="#fff">
+    <circle cx="3.5" cy="3.2" r="0.9"/>
+    <circle cx="8.4" cy="3.2" r="0.9"/>
+    <circle cx="13.3" cy="3.2" r="0.9"/>
+    <circle cx="18.2" cy="3.2" r="0.9"/>
+    <circle cx="23.1" cy="3.2" r="0.9"/>
+    <circle cx="5.95" cy="6.3" r="0.9"/>
+    <circle cx="10.85" cy="6.3" r="0.9"/>
+    <circle cx="15.75" cy="6.3" r="0.9"/>
+    <circle cx="20.65" cy="6.3" r="0.9"/>
+    <circle cx="3.5" cy="9.4" r="0.9"/>
+    <circle cx="8.4" cy="9.4" r="0.9"/>
+    <circle cx="13.3" cy="9.4" r="0.9"/>
+    <circle cx="18.2" cy="9.4" r="0.9"/>
+    <circle cx="23.1" cy="9.4" r="0.9"/>
+    <circle cx="5.95" cy="12.5" r="0.9"/>
+    <circle cx="10.85" cy="12.5" r="0.9"/>
+    <circle cx="15.75" cy="12.5" r="0.9"/>
+    <circle cx="20.65" cy="12.5" r="0.9"/>
+    <circle cx="3.5" cy="15.6" r="0.9"/>
+    <circle cx="8.4" cy="15.6" r="0.9"/>
+    <circle cx="13.3" cy="15.6" r="0.9"/>
+    <circle cx="18.2" cy="15.6" r="0.9"/>
+    <circle cx="23.1" cy="15.6" r="0.9"/>
+    <circle cx="5.95" cy="18.7" r="0.9"/>
+    <circle cx="10.85" cy="18.7" r="0.9"/>
+    <circle cx="15.75" cy="18.7" r="0.9"/>
+    <circle cx="20.65" cy="18.7" r="0.9"/>
+    <circle cx="3.5" cy="21.8" r="0.9"/>
+    <circle cx="8.4" cy="21.8" r="0.9"/>
+    <circle cx="13.3" cy="21.8" r="0.9"/>
+    <circle cx="18.2" cy="21.8" r="0.9"/>
+    <circle cx="23.1" cy="21.8" r="0.9"/>
+  </g>
+</svg>
+

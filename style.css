@@ -807,6 +807,92 @@ input[type="number"] {
   font-size: 0.85rem;
 }
 
+.exchange-converter {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.exchange-converter h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.exchange-converter-grid {
+  display: grid;
+  grid-template-columns: minmax(130px, 160px) minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: end;
+}
+
+.exchange-converter .field {
+  min-width: 0;
+  display: grid;
+  gap: 0.3rem;
+  align-content: start;
+}
+
+.exchange-converter .field label {
+  margin: 0;
+  font-size: 0.81rem;
+  line-height: 1.25;
+  color: var(--text-secondary);
+}
+
+.exchange-converter input[type="number"],
+.exchange-converter select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  box-sizing: border-box;
+  font-size: 0.92rem;
+}
+
+.exchange-converter input[type="number"] {
+  background: var(--bg-secondary);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+}
+
+.exchange-converter-swap-wrap {
+  display: flex;
+  align-items: flex-end;
+}
+
+.exchange-converter-swap {
+  min-height: 42px;
+  white-space: nowrap;
+}
+
+.exchange-converter-result {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--bg) 84%, var(--surface) 16%);
+  padding: 0.8rem 0.9rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.exchange-converter-output {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.exchange-converter-rate {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.exchange-converter-disclaimer {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
 .exchange-rates-grid {
   grid-template-columns: minmax(0, 1fr);
 }
@@ -1099,10 +1185,13 @@ input[type="number"] {
   gap: 0.3rem;
 }
 
-.country-flag {
-  display: inline-block;
-  font-size: 0.95em;
-  line-height: 1;
+.country-flag-image {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  object-fit: cover;
+  border: 1px solid color-mix(in srgb, var(--border) 78%, #ffffff 22%);
+  box-sizing: border-box;
 }
 
 .stock-context {
@@ -1897,6 +1986,22 @@ input[type="number"] {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .exchange-converter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .exchange-converter-amount {
+    grid-column: 1 / -1;
+  }
+
+  .exchange-converter-swap-wrap {
+    align-items: stretch;
+  }
+
+  .exchange-converter-swap {
+    width: 100%;
+  }
+
   .stocks-controls-grid > .field {
     grid-column: auto;
   }
@@ -1972,6 +2077,23 @@ input[type="number"] {
   .exchange-rates-controls-grid {
     grid-template-columns: 1fr;
     gap: 0.6rem;
+  }
+
+  .exchange-converter-grid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+
+  .exchange-converter-amount {
+    grid-column: auto;
+  }
+
+  .exchange-converter-swap-wrap {
+    justify-content: stretch;
+  }
+
+  .exchange-converter-swap {
+    width: 100%;
   }
 
   .stocks-controls-grid > .field,
