@@ -7,17 +7,43 @@
   const DATA_FILES = {
     categories: "kategorien.json",
     topics: "themen.json",
-    companiesIndex: "companies/index.json"
+    companiesIndex: "companies/index.json",
+    exchangeRates: "exchange-rates.json"
   };
   const FAVORITES_STORAGE_KEY = "favorites";
+  const DISPLAY_CURRENCY_STORAGE_KEY = "displayCurrency";
+  const DEFAULT_DISPLAY_CURRENCY = "EUR";
+  const SUPPORTED_DISPLAY_CURRENCIES = new Set(["EUR", "USD"]);
+  const RAW_CURRENCY_ALIAS = {
+    GBp: "GBX"
+  };
+  const jsonPromiseCache = new Map();
+  const convertedValueCache = new Map();
+  const normalizedValueCache = new Map();
+  const stockMarketDataCache = new Map();
+  let stockMarketDataPromise = null;
+  let exchangeRatesPromise = null;
 
   async function loadJson(path) {
     const cleanPath = String(path || "").replace(/^\/+/, "");
-    const response = await fetch(`${basePath}/${cleanPath}`);
-    if (!response.ok) {
-      throw new Error(`Daten konnten nicht geladen werden: ${cleanPath}`);
+    if (jsonPromiseCache.has(cleanPath)) {
+      return jsonPromiseCache.get(cleanPath);
     }
-    return response.json();
+
+    const request = fetch(`${basePath}/${cleanPath}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Daten konnten nicht geladen werden: ${cleanPath}`);
+        }
+        return response.json();
+      })
+      .catch((error) => {
+        jsonPromiseCache.delete(cleanPath);
+        throw error;
+      });
+
+    jsonPromiseCache.set(cleanPath, request);
+    return request;
   }
 
   function setMetaDescription(content) {
@@ -75,6 +101,138 @@
     }
 
     return null;
+  }
+
+  function normalizeCurrencyForRates(currency) {
+    const raw = normalizeText(currency);
+    if (!raw) {
+      return "";
+    }
+
+    if (RAW_CURRENCY_ALIAS[raw]) {
+      return RAW_CURRENCY_ALIAS[raw];
+    }
+
+    return raw.toUpperCase();
+  }
+
+  function resolveDisplayCurrency(rawCurrency) {
+    const normalized = normalizeCurrencyForRates(rawCurrency);
+    if (SUPPORTED_DISPLAY_CURRENCIES.has(normalized)) {
+      return normalized;
+    }
+    return DEFAULT_DISPLAY_CURRENCY;
+  }
+
+  function readDisplayCurrency() {
+    try {
+      return resolveDisplayCurrency(window.localStorage.getItem(DISPLAY_CURRENCY_STORAGE_KEY));
+    } catch (error) {
+      console.warn("Anzeigewaehrung konnte nicht aus localStorage gelesen werden.", error);
+      return DEFAULT_DISPLAY_CURRENCY;
+    }
+  }
+
+  function writeDisplayCurrency(currency) {
+    const normalized = resolveDisplayCurrency(currency);
+    try {
+      window.localStorage.setItem(DISPLAY_CURRENCY_STORAGE_KEY, normalized);
+    } catch (error) {
+      console.warn("Anzeigewaehrung konnte nicht gespeichert werden.", error);
+    }
+    return normalized;
+  }
+
+  async function loadExchangeRates() {
+    if (exchangeRatesPromise) {
+      return exchangeRatesPromise;
+    }
+
+    exchangeRatesPromise = loadJson(`data/${DATA_FILES.exchangeRates}`).then((payload) => {
+      if (!payload || typeof payload !== "object" || !payload.usdPerUnit || typeof payload.usdPerUnit !== "object") {
+        throw new Error("Ungueltige Wechselkurs-Struktur.");
+      }
+
+      const rates = {};
+      Object.entries(payload.usdPerUnit).forEach(([code, rawValue]) => {
+        const normalizedCode = normalizeCurrencyForRates(code);
+        const numericRate = toNumber(rawValue);
+        if (normalizedCode && numericRate && numericRate > 0) {
+          rates[normalizedCode] = numericRate;
+        }
+      });
+
+      if (!rates.USD) {
+        rates.USD = 1;
+      }
+      if (!rates.EUR || !rates.USD) {
+        throw new Error("Erforderliche Wechselkurse fuer EUR/USD fehlen.");
+      }
+
+      return {
+        updatedAt: normalizeText(payload.updatedAt),
+        usdPerUnit: rates
+      };
+    });
+
+    return exchangeRatesPromise;
+  }
+
+  function convertCurrencyValue(value, sourceCurrency, targetCurrency, ratesData) {
+    const numericValue = toNumber(value);
+    if (numericValue === null) {
+      return null;
+    }
+
+    const sourceCode = normalizeCurrencyForRates(sourceCurrency);
+    const targetCode = normalizeCurrencyForRates(targetCurrency);
+
+    if (!sourceCode || !targetCode) {
+      return null;
+    }
+
+    if (sourceCode === targetCode) {
+      return numericValue;
+    }
+
+    const sourceRate = toNumber(ratesData?.usdPerUnit?.[sourceCode]);
+    const targetRate = toNumber(ratesData?.usdPerUnit?.[targetCode]);
+
+    if (!sourceRate || !targetRate) {
+      return null;
+    }
+
+    const usdValue = numericValue * sourceRate;
+    return usdValue / targetRate;
+  }
+
+  function getConvertedCompanyValue(company, field, targetCurrency, ratesData) {
+    const symbol = normalizeCompanySymbol(company?.symbol) || "__unknown__";
+    const normalizedTarget = normalizeCurrencyForRates(targetCurrency);
+    const sourceCurrency = normalizeCurrencyForRates(company?.currency);
+    const sourceValue = toNumber(company?.[field]);
+    const key = `${symbol}|${field}|${sourceCurrency}|${sourceValue}|${normalizedTarget}`;
+
+    if (convertedValueCache.has(key)) {
+      return convertedValueCache.get(key);
+    }
+
+    const converted = convertCurrencyValue(company?.[field], company?.currency, normalizedTarget, ratesData);
+    convertedValueCache.set(key, converted);
+    return converted;
+  }
+
+  function getNormalizedValue(cacheKey, value, sourceCurrency, ratesData) {
+    const normalizedSourceCurrency = normalizeCurrencyForRates(sourceCurrency);
+    const numericValue = toNumber(value);
+    const key = `${cacheKey}|${normalizedSourceCurrency}|${numericValue}|USD`;
+    if (normalizedValueCache.has(key)) {
+      return normalizedValueCache.get(key);
+    }
+
+    const normalized = convertCurrencyValue(value, sourceCurrency, "USD", ratesData);
+    normalizedValueCache.set(key, normalized);
+    return normalized;
   }
 
   function formatNumber(value, options = {}) {
@@ -426,9 +584,47 @@
     });
   }
 
+  async function loadStockMarketData(indexCompanies) {
+    if (stockMarketDataPromise) {
+      return stockMarketDataPromise;
+    }
+
+    const entries = Array.isArray(indexCompanies) ? indexCompanies : [];
+    stockMarketDataPromise = Promise.all(entries.map(async (entry) => {
+      const symbol = normalizeCompanySymbol(entry?.symbol);
+      if (!symbol) {
+        return;
+      }
+
+      const fileName = normalizeText(entry?.file) || `${symbol}.json`;
+
+      try {
+        const company = await loadJson(`data/companies/${fileName}`);
+        stockMarketDataCache.set(symbol, {
+          marketCap: toNumber(company?.marketCap),
+          currency: normalizeText(company?.currency) || normalizeText(entry?.currency)
+        });
+      } catch (error) {
+        stockMarketDataCache.set(symbol, {
+          marketCap: null,
+          currency: normalizeText(entry?.currency)
+        });
+      }
+    }));
+
+    await stockMarketDataPromise;
+    return stockMarketDataCache;
+  }
+
   function renderStockCards(list, companies, options = {}) {
     list.innerHTML = "";
-    const { favoriteSymbols = new Set(), onToggleFavorite = null, emptyMessage = "Keine Unternehmen fuer diese Suche/Filter gefunden." } = options;
+    const {
+      favoriteSymbols = new Set(),
+      onToggleFavorite = null,
+      emptyMessage = "Keine Unternehmen fuer diese Suche/Filter gefunden.",
+      displayCurrency = DEFAULT_DISPLAY_CURRENCY,
+      ratesData = null
+    } = options;
 
     if (!companies.length) {
       renderMessage(list, emptyMessage);
@@ -440,16 +636,23 @@
       const isFavorite = symbol ? favoriteSymbols.has(symbol) : false;
       list.appendChild(createStockCard(company, {
         isFavorite,
-        onToggleFavorite
+        onToggleFavorite,
+        displayCurrency,
+        ratesData
       }));
     });
   }
 
   function createStockCard(company, options = {}) {
-    const { isFavorite = false, onToggleFavorite = null } = options;
+    const {
+      isFavorite = false,
+      onToggleFavorite = null,
+      displayCurrency = DEFAULT_DISPLAY_CURRENCY,
+      ratesData = null
+    } = options;
     const symbol = normalizeCompanySymbol(company.symbol);
     const companyName = normalizeText(company.companyName) || symbol || "Unbekanntes Unternehmen";
-    const currencyCode = normalizeText(company.currency).toUpperCase() || "k. A.";
+    const originalCurrency = normalizeText(company.currency) || "k. A.";
     const logoFallbackText = symbol || normalizeText(company.companyName).slice(0, 3).toUpperCase() || "N/A";
 
     const appendStockFact = (target, label, value) => {
@@ -507,7 +710,13 @@
 
     const priceLine = document.createElement("p");
     priceLine.className = "stock-price-line";
-    priceLine.textContent = `Kurs: ${formatPrice(company.price)} ${currencyCode}`;
+    const targetCurrency = resolveDisplayCurrency(displayCurrency);
+    const convertedPrice = ratesData ? getConvertedCompanyValue(company, "price", targetCurrency, ratesData) : null;
+    const primaryPrice = convertedPrice === null
+      ? formatCurrency(company.price, originalCurrency)
+      : formatCurrency(convertedPrice, targetCurrency);
+    const originalPrice = formatCurrency(company.price, originalCurrency);
+    priceLine.textContent = `Kurs: ${primaryPrice} | Original: ${originalPrice}`;
 
     const facts = document.createElement("dl");
     facts.className = "stock-meta stock-facts stock-facts-compact";
@@ -538,6 +747,7 @@
     const searchInput = document.querySelector("#stocks-search");
     const countryFilter = document.querySelector("#stocks-country-filter");
     const currencyFilter = document.querySelector("#stocks-currency-filter");
+    const displayCurrencyFilter = document.querySelector("#stocks-display-currency");
     const sectorFilter = document.querySelector("#stocks-sector-filter");
     const sortSelect = document.querySelector("#stocks-sort");
     const resultsCount = document.querySelector("#stocks-results-count");
@@ -553,8 +763,16 @@
     }
 
     // Index enthaelt Vorschauwerte, damit die Uebersicht in einem Request ladbar bleibt.
-    const companies = await loadCompanyIndex();
+    const [companies, ratesData] = await Promise.all([
+      loadCompanyIndex(),
+      loadExchangeRates()
+    ]);
     let favoriteSymbols = new Set(readFavorites());
+    let displayCurrency = readDisplayCurrency();
+
+    if (displayCurrencyFilter) {
+      displayCurrencyFilter.value = displayCurrency;
+    }
 
     const persistAndRefresh = (symbol) => {
       const normalizedSymbol = normalizeCompanySymbol(symbol);
@@ -585,6 +803,8 @@
       renderStockCards(favoritesList, favoriteCompanies, {
         favoriteSymbols,
         onToggleFavorite: persistAndRefresh,
+        displayCurrency,
+        ratesData,
         emptyMessage: "Sie koennen Unternehmen als Favoriten markieren, um sie hier schnell wiederzufinden."
       });
     };
@@ -632,8 +852,10 @@
 
       if (sortBy === "price") {
         sorted.sort((a, b) => {
-          const priceA = toNumber(a?.price) ?? 0;
-          const priceB = toNumber(b?.price) ?? 0;
+          const symbolA = normalizeCompanySymbol(a?.symbol) || normalizeText(a?.companyName);
+          const symbolB = normalizeCompanySymbol(b?.symbol) || normalizeText(b?.companyName);
+          const priceA = getNormalizedValue(`${symbolA}|price`, a?.price, a?.currency, ratesData) ?? 0;
+          const priceB = getNormalizedValue(`${symbolB}|price`, b?.price, b?.currency, ratesData) ?? 0;
           return priceB - priceA;
         });
         return sorted;
@@ -641,8 +863,22 @@
 
       if (sortBy === "marketCap") {
         sorted.sort((a, b) => {
-          const capA = toNumber(a?.marketCap) ?? 0;
-          const capB = toNumber(b?.marketCap) ?? 0;
+          const symbolA = normalizeCompanySymbol(a?.symbol);
+          const symbolB = normalizeCompanySymbol(b?.symbol);
+          const metricsA = symbolA ? stockMarketDataCache.get(symbolA) : null;
+          const metricsB = symbolB ? stockMarketDataCache.get(symbolB) : null;
+          const capA = getNormalizedValue(
+            `${symbolA || normalizeText(a?.companyName)}|marketCap`,
+            metricsA?.marketCap,
+            metricsA?.currency || a?.currency,
+            ratesData
+          ) ?? 0;
+          const capB = getNormalizedValue(
+            `${symbolB || normalizeText(b?.companyName)}|marketCap`,
+            metricsB?.marketCap,
+            metricsB?.currency || b?.currency,
+            ratesData
+          ) ?? 0;
           return capB - capA;
         });
         return sorted;
@@ -670,7 +906,7 @@
       return sorted;
     };
 
-    const applyStockFilters = () => {
+    const applyStockFilters = async () => {
       const query = normalizeForMatch(searchInput?.value || "");
       const selectedCountry = normalizeText(countryFilter?.value);
       const selectedCurrency = normalizeText(currencyFilter?.value);
@@ -678,6 +914,14 @@
       const selectedIndustry = normalizeText(params.get("industry"));
       const normalizedIndustry = normalizeForMatch(selectedIndustry);
       const selectedSort = normalizeText(sortSelect?.value) || "alphabet";
+      displayCurrency = resolveDisplayCurrency(displayCurrencyFilter?.value || displayCurrency);
+
+      if (selectedSort === "marketCap") {
+        if (!stockMarketDataPromise) {
+          renderMessage(list, "Market-Cap-Daten werden geladen ...");
+        }
+        await loadStockMarketData(companies);
+      }
 
       const filtered = companies.filter((company) => {
         const matchesSearch = !query || createCompanySearchText(company).includes(query);
@@ -691,7 +935,9 @@
 
       renderStockCards(list, sorted, {
         favoriteSymbols,
-        onToggleFavorite: persistAndRefresh
+        onToggleFavorite: persistAndRefresh,
+        displayCurrency,
+        ratesData
       });
       renderFavorites();
 
@@ -705,8 +951,12 @@
     currencyFilter?.addEventListener("change", applyStockFilters);
     sectorFilter?.addEventListener("change", applyStockFilters);
     sortSelect?.addEventListener("change", applyStockFilters);
+    displayCurrencyFilter?.addEventListener("change", () => {
+      displayCurrency = writeDisplayCurrency(displayCurrencyFilter.value);
+      applyStockFilters();
+    });
 
-    applyStockFilters();
+    await applyStockFilters();
   }
 
   function createWebsiteLink(urlText) {
@@ -852,13 +1102,30 @@
     const {
       favoriteSymbols = new Set(),
       onToggleFavorite = null,
-      similarCompanies = []
+      similarCompanies = [],
+      displayCurrency = DEFAULT_DISPLAY_CURRENCY,
+      ratesData = null,
+      onDisplayCurrencyChange = null
     } = options;
     container.innerHTML = "";
 
     const symbol = normalizeCompanySymbol(company.symbol);
     const companyName = normalizeText(company.companyName) || symbol || "Unternehmen";
     const tone = getChangeTone(company.changePercentage);
+    const selectedDisplayCurrency = resolveDisplayCurrency(displayCurrency);
+    const companyCurrency = normalizeText(company.currency);
+    const displayPrice = ratesData
+      ? convertCurrencyValue(company.price, companyCurrency, selectedDisplayCurrency, ratesData)
+      : null;
+    const displayChange = ratesData
+      ? convertCurrencyValue(company.change, companyCurrency, selectedDisplayCurrency, ratesData)
+      : null;
+    const displayMarketCap = ratesData
+      ? convertCurrencyValue(company.marketCap, companyCurrency, selectedDisplayCurrency, ratesData)
+      : null;
+    const displayDividend = ratesData
+      ? convertCurrencyValue(company.lastDividend, companyCurrency, selectedDisplayCurrency, ratesData)
+      : null;
 
     const backLink = document.createElement("a");
     backLink.className = "back-link";
@@ -920,6 +1187,31 @@
     const marketSnapshot = document.createElement("aside");
     marketSnapshot.className = "company-market-snapshot";
 
+    const currencyField = document.createElement("div");
+    currencyField.className = "field company-currency-switch";
+    const currencyLabel = document.createElement("label");
+    currencyLabel.setAttribute("for", "company-display-currency");
+    currencyLabel.textContent = "Anzeigewaehrung";
+    const currencySelect = document.createElement("select");
+    currencySelect.id = "company-display-currency";
+    currencySelect.setAttribute("aria-label", "Anzeigewaehrung");
+    [
+      { value: "EUR", label: "EUR" },
+      { value: "USD", label: "USD" }
+    ].forEach((entry) => {
+      const option = document.createElement("option");
+      option.value = entry.value;
+      option.textContent = entry.label;
+      currencySelect.appendChild(option);
+    });
+    currencySelect.value = selectedDisplayCurrency;
+    if (typeof onDisplayCurrencyChange === "function") {
+      currencySelect.addEventListener("change", () => {
+        onDisplayCurrencyChange(currencySelect.value);
+      });
+    }
+    currencyField.append(currencyLabel, currencySelect);
+
     const priceBox = document.createElement("div");
     priceBox.className = "company-price-block";
     const priceLabel = document.createElement("span");
@@ -927,8 +1219,13 @@
     priceLabel.textContent = "Kurs";
     const priceValue = document.createElement("strong");
     priceValue.className = "company-price-value";
-    priceValue.textContent = formatCurrency(company.price, company.currency);
-    priceBox.append(priceLabel, priceValue);
+    priceValue.textContent = displayPrice === null
+      ? formatCurrency(company.price, companyCurrency)
+      : formatCurrency(displayPrice, selectedDisplayCurrency);
+    const priceOriginal = document.createElement("span");
+    priceOriginal.className = "muted company-original-currency";
+    priceOriginal.textContent = `Original: ${formatCurrency(company.price, companyCurrency)}`;
+    priceBox.append(priceLabel, priceValue, priceOriginal);
 
     const changeBox = document.createElement("div");
     changeBox.className = `company-change-row tone-${tone}`;
@@ -937,10 +1234,13 @@
     changeLabel.textContent = "Veraenderung";
     const changeValue = document.createElement("strong");
     changeValue.className = "company-change-value";
-    changeValue.textContent = `${formatSignedCurrency(company.change, company.currency)} (${formatPercent(company.changePercentage)})`;
+    const signedChange = displayChange === null
+      ? formatSignedCurrency(company.change, companyCurrency)
+      : formatSignedCurrency(displayChange, selectedDisplayCurrency);
+    changeValue.textContent = `${signedChange} (${formatPercent(company.changePercentage)})`;
     changeBox.append(changeLabel, changeValue);
 
-    marketSnapshot.append(priceBox, changeBox);
+    marketSnapshot.append(currencyField, priceBox, changeBox);
     headMain.append(topMeta, titleRow, classification, description);
     header.append(logoWrap, headMain, marketSnapshot);
 
@@ -962,9 +1262,19 @@
     ]);
 
     const marketSection = createDataSection("Boersen- und Stammdaten", [
-      { label: "Market Cap", value: formatCompactCurrency(company.marketCap, company.currency) },
+      {
+        label: "Market Cap",
+        value: displayMarketCap === null
+          ? formatCompactCurrency(company.marketCap, companyCurrency)
+          : `${formatCompactCurrency(displayMarketCap, selectedDisplayCurrency)} (Original: ${formatCompactCurrency(company.marketCap, companyCurrency)})`
+      },
       { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
-      { label: "Last Dividend", value: formatCurrency(company.lastDividend, company.currency) },
+      {
+        label: "Last Dividend",
+        value: displayDividend === null
+          ? formatCurrency(company.lastDividend, companyCurrency)
+          : `${formatCurrency(displayDividend, selectedDisplayCurrency)} (Original: ${formatCurrency(company.lastDividend, companyCurrency)})`
+      },
       { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
       { label: "Volume", value: formatCompactNumber(company.volume) },
       { label: "Average Volume", value: formatCompactNumber(company.averageVolume) },
@@ -1028,7 +1338,10 @@
 
     renderMessage(article, "Unternehmensdaten werden geladen ...");
 
-    const index = await loadCompanyIndex();
+    const [index, ratesData] = await Promise.all([
+      loadCompanyIndex(),
+      loadExchangeRates()
+    ]);
     const entry = findCompanyBySymbol(index, symbol);
 
     if (!entry) {
@@ -1052,6 +1365,7 @@
     document.title = `${companyName} Aktie (${symbol}) | MarktWiki`;
     setMetaDescription(shortenText(company.description, 155));
     let favoriteSymbols = new Set(readFavorites());
+    let displayCurrency = readDisplayCurrency();
     const similarCompanies = findSimilarCompanies(index, company, entry, 3);
 
     const persistAndRender = (nextSymbol) => {
@@ -1070,14 +1384,32 @@
       renderCompanyDetail(article, company, {
         favoriteSymbols,
         onToggleFavorite: persistAndRender,
-        similarCompanies
+        similarCompanies,
+        displayCurrency,
+        ratesData,
+        onDisplayCurrencyChange: updateDisplayCurrency
+      });
+    };
+
+    const updateDisplayCurrency = (nextCurrency) => {
+      displayCurrency = writeDisplayCurrency(nextCurrency);
+      renderCompanyDetail(article, company, {
+        favoriteSymbols,
+        onToggleFavorite: persistAndRender,
+        similarCompanies,
+        displayCurrency,
+        ratesData,
+        onDisplayCurrencyChange: updateDisplayCurrency
       });
     };
 
     renderCompanyDetail(article, company, {
       favoriteSymbols,
       onToggleFavorite: persistAndRender,
-      similarCompanies
+      similarCompanies,
+      displayCurrency,
+      ratesData,
+      onDisplayCurrencyChange: updateDisplayCurrency
     });
   }
 

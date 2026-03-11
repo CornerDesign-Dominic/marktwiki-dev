@@ -3,15 +3,16 @@
 
   let searchDataPromise;
   let searchInitialized = false;
+  let navSubmenusInitialized = false;
   const NAV_ITEMS = [
     { key: "wiki", label: "Wiki", path: "wiki/index.html" },
     {
       key: "markets",
       label: "Maerkte",
-      path: "aktien.html",
       aliases: ["stocks"],
       sections: [
-        { key: "listed-companies", label: "Boersennotierte Unternehmen", path: "aktien.html" }
+        { key: "listed-companies", label: "Boersennotierte Unternehmen", path: "aktien.html", aliases: ["stocks"] },
+        { key: "exchange-rates", label: "Wechselkurse", path: "wechselkurse.html" }
       ]
     },
     { key: "tools", label: "Tools", path: "werkzeuge.html" }
@@ -221,6 +222,16 @@
     searchInitialized = true;
   }
 
+  function isSectionActive(activeNav, section) {
+    if (activeNav === section.key) {
+      return true;
+    }
+    if (Array.isArray(section.aliases) && section.aliases.includes(activeNav)) {
+      return true;
+    }
+    return false;
+  }
+
   function isNavActive(activeNav, item) {
     if (activeNav === item.key) {
       return true;
@@ -228,18 +239,109 @@
     if (Array.isArray(item.aliases) && item.aliases.includes(activeNav)) {
       return true;
     }
+    if (Array.isArray(item.sections) && item.sections.some((section) => isSectionActive(activeNav, section))) {
+      return true;
+    }
     return false;
   }
 
-  function navLink(basePath, activeNav, item) {
+  function navItemMarkup(basePath, activeNav, item) {
+    if (Array.isArray(item.sections) && item.sections.length) {
+      const activeClass = isNavActive(activeNav, item) ? " active" : "";
+      const openClass = isNavActive(activeNav, item) ? " is-open" : "";
+      const keyAttr = ` data-nav-key="${escapeHtml(item.key)}"`;
+      const submenuMarkup = item.sections.map((section) => {
+        const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
+        const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;
+        return `<li><a${sectionActiveClass}${sectionKeyAttr} href="${href(basePath, section.path)}">${section.label}</a></li>`;
+      }).join("");
+
+      return `<li class="nav-item has-submenu${openClass}" data-nav-group="${escapeHtml(item.key)}">
+        <button type="button" class="nav-parent${activeClass}"${keyAttr} data-nav-toggle="${escapeHtml(item.key)}" aria-expanded="${activeClass ? "true" : "false"}" aria-haspopup="true">
+          <span>${item.label}</span>
+          <span class="nav-chevron" aria-hidden="true"></span>
+        </button>
+        <ul class="submenu" data-nav-submenu="${escapeHtml(item.key)}">
+          ${submenuMarkup}
+        </ul>
+      </li>`;
+    }
+
     const activeClass = isNavActive(activeNav, item) ? " class=\"active\"" : "";
     const keyAttr = ` data-nav-key="${escapeHtml(item.key)}"`;
-    return `<li><a${activeClass}${keyAttr} href="${href(basePath, item.path)}">${item.label}</a></li>`;
+    return `<li class="nav-item"><a${activeClass}${keyAttr} href="${href(basePath, item.path)}">${item.label}</a></li>`;
+  }
+
+  function closeSubmenus(navRoot, keepOpenKey = "") {
+    const items = navRoot.querySelectorAll(".has-submenu");
+    items.forEach((item) => {
+      const key = item.getAttribute("data-nav-group");
+      const shouldStayOpen = keepOpenKey && key === keepOpenKey;
+      item.classList.toggle("is-open", shouldStayOpen);
+      const toggle = item.querySelector("[data-nav-toggle]");
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", shouldStayOpen ? "true" : "false");
+      }
+    });
+  }
+
+  function initNavSubmenus() {
+    if (navSubmenusInitialized) {
+      return;
+    }
+
+    const navRoot = document.querySelector(".main-nav");
+    if (!navRoot) {
+      return;
+    }
+
+    const submenuItems = Array.from(navRoot.querySelectorAll(".has-submenu"));
+    if (!submenuItems.length) {
+      navSubmenusInitialized = true;
+      return;
+    }
+
+    submenuItems.forEach((item) => {
+      const toggle = item.querySelector("[data-nav-toggle]");
+      const key = item.getAttribute("data-nav-group");
+      if (!toggle || !key) {
+        return;
+      }
+
+      toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        const isOpen = item.classList.contains("is-open");
+        closeSubmenus(navRoot);
+        if (!isOpen) {
+          item.classList.add("is-open");
+          toggle.setAttribute("aria-expanded", "true");
+        }
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!navRoot.contains(event.target)) {
+        closeSubmenus(navRoot);
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape") {
+        return;
+      }
+      const openToggle = navRoot.querySelector(".has-submenu.is-open [data-nav-toggle]");
+      closeSubmenus(navRoot);
+      if (openToggle) {
+        openToggle.focus();
+      }
+    });
+
+    navSubmenusInitialized = true;
   }
 
   function renderHeader(config = {}) {
     const { basePath, activeNav } = readLayoutConfig(config);
-    const navMarkup = NAV_ITEMS.map((item) => navLink(basePath, activeNav, item)).join("");
+    const navMarkup = NAV_ITEMS.map((item) => navItemMarkup(basePath, activeNav, item)).join("");
 
     return `<header class="site-header">
     <div class="container nav-wrap">
@@ -292,6 +394,7 @@
   function injectHeader(config = {}) {
     injectMarkup(renderHeader(config), "afterbegin");
     initHeaderSearch(config);
+    initNavSubmenus();
   }
 
   function injectFooter(config = {}) {

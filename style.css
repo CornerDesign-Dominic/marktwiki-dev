@@ -133,7 +133,7 @@ img {
   justify-self: end;
 }
 
-.main-nav ul {
+.main-nav > ul {
   list-style: none;
   display: flex;
   gap: 1rem;
@@ -150,11 +150,78 @@ img {
   border-radius: 6px;
 }
 
+.main-nav .nav-item {
+  position: relative;
+}
+
+.main-nav .nav-parent {
+  color: var(--text-secondary);
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  padding: 0.4rem 0.65rem;
+  font: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.main-nav .nav-chevron {
+  width: 0.48rem;
+  height: 0.48rem;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translateY(-1px);
+  transition: transform 0.16s ease;
+}
+
+.main-nav .submenu {
+  list-style: none;
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  min-width: 240px;
+  margin: 0;
+  padding: 0.35rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-secondary);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.26);
+  display: none;
+  flex-direction: column;
+  gap: 0.15rem;
+  z-index: 20;
+}
+
+.main-nav .submenu a {
+  display: block;
+}
+
 .main-nav a.active,
 .main-nav a:hover,
 .main-nav a:focus-visible {
   color: var(--text);
   background: var(--bg);
+}
+
+.main-nav .nav-parent.active,
+.main-nav .nav-parent:hover,
+.main-nav .nav-parent:focus-visible {
+  color: var(--text);
+  background: var(--bg);
+}
+
+.main-nav .has-submenu:hover > .submenu,
+.main-nav .has-submenu:focus-within > .submenu,
+.main-nav .has-submenu.is-open > .submenu {
+  display: flex;
+}
+
+.main-nav .has-submenu:hover > .nav-parent .nav-chevron,
+.main-nav .has-submenu:focus-within > .nav-parent .nav-chevron,
+.main-nav .has-submenu.is-open > .nav-parent .nav-chevron {
+  transform: rotate(-135deg) translateY(-1px);
 }
 
 main {
@@ -1037,12 +1104,32 @@ input[type="number"] {
   gap: 0.65rem;
 }
 
+.company-currency-switch {
+  gap: 0.3rem;
+}
+
+.company-currency-switch label {
+  margin: 0;
+  font-size: 0.81rem;
+  line-height: 1.25;
+  color: var(--text-secondary);
+}
+
+.company-currency-switch select {
+  width: 100%;
+  min-height: 38px;
+}
+
 .company-price-block {
   margin: 0;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
   display: grid;
   gap: 0.2rem;
+}
+
+.company-original-currency {
+  font-size: 0.8rem;
 }
 
 .company-metric-label {
@@ -1719,12 +1806,18 @@ input[type="number"] {
     flex-basis: 240px;
   }
 
-  .main-nav ul {
+  .main-nav > ul {
     width: auto;
     justify-content: flex-start;
     flex-wrap: nowrap;
     gap: 0.5rem;
     overflow-x: auto;
+  }
+
+  .main-nav .submenu {
+    position: static;
+    min-width: 210px;
+    margin-top: 0.25rem;
   }
 
   main {

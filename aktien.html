@@ -9,7 +9,7 @@
   <script src="./layout.js"></script>
   <script src="./main.js" defer></script>
 </head>
-<body data-page="stocks" data-base-path="." data-nav="markets">
+<body data-page="stocks" data-base-path="." data-nav="listed-companies">
   <script>window.MarktWikiLayout.injectHeader();</script>
 
   <main>
@@ -32,6 +32,13 @@
           <div class="field">
             <label for="stocks-currency-filter">Waehrung</label>
             <select id="stocks-currency-filter" aria-label="Nach Waehrung filtern"></select>
+          </div>
+          <div class="field">
+            <label for="stocks-display-currency">Anzeigewaehrung</label>
+            <select id="stocks-display-currency" aria-label="Anzeigewaehrung auswaehlen">
+              <option value="EUR">EUR</option>
+              <option value="USD">USD</option>
+            </select>
           </div>
           <div class="field">
             <label for="stocks-sector-filter">Sektor</label>
