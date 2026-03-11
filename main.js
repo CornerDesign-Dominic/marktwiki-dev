@@ -19,13 +19,30 @@
   const RAW_CURRENCY_ALIAS = {
     GBp: "GBX"
   };
+  const CURRENCY_FLAG_COUNTRY_BY_CODE = {
+    AUD: "AU",
+    CAD: "CA",
+    CHF: "CH",
+    EUR: "EU",
+    GBP: "GB",
+    GBX: "GB",
+    INR: "IN",
+    JPY: "JP",
+    SAR: "SA",
+    SEK: "SE",
+    THB: "TH",
+    TWD: "TW",
+    USD: "US"
+  };
   const jsonPromiseCache = new Map();
   const convertedValueCache = new Map();
   const normalizedValueCache = new Map();
   const exchangeRateDisplayCache = new Map();
+  const currencyNameCache = new Map();
   const stockMarketDataCache = new Map();
   let stockMarketDataPromise = null;
   let exchangeRatesPromise = null;
+  let currencyDisplayNameFormatter = null;
 
   async function loadJson(path) {
     const cleanPath = String(path || "").replace(/^\/+/, "");
@@ -161,6 +178,83 @@
     }
 
     return raw.toUpperCase();
+  }
+
+  function getCurrencyDisplayName(currencyCode) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
+      return "";
+    }
+
+    if (currencyNameCache.has(normalizedCode)) {
+      return currencyNameCache.get(normalizedCode);
+    }
+
+    if (!currencyDisplayNameFormatter && typeof Intl?.DisplayNames === "function") {
+      currencyDisplayNameFormatter = new Intl.DisplayNames(["de"], { type: "currency" });
+    }
+
+    let name = "";
+    if (currencyDisplayNameFormatter) {
+      try {
+        name = normalizeText(currencyDisplayNameFormatter.of(normalizedCode));
+      } catch (_) {
+        name = "";
+      }
+    }
+
+    if (name.toUpperCase() === normalizedCode) {
+      name = "";
+    }
+
+    currencyNameCache.set(normalizedCode, name);
+    return name;
+  }
+
+  function getCurrencyFlag(currencyCode) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
+      return "";
+    }
+
+    const fallbackCountryCode = CURRENCY_FLAG_COUNTRY_BY_CODE[normalizedCode] || "";
+    return countryCodeToFlag(fallbackCountryCode);
+  }
+
+  function formatCurrencyLabel(currencyCode) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
+      return "";
+    }
+
+    const currencyName = getCurrencyDisplayName(normalizedCode);
+    return currencyName ? `${currencyName} (${normalizedCode})` : normalizedCode;
+  }
+
+  function createCurrencyDisplayNode(currencyCode) {
+    const label = formatCurrencyLabel(currencyCode);
+    if (!label) {
+      return null;
+    }
+
+    const wrapper = document.createElement("span");
+    wrapper.className = "currency-with-flag";
+
+    const flag = getCurrencyFlag(currencyCode);
+    if (flag) {
+      const flagElement = document.createElement("span");
+      flagElement.className = "currency-flag";
+      flagElement.setAttribute("aria-hidden", "true");
+      flagElement.textContent = flag;
+      wrapper.appendChild(flagElement);
+    }
+
+    const labelElement = document.createElement("span");
+    labelElement.className = "currency-label";
+    labelElement.textContent = label;
+    wrapper.appendChild(labelElement);
+
+    return wrapper;
   }
 
   function resolveDisplayCurrency(rawCurrency) {
@@ -724,7 +818,12 @@
 
     const title = document.createElement("h2");
     title.className = "exchange-rate-card-title";
-    title.textContent = currencyCode || "k. A.";
+    const currencyDisplay = createCurrencyDisplayNode(currencyCode);
+    if (currencyDisplay) {
+      title.appendChild(currencyDisplay);
+    } else {
+      title.textContent = "k. A.";
+    }
 
     const primary = document.createElement("p");
     primary.className = "exchange-rate-primary";

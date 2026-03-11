@@ -814,16 +814,29 @@ input[type="number"] {
 }
 
 .exchange-rates-grid {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .exchange-rate-card {
   display: grid;
   gap: 0.35rem;
+  width: 100%;
 }
 
 .exchange-rate-card-title {
   margin: 0;
+}
+
+.currency-with-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.currency-flag {
+  display: inline-block;
+  font-size: 1em;
+  line-height: 1;
 }
 
 .exchange-rate-primary {
