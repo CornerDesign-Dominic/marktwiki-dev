@@ -1572,7 +1572,10 @@
       ? formatCurrency(company.price, originalCurrency)
       : formatCurrency(convertedPrice, targetCurrency);
     const originalPrice = formatCurrency(company.price, originalCurrency);
-    priceLine.textContent = `Kurs: ${primaryPrice} | Original: ${originalPrice}`;
+    const baseCurrencyCode = normalizeCurrencyForRates(originalCurrency) || "Basiswaehrung";
+    priceLine.textContent = convertedPrice === null
+      ? `Kurs: ${primaryPrice}`
+      : `Kurs: ${primaryPrice} | ${baseCurrencyCode}: ${originalPrice}`;
 
     const facts = document.createElement("dl");
     facts.className = "stock-meta stock-facts stock-facts-compact";
@@ -2033,11 +2036,152 @@
     }
 
     const link = document.createElement("a");
+    link.className = "company-external-link";
     link.href = url;
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = url;
+    link.title = url;
+
+    try {
+      const parsedUrl = new URL(url);
+      link.textContent = parsedUrl.hostname.replace(/^www\./i, "") || url;
+    } catch (_) {
+      link.textContent = url;
+    }
+
     return link;
+  }
+
+  function createPrimarySecondaryValue(primaryValue, secondaryValue = "", options = {}) {
+    const { secondaryLabel = "" } = options;
+    const wrapper = document.createElement("span");
+    wrapper.className = "value-stack";
+
+    const primary = document.createElement("span");
+    primary.className = "value-primary";
+    primary.textContent = normalizeText(primaryValue) || "k. A.";
+    wrapper.appendChild(primary);
+
+    const secondaryText = normalizeText(secondaryValue);
+    if (secondaryText) {
+      const secondary = document.createElement("span");
+      secondary.className = "value-secondary";
+      secondary.textContent = secondaryLabel
+        ? `${secondaryLabel}: ${secondaryText}`
+        : secondaryText;
+      wrapper.appendChild(secondary);
+    }
+
+    return wrapper;
+  }
+
+  function formatCurrencyWithOptionalBase(value, options = {}) {
+    const {
+      sourceCurrency = "",
+      displayCurrency = DEFAULT_DISPLAY_CURRENCY,
+      ratesData = null,
+      formatter = formatCurrency
+    } = options;
+
+    const sourceCode = normalizeCurrencyForRates(sourceCurrency);
+    const targetCode = normalizeCurrencyForRates(displayCurrency);
+    const convertedValue = ratesData ? convertCurrencyValue(value, sourceCode, targetCode, ratesData) : null;
+    const canShowConverted = convertedValue !== null && targetCode && targetCode !== sourceCode;
+    const primaryValue = canShowConverted
+      ? formatter(convertedValue, targetCode)
+      : formatter(value, sourceCode);
+    const secondaryValue = canShowConverted
+      ? formatter(value, sourceCode)
+      : "";
+
+    return createPrimarySecondaryValue(primaryValue, secondaryValue, {
+      secondaryLabel: sourceCode || "Basiswaehrung"
+    });
+  }
+
+  function parseRangeValues(rawRange) {
+    const valueText = normalizeText(rawRange);
+    if (!valueText) {
+      return null;
+    }
+
+    const numericMatches = valueText.match(/-?\d+(?:[.,]\d+)?/g);
+    if (!Array.isArray(numericMatches) || numericMatches.length < 2) {
+      return null;
+    }
+
+    const firstValue = toNumber(numericMatches[0]);
+    const secondValue = toNumber(numericMatches[1]);
+    if (firstValue === null || secondValue === null) {
+      return null;
+    }
+
+    return {
+      low: Math.min(firstValue, secondValue),
+      high: Math.max(firstValue, secondValue)
+    };
+  }
+
+  function createRangeFactItems(rangeValue, options = {}) {
+    const {
+      sourceCurrency = "",
+      displayCurrency = DEFAULT_DISPLAY_CURRENCY,
+      ratesData = null
+    } = options;
+
+    const parsedRange = parseRangeValues(rangeValue);
+    if (!parsedRange) {
+      return [{
+        label: "52W-Range",
+        value: normalizeText(rangeValue) || "k. A."
+      }];
+    }
+
+    const sourceCode = normalizeCurrencyForRates(sourceCurrency);
+    const targetCode = normalizeCurrencyForRates(displayCurrency);
+    const lowConverted = ratesData ? convertCurrencyValue(parsedRange.low, sourceCode, targetCode, ratesData) : null;
+    const highConverted = ratesData ? convertCurrencyValue(parsedRange.high, sourceCode, targetCode, ratesData) : null;
+    const canShowConverted = lowConverted !== null
+      && highConverted !== null
+      && targetCode
+      && targetCode !== sourceCode;
+
+    const resolvedCurrency = canShowConverted ? targetCode : sourceCode;
+    const lowDisplay = canShowConverted ? lowConverted : parsedRange.low;
+    const highDisplay = canShowConverted ? highConverted : parsedRange.high;
+    const spreadDisplay = highDisplay - lowDisplay;
+
+    const secondaryLow = canShowConverted ? formatCurrency(parsedRange.low, sourceCode) : "";
+    const secondaryHigh = canShowConverted ? formatCurrency(parsedRange.high, sourceCode) : "";
+    const secondarySpread = canShowConverted ? formatCurrency(parsedRange.high - parsedRange.low, sourceCode) : "";
+    const secondaryLabel = sourceCode || "Basiswaehrung";
+
+    return [
+      {
+        label: "52W Tief",
+        value: createPrimarySecondaryValue(
+          formatCurrency(lowDisplay, resolvedCurrency),
+          secondaryLow,
+          { secondaryLabel }
+        )
+      },
+      {
+        label: "52W Hoch",
+        value: createPrimarySecondaryValue(
+          formatCurrency(highDisplay, resolvedCurrency),
+          secondaryHigh,
+          { secondaryLabel }
+        )
+      },
+      {
+        label: "52W Spanne",
+        value: createPrimarySecondaryValue(
+          formatCurrency(spreadDisplay, resolvedCurrency),
+          secondarySpread,
+          { secondaryLabel }
+        )
+      }
+    ];
   }
 
   function createStocksFilterLink(value, key) {
@@ -2355,13 +2499,6 @@
     const displayChange = ratesData
       ? convertCurrencyValue(company.change, companyCurrency, selectedDisplayCurrency, ratesData)
       : null;
-    const displayMarketCap = ratesData
-      ? convertCurrencyValue(company.marketCap, companyCurrency, selectedDisplayCurrency, ratesData)
-      : null;
-    const displayDividend = ratesData
-      ? convertCurrencyValue(company.lastDividend, companyCurrency, selectedDisplayCurrency, ratesData)
-      : null;
-
     const backLink = document.createElement("a");
     backLink.className = "back-link";
     backLink.href = `${basePath}/aktien.html`;
@@ -2459,7 +2596,8 @@
       : formatCurrency(displayPrice, selectedDisplayCurrency);
     const priceOriginal = document.createElement("span");
     priceOriginal.className = "muted company-original-currency";
-    priceOriginal.textContent = `Original: ${formatCurrency(company.price, companyCurrency)}`;
+    const baseCurrencyCode = normalizeCurrencyForRates(companyCurrency);
+    priceOriginal.textContent = `${baseCurrencyCode || "Basiswaehrung"}: ${formatCurrency(company.price, companyCurrency)}`;
     priceBox.append(priceLabel, priceValue, priceOriginal);
 
     const changeBox = document.createElement("div");
@@ -2488,6 +2626,11 @@
       normalizeText(company.zip),
       normalizeText(company.country)
     ].filter(Boolean);
+    const rangeFactItems = createRangeFactItems(company.range, {
+      sourceCurrency: companyCurrency,
+      displayCurrency: selectedDisplayCurrency,
+      ratesData
+    });
 
     const summarySection = document.createElement("section");
     summarySection.id = "summary";
@@ -2521,17 +2664,23 @@
       createCompanyFactsGroup("Wichtigste Kennzahlen", [
         {
           label: "Kurs",
-          value: displayPrice === null
-            ? formatCurrency(company.price, companyCurrency)
-            : `${formatCurrency(displayPrice, selectedDisplayCurrency)} (Original: ${formatCurrency(company.price, companyCurrency)})`
+          value: formatCurrencyWithOptionalBase(company.price, {
+            sourceCurrency: companyCurrency,
+            displayCurrency: selectedDisplayCurrency,
+            ratesData,
+            formatter: formatCurrency
+          })
         },
         {
           label: "Market Cap",
-          value: displayMarketCap === null
-            ? formatCompactCurrency(company.marketCap, companyCurrency)
-            : `${formatCompactCurrency(displayMarketCap, selectedDisplayCurrency)} (Original: ${formatCompactCurrency(company.marketCap, companyCurrency)})`
+          value: formatCurrencyWithOptionalBase(company.marketCap, {
+            sourceCurrency: companyCurrency,
+            displayCurrency: selectedDisplayCurrency,
+            ratesData,
+            formatter: formatCompactCurrency
+          })
         },
-        { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
+        ...rangeFactItems.slice(0, 2),
         { label: "Volume", value: formatCompactNumber(company.volume) }
       ])
     );
@@ -2568,18 +2717,24 @@
       createCompanyFactsGroup("Boersen- und Handelsdaten", [
         {
           label: "Market Cap",
-          value: displayMarketCap === null
-            ? formatCompactCurrency(company.marketCap, companyCurrency)
-            : `${formatCompactCurrency(displayMarketCap, selectedDisplayCurrency)} (Original: ${formatCompactCurrency(company.marketCap, companyCurrency)})`
+          value: formatCurrencyWithOptionalBase(company.marketCap, {
+            sourceCurrency: companyCurrency,
+            displayCurrency: selectedDisplayCurrency,
+            ratesData,
+            formatter: formatCompactCurrency
+          })
         },
         { label: "Beta", value: formatNumber(company.beta, { maximumFractionDigits: 3 }) },
         {
           label: "Dividende",
-          value: displayDividend === null
-            ? formatCurrency(company.lastDividend, companyCurrency)
-            : `${formatCurrency(displayDividend, selectedDisplayCurrency)} (Original: ${formatCurrency(company.lastDividend, companyCurrency)})`
+          value: formatCurrencyWithOptionalBase(company.lastDividend, {
+            sourceCurrency: companyCurrency,
+            displayCurrency: selectedDisplayCurrency,
+            ratesData,
+            formatter: formatCurrency
+          })
         },
-        { label: "52-Wochen-Range", value: normalizeText(company.range) || "k. A." },
+        ...rangeFactItems,
         { label: "Volume", value: formatCompactNumber(company.volume) },
         { label: "Average Volume", value: formatCompactNumber(company.averageVolume) }
       ]),
