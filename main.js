@@ -47,13 +47,17 @@
   };
   const CURRENCY_FLAG_COUNTRY_BY_CODE = {
     AUD: "AU",
+    BRL: "BR",
     CAD: "CA",
     CHF: "CH",
+    CNY: "CN",
+    DKK: "DK",
     EUR: "EU",
     GBP: "GB",
     GBX: "GB",
     INR: "IN",
     JPY: "JP",
+    NOK: "NO",
     SAR: "SA",
     SEK: "SE",
     THB: "TH",
@@ -1483,7 +1487,7 @@
         const updateLabel = updatedAtValue
           ? ` | Stand: ${formatDate(updatedAtValue)}`
           : "";
-        meta.textContent = `${sortedEntries.length} Wechselkurse | Basis: ${selectedBaseCurrency}${sourceLabel}${updateLabel}`;
+        meta.textContent = `${sortedEntries.length} Wechselkurse${sourceLabel}${updateLabel}`;
       }
     };
 
