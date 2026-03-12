@@ -31,6 +31,7 @@
     CZ: "assets/flags/cz.svg",
     DE: "assets/flags/de.svg",
     DK: "assets/flags/dk.svg",
+    EU: "assets/flags/eu.svg",
     ES: "assets/flags/es.svg",
     FR: "assets/flags/fr.svg",
     GB: "assets/flags/gb.svg",
