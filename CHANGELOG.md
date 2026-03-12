@@ -1,5 +1,14 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.46
+
+- Automatische taegliche Aktualisierung der Wechselkurse auf Basis der offiziellen ECB-Referenzkurse eingefuehrt.
+- Neue GitHub Action `.github/workflows/update-ecb-exchange-rates.yml` angelegt, die das Update per Cron oder manuell ausfuehren und nur bei echten Aenderungen committen kann.
+- Neues Node-Skript `scripts/update-ecb-exchange-rates.mjs` hinzugefuegt, das die ECB-XML robust validiert und `data/exchange-rates.json` statisch neu erzeugt.
+- `data/exchange-rates.json` von einer manuell gepflegten Datei auf eine automatisch generierte ECB-Datenquelle mit EUR-Basis umgestellt.
+
+---
+
 ## Version 0.45
 
 - Aktienseite um eine eigene lokale Unternehmenssuche erweitert (unabhaengig von der globalen Header-Suche).

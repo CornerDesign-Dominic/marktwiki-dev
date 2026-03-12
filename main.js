@@ -411,6 +411,7 @@
 
       return {
         updatedAt: normalizeText(payload.updatedAt),
+        source: normalizeText(payload.source),
         usdPerUnit: rates
       };
     });
@@ -1474,10 +1475,15 @@
       }
 
       if (meta) {
-        const updateLabel = normalizeText(ratesData.updatedAt)
-          ? ` | Stand: ${formatDate(ratesData.updatedAt)}`
+        const sourceValue = normalizeText(ratesData?.source);
+        const updatedAtValue = normalizeText(ratesData?.updatedAt);
+        const sourceLabel = sourceValue
+          ? ` | Quelle: ${sourceValue}`
           : "";
-        meta.textContent = `${sortedEntries.length} Wechselkurse | Basis: ${selectedBaseCurrency}${updateLabel}`;
+        const updateLabel = updatedAtValue
+          ? ` | Stand: ${formatDate(updatedAtValue)}`
+          : "";
+        meta.textContent = `${sortedEntries.length} Wechselkurse | Basis: ${selectedBaseCurrency}${sourceLabel}${updateLabel}`;
       }
     };
 
