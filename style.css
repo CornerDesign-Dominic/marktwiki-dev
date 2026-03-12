@@ -780,6 +780,10 @@ input[type="number"] {
   align-items: end;
 }
 
+.exchange-rates-controls-grid > .field:first-child {
+  grid-column: 1 / -1;
+}
+
 .exchange-rates-controls .field {
   min-width: 0;
   display: grid;
@@ -787,39 +791,49 @@ input[type="number"] {
   align-content: start;
 }
 
-.exchange-rates-controls .field label {
+.exchange-rates-controls .field label,
+.exchange-rates-controls .field .field-label {
   margin: 0;
   font-size: 0.81rem;
   line-height: 1.25;
   color: var(--text-secondary);
 }
 
-.exchange-rates-controls select {
+.exchange-rates-controls input[type="search"] {
   width: 100%;
   min-width: 0;
   min-height: 42px;
   box-sizing: border-box;
   font-size: 0.92rem;
-  padding: 0.7rem 2.6rem 0.7rem 0.82rem;
+  padding: 0.7rem 0.82rem;
   border-radius: 10px;
   border-color: color-mix(in srgb, var(--border) 82%, var(--surface) 18%);
-  background:
-    linear-gradient(45deg, transparent 50%, var(--text-secondary) 50%) calc(100% - 18px) calc(50% - 3px) / 7px 7px no-repeat,
-    linear-gradient(135deg, var(--text-secondary) 50%, transparent 50%) calc(100% - 13px) calc(50% - 3px) / 7px 7px no-repeat,
-    color-mix(in srgb, var(--bg-secondary) 86%, var(--surface) 14%);
-  appearance: none;
-  -webkit-appearance: none;
+  background: color-mix(in srgb, var(--bg-secondary) 86%, var(--surface) 14%);
+  color: var(--text);
   transition: border-color 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease;
 }
 
-.exchange-rates-controls select:hover {
+.exchange-rates-controls input[type="search"]::placeholder {
+  color: color-mix(in srgb, var(--text-secondary) 86%, transparent);
+}
+
+.exchange-rates-controls input[type="search"]:hover {
   border-color: color-mix(in srgb, var(--accent) 42%, var(--border));
 }
 
-.exchange-rates-controls select:focus-visible {
+.exchange-rates-controls input[type="search"]:focus-visible {
   outline: none;
   border-color: color-mix(in srgb, var(--accent) 78%, var(--border));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+
+.exchange-sort-toggle {
+  width: 100%;
+}
+
+.exchange-sort-option {
+  min-height: 42px;
+  padding-inline: 0.9rem;
 }
 
 .exchange-rates-meta {

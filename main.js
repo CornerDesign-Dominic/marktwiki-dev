@@ -64,6 +64,15 @@
     TWD: "TW",
     USD: "US"
   };
+  const CURRENCY_SEARCH_ALIAS_BY_CODE = {
+    CHF: "schweiz schweizer swiss",
+    EUR: "euro europa euroraum",
+    GBP: "pfund britisches pfund grossbritannien england uk",
+    GBX: "pence pfund britisches pfund grossbritannien england uk",
+    NOK: "norwegen norwegische krone",
+    SEK: "schweden schwedische krone",
+    USD: "dollar usa us"
+  };
   const jsonPromiseCache = new Map();
   const convertedValueCache = new Map();
   const normalizedValueCache = new Map();
@@ -897,6 +906,20 @@
     return currencyName ? `${normalizedCode} — ${currencyName}` : normalizedCode;
   }
 
+  function getCurrencySearchText(currencyCode) {
+    const normalizedCode = normalizeCurrencyForRates(currencyCode);
+    if (!normalizedCode) {
+      return "";
+    }
+
+    return normalizeForMatch([
+      normalizedCode,
+      getCurrencyDisplayName(normalizedCode),
+      formatCurrencyLabel(normalizedCode),
+      CURRENCY_SEARCH_ALIAS_BY_CODE[normalizedCode] || ""
+    ].join(" "));
+  }
+
   function createCurrencyCombobox(options = {}) {
     const {
       input,
@@ -1442,10 +1465,25 @@
     });
   }
 
+  function setExchangeSortDirectionToggleState(toggle, selectedDirection) {
+    if (!toggle) {
+      return;
+    }
+
+    const direction = normalizeText(selectedDirection) === "desc" ? "desc" : "asc";
+    const buttons = toggle.querySelectorAll("[data-sort-direction]");
+    buttons.forEach((button) => {
+      const isActive = normalizeText(button.getAttribute("data-sort-direction")) === direction;
+      button.classList.toggle("is-active", isActive);
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+  }
+
   async function initExchangeRates() {
     const list = document.querySelector("#exchange-rates-list");
+    const searchInput = document.querySelector("#exchange-search-input");
     const baseToggle = document.querySelector("#exchange-base-currency");
-    const sortSelect = document.querySelector("#exchange-sort-direction");
+    const sortToggle = document.querySelector("#exchange-sort-direction");
     const meta = document.querySelector("#exchange-rates-meta");
 
     if (!list) {
@@ -1455,14 +1493,23 @@
     renderMessage(list, "Wechselkurse werden geladen ...");
     const ratesData = await loadExchangeRates();
     let selectedBaseCurrency = readDisplayCurrency();
+    let selectedDirection = "asc";
     initExchangeConverter(ratesData, selectedBaseCurrency);
     setExchangeBaseCurrencyToggleState(baseToggle, selectedBaseCurrency);
+    setExchangeSortDirectionToggleState(sortToggle, selectedDirection);
 
     const applyExchangeFilters = () => {
       selectedBaseCurrency = resolveDisplayCurrency(selectedBaseCurrency);
-      const selectedDirection = normalizeText(sortSelect?.value) === "asc" ? "asc" : "desc";
+      const searchQuery = normalizeForMatch(searchInput?.value || "");
       const entries = getExchangeRateEntries(selectedBaseCurrency, ratesData);
-      const sortedEntries = [...entries].sort((a, b) => {
+      const filteredEntries = entries.filter((entry) => {
+        if (!searchQuery) {
+          return true;
+        }
+
+        return getCurrencySearchText(entry?.currencyCode).includes(searchQuery);
+      });
+      const sortedEntries = [...filteredEntries].sort((a, b) => {
         const rateA = toNumber(a?.rate) ?? Number.POSITIVE_INFINITY;
         const rateB = toNumber(b?.rate) ?? Number.POSITIVE_INFINITY;
         return selectedDirection === "asc" ? rateA - rateB : rateB - rateA;
@@ -1471,7 +1518,7 @@
       list.innerHTML = "";
 
       if (!sortedEntries.length) {
-        renderMessage(list, "Es sind keine Wechselkurse verfuegbar.");
+        renderMessage(list, searchQuery ? "Keine Wechselkurse fuer diese Suche gefunden." : "Es sind keine Wechselkurse verfuegbar.");
       } else {
         sortedEntries.forEach((entry) => {
           list.appendChild(createExchangeRateCard(entry, selectedBaseCurrency));
@@ -1498,7 +1545,14 @@
         applyExchangeFilters();
       });
     });
-    sortSelect?.addEventListener("change", applyExchangeFilters);
+    sortToggle?.querySelectorAll("[data-sort-direction]").forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedDirection = normalizeText(button.getAttribute("data-sort-direction")) === "desc" ? "desc" : "asc";
+        setExchangeSortDirectionToggleState(sortToggle, selectedDirection);
+        applyExchangeFilters();
+      });
+    });
+    searchInput?.addEventListener("input", applyExchangeFilters);
 
     applyExchangeFilters();
   }

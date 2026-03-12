@@ -100,6 +100,17 @@
         <h2 id="exchange-rates-controls-heading" class="sr-only">Wechselkurse filtern und sortieren</h2>
         <div class="exchange-rates-controls-grid">
           <div class="field">
+            <label for="exchange-search-input">Waehrung suchen</label>
+            <input
+              id="exchange-search-input"
+              type="search"
+              inputmode="search"
+              autocomplete="off"
+              placeholder="z. B. USD, Dollar oder Schweiz"
+              aria-label="Waehrung nach Code oder Namen suchen"
+            >
+          </div>
+          <div class="field">
             <label id="exchange-base-currency-label">Anzeige relativ zu</label>
             <div id="exchange-base-currency" class="company-currency-toggle exchange-base-currency-toggle" role="group" aria-labelledby="exchange-base-currency-label">
               <button type="button" class="company-currency-option" data-currency="USD" aria-pressed="false">USD</button>
@@ -107,11 +118,11 @@
             </div>
           </div>
           <div class="field">
-            <label for="exchange-sort-direction">Sortierung nach Wechselkurswert</label>
-            <select id="exchange-sort-direction" class="exchange-rates-select" aria-label="Sortierung nach Wechselkurswert">
-              <option value="asc">Aufsteigend</option>
-              <option value="desc">Absteigend</option>
-            </select>
+            <span id="exchange-sort-direction-label" class="field-label">Sortierung nach Wechselkurswert</span>
+            <div id="exchange-sort-direction" class="company-currency-toggle exchange-sort-toggle" role="group" aria-labelledby="exchange-sort-direction-label">
+              <button type="button" class="company-currency-option exchange-sort-option is-active" data-sort-direction="asc" aria-pressed="true">Aufsteigend</button>
+              <button type="button" class="company-currency-option exchange-sort-option" data-sort-direction="desc" aria-pressed="false">Absteigend</button>
+            </div>
           </div>
         </div>
         <p id="exchange-rates-meta" class="muted exchange-rates-meta" role="status" aria-live="polite"></p>
