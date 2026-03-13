@@ -419,7 +419,7 @@
       panelList.innerHTML = item.sections.map((section) => {
         const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
         const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;
-        return `<li><a${sectionActiveClass}${sectionKeyAttr} href="${href(basePath, section.path)}">${section.label}</a></li>`;
+        return `<li class="nav-submenu-item"><a${sectionActiveClass}${sectionKeyAttr} href="${href(basePath, section.path)}">${section.label}</a></li>`;
       }).join("");
     };
 
@@ -574,8 +574,13 @@
         </ul>
       </nav>
       <div id="main-nav-submenu-panel" class="nav-submenu-panel" hidden aria-hidden="true">
-        <p class="nav-submenu-title" data-submenu-title></p>
-        <ul class="nav-submenu-list" data-submenu-list></ul>
+        <div class="nav-submenu-head">
+          <p class="nav-submenu-eyebrow">Bereich</p>
+          <p class="nav-submenu-title" data-submenu-title></p>
+        </div>
+        <div class="nav-submenu-scroll">
+          <ul class="nav-submenu-list" data-submenu-list></ul>
+        </div>
       </div>
     </div>
     ${themeToggleMarkup}

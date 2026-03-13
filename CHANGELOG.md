@@ -1,5 +1,13 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.51
+
+- Aufgeklapptes Untermenue-Panel im Header vergroessert und an derselben festen Position beibehalten.
+- Panel-Inhalt in `layout.js` um einen klaren Kopfbereich und einen separaten Scrollbereich ergaenzt, ohne die bestehende Navigationslogik zu aendern.
+- Lesbarkeit und Bedienung des Untermenues in `style.css` verbessert: mehr Innenabstand, groessere Klickflaechen, klarere Titelhierarchie und saubere Fokus-/Hover-Zustaende.
+
+---
+
 ## Version 0.50
 
 - Neue statische Glossarseite `glossar.html` im bestehenden MarktWiki-Layout angelegt, bewusst ohne Verlinkung in Navigation, Header oder Footer.
