@@ -37,8 +37,8 @@ jobs:
 
       - name: Fetch stock EOD file
         env:
-          EOD_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
-          EOD_API_AUTH_VALUE: ${{ secrets.MASSIVE_API_KEY }}
+          EOD_API_KEY: ${{ secrets.MASSIVE_API_KEY  }}
+          EOD_API_AUTH_VALUE: ${{ secrets.MASSIVE_API_KEY  }}
         run: node scripts/fetch-eod-stock-data.mjs
 
       - name: Process matched stock EOD data
