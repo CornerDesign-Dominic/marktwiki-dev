@@ -1,0 +1,53 @@
+{
+  "id": "uniswap",
+  "name": "Uniswap",
+  "symbol": "UNI",
+  "category": "DeFi",
+  "consensusMechanism": "Ethereum / Proof of Stake",
+  "launchYear": 2020,
+  "network": "Ethereum",
+  "hasMaxSupply": true,
+  "currency": "USD",
+  "price": 12.3,
+  "changePct": 0.31,
+  "marketCapBn": 7.4,
+  "summary": "Governance-Token eines grossen dezentralen Handelsprotokolls.",
+  "description": "UNI repraesentiert das Governance-Asset des Uniswap-Oekosystems. Die Bedeutung haengt von Handelsvolumen, Governance und regulatorischem Umfeld fuer DeFi ab.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 12.3,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.31
+  },
+  "circulatingSupply": 600000000,
+  "maxSupply": 1000000000,
+  "useCase": "Governance im DeFi-Protokoll Uniswap",
+  "dominance": "Wichtiges DeFi-Governance-Asset",
+  "organization": "Uniswap Labs / DAO",
+  "allocations": [
+    {
+      "title": "Einordnung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "DEX Governance",
+          "share": 60.0
+        },
+        {
+          "label": "DeFi Oekosystem",
+          "share": 25.0
+        },
+        {
+          "label": "Community Treasury",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Stark von DeFi-Aktivitaet abhaengig",
+    "Governance-Mehrwert wird am Markt unterschiedlich bewertet"
+  ],
+  "file": "uniswap.json"
+}

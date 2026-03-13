@@ -1,0 +1,63 @@
+{
+  "id": "aluminum",
+  "name": "Aluminium",
+  "symbol": "ALI",
+  "category": "Industriemetalle",
+  "regionFocus": "Global",
+  "currency": "USD",
+  "unit": "Tonne",
+  "price": 2248,
+  "changePct": -0.12,
+  "referenceMarket": "LME",
+  "summary": "Aluminium ist ein Leichtmetall fuer Transport, Verpackung und Bau.",
+  "description": "Aluminium wird wegen seines Gewichts und seiner Formbarkeit breit eingesetzt. Energiekosten spielen fuer die Produktion und damit fuer den Marktpreis eine grosse Rolle.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 2248,
+    "currency": "USD",
+    "unit": "Tonne",
+    "referenceMarket": "LME",
+    "changePct": -0.12
+  },
+  "majorOrigins": [
+    "China",
+    "Indien",
+    "Russland",
+    "Kanada"
+  ],
+  "mainUses": [
+    "Verpackung",
+    "Transport",
+    "Bau"
+  ],
+  "contracts": [
+    "Aluminium Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "China",
+      "share": 59.0
+    },
+    {
+      "label": "Indien",
+      "share": 6.0
+    },
+    {
+      "label": "Russland",
+      "share": 5.0
+    },
+    {
+      "label": "Kanada",
+      "share": 3.0
+    },
+    {
+      "label": "Rest",
+      "share": 27.0
+    }
+  ],
+  "marketNotes": [
+    "Energieintensive Produktion",
+    "LME-Lagerdaten wichtig"
+  ],
+  "file": "aluminum.json"
+}

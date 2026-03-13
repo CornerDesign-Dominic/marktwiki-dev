@@ -1,0 +1,53 @@
+{
+  "id": "tether",
+  "name": "Tether",
+  "symbol": "USDT",
+  "category": "Stablecoin",
+  "consensusMechanism": "Mehrere Netzwerke",
+  "launchYear": 2014,
+  "network": "Ethereum / Tron / weitere",
+  "hasMaxSupply": false,
+  "currency": "USD",
+  "price": 1.0,
+  "changePct": 0.01,
+  "marketCapBn": 108.0,
+  "summary": "Dollar-naher Stablecoin fuer Handel und Liquiditaet.",
+  "description": "USDT wird als zentraler Handels- und Transfer-Stablecoin genutzt. Die Nachfrage haengt eng mit Handelsaktivitaet und Marktliquiditaet zusammen.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 1.0,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.01
+  },
+  "circulatingSupply": 108000000000,
+  "maxSupply": null,
+  "useCase": "Dollarnahe Handels- und Transferliquiditaet",
+  "dominance": "Fuehrender Stablecoin nach Umlaufmenge",
+  "organization": "Tether Holdings",
+  "allocations": [
+    {
+      "title": "Nutzung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Boersenliquiditaet",
+          "share": 55.0
+        },
+        {
+          "label": "Transfers",
+          "share": 25.0
+        },
+        {
+          "label": "DeFi",
+          "share": 20.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Dollarnahe Preisbindung statt Renditeasset",
+    "Stablecoin-Risiken liegen im Emittentenmodell"
+  ],
+  "file": "tether.json"
+}

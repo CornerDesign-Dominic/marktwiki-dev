@@ -1,0 +1,70 @@
+{
+  "id": "ftse-100",
+  "name": "FTSE 100",
+  "ticker": "UKX",
+  "region": "Europa",
+  "country": "Grossbritannien",
+  "type": "Blue Chip",
+  "componentBucket": "100 Werte",
+  "indexKind": "Preisindex",
+  "currency": "GBP",
+  "level": 7796.2,
+  "changePct": 0.18,
+  "componentCount": 100,
+  "operator": "FTSE Russell",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Leitindex grosser britischer Standardwerte.",
+  "description": "Der FTSE 100 enthaelt die groessten an der Londoner Boerse notierten Unternehmen. Viele Mitglieder erwirtschaften einen grossen Teil ihrer Umsaetze international.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Finanzen",
+          "share": 21.0
+        },
+        {
+          "label": "Rohstoffe",
+          "share": 14.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 13.0
+        },
+        {
+          "label": "Energie",
+          "share": 12.0
+        },
+        {
+          "label": "Rest",
+          "share": 40.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "Shell",
+      "weight": "8.4 %"
+    },
+    {
+      "name": "AstraZeneca",
+      "weight": "7.9 %"
+    },
+    {
+      "name": "HSBC",
+      "weight": "7.2 %"
+    },
+    {
+      "name": "Unilever",
+      "weight": "4.5 %"
+    },
+    {
+      "name": "BP",
+      "weight": "3.8 %"
+    }
+  ],
+  "file": "ftse-100.json"
+}

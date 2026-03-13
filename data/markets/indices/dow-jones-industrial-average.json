@@ -1,0 +1,70 @@
+{
+  "id": "dow-jones-industrial-average",
+  "name": "Dow Jones Industrial Average",
+  "ticker": "DJIA",
+  "region": "USA",
+  "country": "USA",
+  "type": "Blue Chip",
+  "componentBucket": "30 Werte",
+  "indexKind": "Preisindex",
+  "currency": "USD",
+  "level": 39012.6,
+  "changePct": 0.27,
+  "componentCount": 30,
+  "operator": "S&P Dow Jones Indices",
+  "calculationMethod": "Preisgewichtet",
+  "summary": "Traditionsreicher US-Blue-Chip-Index mit 30 Werten.",
+  "description": "Der Dow Jones ist preisgewichtet und umfasst 30 grosse US-Unternehmen aus verschiedenen Branchen. Trotz der kleinen Anzahl bleibt er medial sehr praegnant.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Industrie",
+          "share": 22.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 18.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 16.0
+        },
+        {
+          "label": "Technologie",
+          "share": 15.0
+        },
+        {
+          "label": "Rest",
+          "share": 29.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "UnitedHealth",
+      "weight": "8.4 %"
+    },
+    {
+      "name": "Goldman Sachs",
+      "weight": "7.9 %"
+    },
+    {
+      "name": "Microsoft",
+      "weight": "6.4 %"
+    },
+    {
+      "name": "Home Depot",
+      "weight": "5.8 %"
+    },
+    {
+      "name": "Amgen",
+      "weight": "5.4 %"
+    }
+  ],
+  "file": "dow-jones-industrial-average.json"
+}

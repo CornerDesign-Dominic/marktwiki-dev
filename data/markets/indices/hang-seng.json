@@ -1,0 +1,70 @@
+{
+  "id": "hang-seng",
+  "name": "Hang Seng Index",
+  "ticker": "HSI",
+  "region": "Asien",
+  "country": "Hongkong",
+  "type": "Blue Chip",
+  "componentBucket": "80+ Werte",
+  "indexKind": "Preisindex",
+  "currency": "HKD",
+  "level": 17112.3,
+  "changePct": -0.52,
+  "componentCount": 82,
+  "operator": "Hang Seng Indexes Company",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Leitindex grosser in Hongkong notierter Unternehmen.",
+  "description": "Der Hang Seng bildet grosse und liquide Unternehmen aus Hongkong und China ab. Er reagiert besonders auf chinesische Konjunktur- und Regulierungssignale.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Finanzen",
+          "share": 32.0
+        },
+        {
+          "label": "Technologie",
+          "share": 24.0
+        },
+        {
+          "label": "Konsum",
+          "share": 17.0
+        },
+        {
+          "label": "Immobilien",
+          "share": 8.0
+        },
+        {
+          "label": "Rest",
+          "share": 19.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "Tencent",
+      "weight": "8.1 %"
+    },
+    {
+      "name": "HSBC",
+      "weight": "7.0 %"
+    },
+    {
+      "name": "Alibaba",
+      "weight": "6.4 %"
+    },
+    {
+      "name": "AIA Group",
+      "weight": "6.0 %"
+    },
+    {
+      "name": "Meituan",
+      "weight": "4.9 %"
+    }
+  ],
+  "file": "hang-seng.json"
+}

@@ -1,0 +1,70 @@
+{
+  "id": "msci-world",
+  "name": "MSCI World",
+  "ticker": "MXWO",
+  "region": "Global",
+  "country": "Industrielaender",
+  "type": "Weltindex",
+  "componentBucket": "1500+ Werte",
+  "indexKind": "Performanceindex",
+  "currency": "USD",
+  "level": 3520.6,
+  "changePct": 0.19,
+  "componentCount": 1503,
+  "operator": "MSCI",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Weltindex fuer grosse und mittlere Industrielaender-Aktien.",
+  "description": "Der MSCI World deckt grosse und mittlere Unternehmen aus Industrielaendern ab und ist eine haeufig genutzte Benchmark fuer Weltaktienprodukte.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Regionen",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "USA",
+          "share": 70.0
+        },
+        {
+          "label": "Japan",
+          "share": 6.0
+        },
+        {
+          "label": "UK",
+          "share": 4.0
+        },
+        {
+          "label": "Frankreich",
+          "share": 3.0
+        },
+        {
+          "label": "Rest",
+          "share": 17.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "Microsoft",
+      "weight": "4.9 %"
+    },
+    {
+      "name": "Apple",
+      "weight": "4.5 %"
+    },
+    {
+      "name": "NVIDIA",
+      "weight": "4.0 %"
+    },
+    {
+      "name": "Amazon",
+      "weight": "2.6 %"
+    },
+    {
+      "name": "Meta Platforms",
+      "weight": "1.8 %"
+    }
+  ],
+  "file": "msci-world.json"
+}

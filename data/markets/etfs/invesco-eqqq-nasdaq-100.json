@@ -1,0 +1,63 @@
+{
+  "id": "invesco-eqqq-nasdaq-100",
+  "name": "Invesco EQQQ Nasdaq-100 UCITS ETF",
+  "ticker": "EQQQ",
+  "provider": "Invesco",
+  "region": "USA",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Ausschuettend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 456.3,
+  "changePct": 0.56,
+  "benchmark": "Nasdaq-100",
+  "ter": 0.3,
+  "aumBn": 8.6,
+  "summary": "ETF auf grosse US-Wachstums- und Technologiewerte.",
+  "description": "Der ETF fokussiert auf nicht-finanzielle Nasdaq-100-Mitglieder und ist damit stark technologie- und wachstumsorientiert.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 456.3,
+    "currency": "USD",
+    "referenceMarket": "London Stock Exchange",
+    "changePct": 0.56
+  },
+  "isin": "IE0032077012",
+  "wkn": "801498",
+  "fundVolumeBn": 8.6,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Top-Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Technologie",
+          "share": 57.0
+        },
+        {
+          "label": "Kommunikation",
+          "share": 16.0
+        },
+        {
+          "label": "Konsum",
+          "share": 15.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 7.0
+        },
+        {
+          "label": "Rest",
+          "share": 5.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Stark wachstumsorientiert",
+    "Hoehere Konzentration auf Mega Caps"
+  ],
+  "file": "invesco-eqqq-nasdaq-100.json"
+}

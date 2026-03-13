@@ -1,0 +1,63 @@
+{
+  "id": "ishares-core-sp500-ucits",
+  "name": "iShares Core S&P 500 UCITS ETF",
+  "ticker": "SXR8",
+  "provider": "iShares",
+  "region": "USA",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 548.8,
+  "changePct": 0.34,
+  "benchmark": "S&P 500",
+  "ter": 0.07,
+  "aumBn": 78.9,
+  "summary": "Guenstiger ETF auf grosse US-Aktien.",
+  "description": "Der ETF bildet den S&P 500 mit physischer Replikation nach und bietet eine kostenguenstige US-Large-Cap-Allokation.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 548.8,
+    "currency": "USD",
+    "referenceMarket": "Xetra",
+    "changePct": 0.34
+  },
+  "isin": "IE00B5BMR087",
+  "wkn": "A0YEDG",
+  "fundVolumeBn": 78.9,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Technologie",
+          "share": 31.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 13.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 12.0
+        },
+        {
+          "label": "Konsum",
+          "share": 10.0
+        },
+        {
+          "label": "Rest",
+          "share": 34.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Sehr niedrige Kostenquote",
+    "Starker Fokus auf US-Grossunternehmen"
+  ],
+  "file": "ishares-core-sp500-ucits.json"
+}

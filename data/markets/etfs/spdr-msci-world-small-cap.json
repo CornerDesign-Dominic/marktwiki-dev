@@ -1,0 +1,63 @@
+{
+  "id": "spdr-msci-world-small-cap",
+  "name": "SPDR MSCI World Small Cap UCITS ETF",
+  "ticker": "WOSC",
+  "provider": "SPDR",
+  "region": "Global",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Optimiert",
+  "currency": "USD",
+  "price": 62.1,
+  "changePct": -0.06,
+  "benchmark": "MSCI World Small Cap",
+  "ter": 0.45,
+  "aumBn": 1.8,
+  "summary": "ETF fuer Small Caps aus Industrielaendern.",
+  "description": "Der ETF ergaenzt klassische Weltindizes um kleinere Unternehmen und bietet damit ein breiteres Marktexposure.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 62.1,
+    "currency": "USD",
+    "referenceMarket": "Xetra",
+    "changePct": -0.06
+  },
+  "isin": "IE00BCBJG560",
+  "wkn": "A1W56P",
+  "fundVolumeBn": 1.8,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Regionen",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "USA",
+          "share": 58.0
+        },
+        {
+          "label": "Japan",
+          "share": 14.0
+        },
+        {
+          "label": "UK",
+          "share": 7.0
+        },
+        {
+          "label": "Kanada",
+          "share": 5.0
+        },
+        {
+          "label": "Rest",
+          "share": 16.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Ergaenzung zu Standard-Weltindizes",
+    "Hoehere Kosten und Volatilitaet als Large-Cap-ETF"
+  ],
+  "file": "spdr-msci-world-small-cap.json"
+}

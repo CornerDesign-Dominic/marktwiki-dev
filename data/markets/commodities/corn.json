@@ -1,0 +1,63 @@
+{
+  "id": "corn",
+  "name": "Mais",
+  "symbol": "ZC",
+  "category": "Agrar",
+  "regionFocus": "USA",
+  "currency": "USD",
+  "unit": "Bushel",
+  "price": 4.67,
+  "changePct": -0.24,
+  "referenceMarket": "CBOT",
+  "summary": "Mais ist ein grosser Agrarrohstoff fuer Nahrung, Futter und Ethanol.",
+  "description": "Mais wird stark in Futtermitteln, Industrie und Ethanol verwendet. Preisrelevant sind US-Ernten, Wetter und die Exportnachfrage aus Schwellenlaendern.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 4.67,
+    "currency": "USD",
+    "unit": "Bushel",
+    "referenceMarket": "CBOT",
+    "changePct": -0.24
+  },
+  "majorOrigins": [
+    "USA",
+    "China",
+    "Brasilien",
+    "Argentinien"
+  ],
+  "mainUses": [
+    "Futtermittel",
+    "Ethanol",
+    "Lebensmittel"
+  ],
+  "contracts": [
+    "Corn Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "USA",
+      "share": 31.0
+    },
+    {
+      "label": "China",
+      "share": 23.0
+    },
+    {
+      "label": "Brasilien",
+      "share": 10.0
+    },
+    {
+      "label": "Argentinien",
+      "share": 6.0
+    },
+    {
+      "label": "Rest",
+      "share": 30.0
+    }
+  ],
+  "marketNotes": [
+    "US-Anbauzyklen zentral fuer den Weltmarkt",
+    "Ethanolnachfrage schafft eigenen Nachfragesockel"
+  ],
+  "file": "corn.json"
+}

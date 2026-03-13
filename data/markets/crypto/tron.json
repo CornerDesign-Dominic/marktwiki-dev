@@ -1,0 +1,53 @@
+{
+  "id": "tron",
+  "name": "TRON",
+  "symbol": "TRX",
+  "category": "Layer 1 / Payments",
+  "consensusMechanism": "Delegated Proof of Stake",
+  "launchYear": 2017,
+  "network": "TRON",
+  "hasMaxSupply": false,
+  "currency": "USD",
+  "price": 0.14,
+  "changePct": 0.22,
+  "marketCapBn": 12.0,
+  "summary": "Netzwerk mit Fokus auf guenstige Transfers und Stablecoin-Nutzung.",
+  "description": "TRON wird vor allem fuer guenstige Stablecoin-Transfers genutzt. Die Netzwerkaktivitaet ist stark an Transfer- und Stablecoin-Faelle gekoppelt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 0.14,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.22
+  },
+  "circulatingSupply": 88000000000,
+  "maxSupply": null,
+  "useCase": "Guenstige Transfers und Stablecoin-Siedlung",
+  "dominance": "Wichtiges Netzwerk fuer USDT-Transfers",
+  "organization": "TRON DAO",
+  "allocations": [
+    {
+      "title": "Nutzung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Stablecoin-Transfers",
+          "share": 60.0
+        },
+        {
+          "label": "Apps / Gaming",
+          "share": 20.0
+        },
+        {
+          "label": "Payments",
+          "share": 20.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Hohe Stablecoin-Aktivitaet",
+    "Zentralisierungsdebatten bleiben relevant"
+  ],
+  "file": "tron.json"
+}

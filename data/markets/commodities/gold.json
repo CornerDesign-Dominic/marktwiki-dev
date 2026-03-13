@@ -1,0 +1,64 @@
+{
+  "id": "gold",
+  "name": "Gold",
+  "symbol": "XAU",
+  "category": "Edelmetalle",
+  "regionFocus": "Global",
+  "currency": "USD",
+  "unit": "Unze",
+  "price": 2190.3,
+  "changePct": 0.44,
+  "referenceMarket": "LBMA / COMEX",
+  "summary": "Gold gilt als klassischer Wertspeicher und Krisenrohstoff.",
+  "description": "Gold wird als Wertspeicher, Schmuckmetall und in geringerem Umfang industriell genutzt. Der Markt reagiert stark auf Realzinsen, US-Dollar und geopolitische Risiken.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 2190.3,
+    "currency": "USD",
+    "unit": "Unze",
+    "referenceMarket": "LBMA / COMEX",
+    "changePct": 0.44
+  },
+  "majorOrigins": [
+    "China",
+    "Australien",
+    "Russland",
+    "Kanada"
+  ],
+  "mainUses": [
+    "Wertspeicher",
+    "Schmuck",
+    "Zentralbankreserven"
+  ],
+  "contracts": [
+    "Gold Futures",
+    "Spot Gold"
+  ],
+  "originDistribution": [
+    {
+      "label": "China",
+      "share": 12.0
+    },
+    {
+      "label": "Australien",
+      "share": 10.0
+    },
+    {
+      "label": "Russland",
+      "share": 9.0
+    },
+    {
+      "label": "Kanada",
+      "share": 6.0
+    },
+    {
+      "label": "Rest",
+      "share": 63.0
+    }
+  ],
+  "marketNotes": [
+    "Typischer Safe-Haven-Rohstoff",
+    "Liquiditaet ueber Spot- und Terminmarkt hoch"
+  ],
+  "file": "gold.json"
+}

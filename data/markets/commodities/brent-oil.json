@@ -1,0 +1,63 @@
+{
+  "id": "brent-oil",
+  "name": "Brent Oel",
+  "symbol": "BZ",
+  "category": "Energie",
+  "regionFocus": "Nordsee / OPEC+",
+  "currency": "USD",
+  "unit": "Barrel",
+  "price": 82.4,
+  "changePct": 1.02,
+  "referenceMarket": "ICE Futures Europe",
+  "summary": "Brent ist die zentrale europaeische Rohoel-Benchmark.",
+  "description": "Brent wird international als Referenz fuer viele Oelimporte genutzt. Preisimpulse kommen vor allem aus OPEC+-Politik, Lagerdaten und geopolitischen Spannungen.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 82.4,
+    "currency": "USD",
+    "unit": "Barrel",
+    "referenceMarket": "ICE Futures Europe",
+    "changePct": 1.02
+  },
+  "majorOrigins": [
+    "Saudi-Arabien",
+    "USA",
+    "Russland",
+    "Irak"
+  ],
+  "mainUses": [
+    "Kraftstoffe",
+    "Petrochemie",
+    "Heizoel"
+  ],
+  "contracts": [
+    "Brent Crude Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "Saudi-Arabien",
+      "share": 13.0
+    },
+    {
+      "label": "USA",
+      "share": 12.0
+    },
+    {
+      "label": "Russland",
+      "share": 10.0
+    },
+    {
+      "label": "Irak",
+      "share": 5.0
+    },
+    {
+      "label": "Rest",
+      "share": 60.0
+    }
+  ],
+  "marketNotes": [
+    "Wichtige globale Benchmark",
+    "Stark geopolitisch beeinflusst"
+  ],
+  "file": "brent-oil.json"
+}

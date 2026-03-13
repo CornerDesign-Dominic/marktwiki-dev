@@ -1,0 +1,70 @@
+{
+  "id": "sp-500",
+  "name": "S&P 500",
+  "ticker": "SPX",
+  "region": "USA",
+  "country": "USA",
+  "type": "Large Cap",
+  "componentBucket": "500 Werte",
+  "indexKind": "Performanceindex",
+  "currency": "USD",
+  "level": 5180.42,
+  "changePct": 0.62,
+  "componentCount": 500,
+  "operator": "S&P Dow Jones Indices",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Breiter Leitindex fuer grosse US-Unternehmen.",
+  "description": "Der S&P 500 umfasst 500 grosse boersennotierte US-Unternehmen und gilt als zentrale Benchmark fuer den US-Aktienmarkt.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Technologie",
+          "share": 31.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 13.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 12.0
+        },
+        {
+          "label": "Kommunikation",
+          "share": 9.0
+        },
+        {
+          "label": "Rest",
+          "share": 35.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "Microsoft",
+      "weight": "7.2 %"
+    },
+    {
+      "name": "Apple",
+      "weight": "6.1 %"
+    },
+    {
+      "name": "NVIDIA",
+      "weight": "5.8 %"
+    },
+    {
+      "name": "Amazon",
+      "weight": "3.7 %"
+    },
+    {
+      "name": "Meta Platforms",
+      "weight": "2.5 %"
+    }
+  ],
+  "file": "sp-500.json"
+}

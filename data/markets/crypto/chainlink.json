@@ -1,0 +1,57 @@
+{
+  "id": "chainlink",
+  "name": "Chainlink",
+  "symbol": "LINK",
+  "category": "Oracle",
+  "consensusMechanism": "Oracle-Netzwerk",
+  "launchYear": 2017,
+  "network": "Ethereum / Cross-Chain",
+  "hasMaxSupply": true,
+  "currency": "USD",
+  "price": 18.9,
+  "changePct": 0.69,
+  "marketCapBn": 11.0,
+  "summary": "Fuehrendes Oracle-Netzwerk fuer externe Daten in Smart Contracts.",
+  "description": "Chainlink verbindet Blockchains mit externen Datenquellen und Infrastruktur. Die Nachfrage haengt eng mit DeFi, Tokenisierung und Cross-Chain-Anwendungen zusammen.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 18.9,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.69
+  },
+  "circulatingSupply": 608000000,
+  "maxSupply": 1000000000,
+  "useCase": "Oracle-Daten, Cross-Chain-Nachrichten und Infrastruktur",
+  "dominance": "Fuehrendes Oracle-Asset",
+  "organization": "Chainlink Labs",
+  "allocations": [
+    {
+      "title": "Use Cases",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Price Feeds",
+          "share": 45.0
+        },
+        {
+          "label": "Cross-Chain",
+          "share": 25.0
+        },
+        {
+          "label": "Automation",
+          "share": 15.0
+        },
+        {
+          "label": "Tokenisierung",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Infrastruktur-Layer statt klassischer Zahlungscoin",
+    "Adoption haengt von Smart-Contract-Nutzung ab"
+  ],
+  "file": "chainlink.json"
+}

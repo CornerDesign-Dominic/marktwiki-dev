@@ -1,0 +1,47 @@
+{
+  "id": "wisdomtree-physical-gold",
+  "name": "WisdomTree Physical Gold",
+  "ticker": "PHAU",
+  "provider": "WisdomTree",
+  "region": "Global",
+  "assetClass": "Rohstoff-ETC",
+  "distributionPolicy": "Keine Ausschuettung",
+  "replicationMethod": "Physisch besichert",
+  "currency": "USD",
+  "price": 217.5,
+  "changePct": 0.47,
+  "benchmark": "Gold Spot",
+  "ter": 0.39,
+  "aumBn": 14.8,
+  "summary": "Physisch besicherter Gold-ETC fuer Rohstoffexposure.",
+  "description": "Das Produkt bildet den Goldpreis ueber physisch hinterlegte Barren ab. Es wird haeufig fuer Inflations- oder Krisenabsicherungen eingesetzt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 217.5,
+    "currency": "USD",
+    "referenceMarket": "London Stock Exchange",
+    "changePct": 0.47
+  },
+  "isin": "JE00B1VS3770",
+  "wkn": "A0N62G",
+  "fundVolumeBn": 14.8,
+  "domicile": "Jersey",
+  "fundType": "ETC",
+  "allocations": [
+    {
+      "title": "Einordnung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Physisches Gold",
+          "share": 100.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Kein klassischer Fonds, sondern ETC",
+    "Direktes Edelmetallexposure ohne Unternehmensrisiko"
+  ],
+  "file": "wisdomtree-physical-gold.json"
+}

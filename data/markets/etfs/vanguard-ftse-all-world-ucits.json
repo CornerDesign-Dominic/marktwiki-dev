@@ -1,0 +1,63 @@
+{
+  "id": "vanguard-ftse-all-world-ucits",
+  "name": "Vanguard FTSE All-World UCITS ETF",
+  "ticker": "VWCE",
+  "provider": "Vanguard",
+  "region": "Global",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 121.45,
+  "changePct": 0.18,
+  "benchmark": "FTSE All-World",
+  "ter": 0.22,
+  "aumBn": 28.2,
+  "summary": "Globaler Aktien-ETF inklusive Schwellenlaendern.",
+  "description": "Der ETF kombiniert Industrie- und Schwellenlaender in einem breiten Weltaktienprodukt. Er wird oft als Ein-ETF-Loesung genutzt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 121.45,
+    "currency": "USD",
+    "referenceMarket": "Xetra",
+    "changePct": 0.18
+  },
+  "isin": "IE00BK5BQT80",
+  "wkn": "A2PKXG",
+  "fundVolumeBn": 28.2,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Regionen",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "USA",
+          "share": 61.0
+        },
+        {
+          "label": "Europa",
+          "share": 16.0
+        },
+        {
+          "label": "Pazifik",
+          "share": 9.0
+        },
+        {
+          "label": "Emerging Markets",
+          "share": 11.0
+        },
+        {
+          "label": "Rest",
+          "share": 3.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Enthaelt Schwellenlaender",
+    "Breite Marktabdeckung in einem Produkt"
+  ],
+  "file": "vanguard-ftse-all-world-ucits.json"
+}

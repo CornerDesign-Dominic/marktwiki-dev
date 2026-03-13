@@ -1,0 +1,57 @@
+{
+  "id": "avalanche",
+  "name": "Avalanche",
+  "symbol": "AVAX",
+  "category": "Layer 1",
+  "consensusMechanism": "Proof of Stake",
+  "launchYear": 2020,
+  "network": "Avalanche",
+  "hasMaxSupply": true,
+  "currency": "USD",
+  "price": 38.4,
+  "changePct": -0.34,
+  "marketCapBn": 15.0,
+  "summary": "Layer-1-Netzwerk mit Fokus auf Subnets und niedrige Finalitaet.",
+  "description": "Avalanche kombiniert schnelle Finalitaet mit einem modularen Ansatz ueber Subnets. Es richtet sich an DeFi-, Gaming- und Enterprise-Anwendungen.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 38.4,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": -0.34
+  },
+  "circulatingSupply": 412000000,
+  "maxSupply": 720000000,
+  "useCase": "Subnets, DeFi und institutionelle Anwendungen",
+  "dominance": "Mittelgrosses Layer-1-Netzwerk",
+  "organization": "Ava Labs / Avalanche Foundation",
+  "allocations": [
+    {
+      "title": "Use Cases",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "DeFi",
+          "share": 40.0
+        },
+        {
+          "label": "Subnets",
+          "share": 25.0
+        },
+        {
+          "label": "Gaming",
+          "share": 20.0
+        },
+        {
+          "label": "Enterprise",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Modularer Netzwerkansatz ueber Subnets",
+    "Wettbewerb mit anderen Smart-Contract-Plattformen hoch"
+  ],
+  "file": "avalanche.json"
+}

@@ -1,217 +1,58 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Indizes | MarktWiki</title>
-  <meta name="description" content="Übersicht wichtiger Indizes mit statischen Beispielwerten.">
+  <meta name="description" content="Uebersicht wichtiger Boersenindizes mit Filtern, Sortierung und statischen Detailprofilen.">
   <link rel="stylesheet" href="./style.css">
-  <style>
-    .markets-compact-page .markets-compact-grid {
-      grid-template-columns: 1fr;
-      gap: 0.8rem;
-    }
-
-    .markets-compact-page .market-compact-card {
-      padding: 0.78rem 0.82rem;
-      background: color-mix(in srgb, var(--surface) 90%, var(--bg) 10%);
-      transition: border-color 0.18s ease, background-color 0.18s ease;
-    }
-
-    .markets-compact-page .market-compact-card:hover {
-      border-color: var(--accent);
-      background: color-mix(in srgb, var(--bg-secondary) 74%, var(--surface) 26%);
-    }
-
-    .markets-compact-page .market-compact-body {
-      display: grid;
-      grid-template-columns: minmax(56px, 66px) minmax(0, 1fr);
-      gap: 0.72rem;
-      align-items: start;
-    }
-
-    .markets-compact-page .market-compact-visual {
-      min-height: 56px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.3rem;
-    }
-
-    .markets-compact-page .market-compact-symbol {
-      font-size: 0.82rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: var(--text-secondary);
-    }
-
-    .markets-compact-page .market-compact-details {
-      display: grid;
-      gap: 0.28rem;
-      min-width: 0;
-    }
-
-    .markets-compact-page .market-compact-title-row {
-      display: flex;
-      align-items: start;
-      justify-content: space-between;
-      gap: 0.62rem;
-    }
-
-    .markets-compact-page .market-compact-title-row h3 {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.3;
-    }
-
-    .markets-compact-page .market-compact-main-value {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-
-    .markets-compact-page .market-compact-change {
-      margin: 0;
-      font-size: 0.86rem;
-      font-weight: 600;
-    }
-
-    .markets-compact-page .market-compact-change.is-positive {
-      color: var(--link);
-    }
-
-    .markets-compact-page .market-compact-change.is-negative {
-      color: var(--hover);
-    }
-
-    .markets-compact-page .market-compact-facts {
-      margin: 0.05rem 0 0;
-    }
-
-    .markets-compact-page .market-compact-facts div {
-      grid-template-columns: minmax(64px, max-content) minmax(0, 1fr);
-      gap: 0.38rem;
-    }
-
-    .markets-compact-page .market-compact-facts dt {
-      font-size: 0.68rem;
-    }
-
-    .markets-compact-page .market-compact-facts dd {
-      font-size: 0.82rem;
-    }
-
-    @media (max-width: 768px) {
-      .markets-compact-page .market-compact-body {
-        grid-template-columns: minmax(50px, 56px) minmax(0, 1fr);
-        gap: 0.6rem;
-      }
-
-      .markets-compact-page .market-compact-visual {
-        min-height: 50px;
-      }
-
-      .markets-compact-page .market-compact-facts div {
-        grid-template-columns: 1fr;
-        gap: 0.14rem;
-      }
-    }
-  </style>
   <script src="./layout.js"></script>
+  <script src="./markets.js" defer></script>
 </head>
-<body class="markets-compact-page" data-page="indices" data-base-path="." data-nav="indices">
+<body data-page="market-list" data-market-type="indices" data-base-path="." data-nav="indices">
   <script>window.MarktWikiLayout.injectHeader();</script>
 
   <main>
     <div class="container">
-      <h1>Indizes</h1>
+      <section class="card hero market-page-hero">
+        <h1>Indizes</h1>
+        <p class="muted">
+          Wichtige Aktien- und Marktindizes mit kompakter Einordnung, Filterlogik und Detailseiten.
+        </p>
+        <p class="muted">Hinweis: Angezeigte Marktwerte dienen nur der Orientierung und koennen von aktuellen Marktdaten abweichen. Details im <a href="./haftungsausschluss.html">Haftungsausschluss</a>.</p>
+      </section>
 
-      <section class="section-space" aria-labelledby="indizes-liste">
-        <h2 id="indizes-liste" class="sr-only">Beispielwerte für Indizes</h2>
-        <div class="card-grid markets-compact-grid">
-          <article class="card market-compact-card">
-            <div class="market-compact-body">
-              <div class="market-compact-visual">
-                <span class="market-compact-symbol">SPX</span>
-              </div>
-              <div class="market-compact-details">
-                <div class="market-compact-title-row">
-                  <h3>S&amp;P 500</h3>
-                  <span class="badge">USA</span>
-                </div>
-                <p class="market-compact-main-value">5.180,42 Punkte</p>
-                <p class="market-compact-change is-positive">+0,62 %</p>
-                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
-                  <div><dt>Kürzel</dt><dd>SPX</dd></div>
-                  <div><dt>Typ</dt><dd>Large Cap Index</dd></div>
-                </dl>
-              </div>
-            </div>
-          </article>
+      <section class="card section-space market-directory-controls" aria-labelledby="market-controls-heading">
+        <h2 id="market-controls-heading" class="sr-only">Indizes suchen, filtern und sortieren</h2>
+        <div class="market-directory-grid">
+          <div class="field market-search-field">
+            <label for="market-search">Index suchen</label>
+            <input id="market-search" type="search" placeholder="Name, Kuerzel, Region, Betreiber ..." autocomplete="off" spellcheck="false">
+          </div>
+          <div id="market-filter-fields" class="market-filter-fields"></div>
+          <div class="field">
+            <label for="market-sort">Sortierfeld</label>
+            <select id="market-sort" aria-label="Indizes sortieren"></select>
+          </div>
+          <div class="field">
+            <label for="market-sort-direction">Richtung</label>
+            <select id="market-sort-direction" aria-label="Sortierrichtung">
+              <option value="asc">Aufsteigend</option>
+              <option value="desc">Absteigend</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="market-reset-filters">Filter</label>
+            <button id="market-reset-filters" class="btn" type="button">Zuruecksetzen</button>
+          </div>
+        </div>
+        <p id="market-results-count" class="muted market-results-count" role="status" aria-live="polite"></p>
+      </section>
 
-          <article class="card market-compact-card">
-            <div class="market-compact-body">
-              <div class="market-compact-visual">
-                <span class="market-compact-symbol">NDX</span>
-              </div>
-              <div class="market-compact-details">
-                <div class="market-compact-title-row">
-                  <h3>NASDAQ 100</h3>
-                  <span class="badge">Tech</span>
-                </div>
-                <p class="market-compact-main-value">18.045,30 Punkte</p>
-                <p class="market-compact-change is-positive">+1,14 %</p>
-                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
-                  <div><dt>Kürzel</dt><dd>NDX</dd></div>
-                  <div><dt>Typ</dt><dd>Growth Index</dd></div>
-                </dl>
-              </div>
-            </div>
-          </article>
-
-          <article class="card market-compact-card">
-            <div class="market-compact-body">
-              <div class="market-compact-visual">
-                <span class="market-compact-symbol">DAX</span>
-              </div>
-              <div class="market-compact-details">
-                <div class="market-compact-title-row">
-                  <h3>DAX</h3>
-                  <span class="badge">DE</span>
-                </div>
-                <p class="market-compact-main-value">18.221,75 Punkte</p>
-                <p class="market-compact-change is-negative">-0,28 %</p>
-                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
-                  <div><dt>Kürzel</dt><dd>DAX</dd></div>
-                  <div><dt>Typ</dt><dd>Blue Chip Index</dd></div>
-                </dl>
-              </div>
-            </div>
-          </article>
-
-          <article class="card market-compact-card">
-            <div class="market-compact-body">
-              <div class="market-compact-visual">
-                <span class="market-compact-symbol">SX5E</span>
-              </div>
-              <div class="market-compact-details">
-                <div class="market-compact-title-row">
-                  <h3>Euro Stoxx 50</h3>
-                  <span class="badge">EU</span>
-                </div>
-                <p class="market-compact-main-value">4.948,10 Punkte</p>
-                <p class="market-compact-change is-positive">+0,21 %</p>
-                <dl class="stock-meta stock-facts stock-facts-compact market-compact-facts">
-                  <div><dt>Kürzel</dt><dd>SX5E</dd></div>
-                  <div><dt>Typ</dt><dd>Eurozonen-Index</dd></div>
-                </dl>
-              </div>
-            </div>
-          </article>
+      <section class="section-space" aria-labelledby="market-list-heading">
+        <h2 id="market-list-heading" class="sr-only">Indexliste</h2>
+        <div id="market-list" class="card-grid market-list-grid" data-error-target="market-list">
+          <p class="status-message">Indizes werden geladen ...</p>
         </div>
       </section>
     </div>

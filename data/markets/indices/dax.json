@@ -1,0 +1,70 @@
+{
+  "id": "dax",
+  "name": "DAX",
+  "ticker": "DAX",
+  "region": "Europa",
+  "country": "Deutschland",
+  "type": "Blue Chip",
+  "componentBucket": "40 Werte",
+  "indexKind": "Performanceindex",
+  "currency": "EUR",
+  "level": 18221.75,
+  "changePct": -0.28,
+  "componentCount": 40,
+  "operator": "Deutsche Boerse",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Leitindex der grossen deutschen Boersenwerte.",
+  "description": "Der DAX umfasst 40 grosse deutsche Aktien und wird als Performanceindex berechnet, also inklusive reinvestierter Dividenden.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Industrie",
+          "share": 24.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 18.0
+        },
+        {
+          "label": "Chemie",
+          "share": 15.0
+        },
+        {
+          "label": "Software",
+          "share": 11.0
+        },
+        {
+          "label": "Rest",
+          "share": 32.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "SAP",
+      "weight": "14.0 %"
+    },
+    {
+      "name": "Siemens",
+      "weight": "10.1 %"
+    },
+    {
+      "name": "Allianz",
+      "weight": "7.8 %"
+    },
+    {
+      "name": "Airbus",
+      "weight": "7.4 %"
+    },
+    {
+      "name": "Deutsche Telekom",
+      "weight": "6.1 %"
+    }
+  ],
+  "file": "dax.json"
+}

@@ -1,0 +1,59 @@
+{
+  "id": "vaneck-semiconductor",
+  "name": "VanEck Semiconductor UCITS ETF",
+  "ticker": "VVSM",
+  "provider": "VanEck",
+  "region": "Global",
+  "assetClass": "Themen-ETF",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 36.8,
+  "changePct": 0.63,
+  "benchmark": "MVIS US Listed Semiconductor 10% Capped",
+  "ter": 0.35,
+  "aumBn": 1.5,
+  "summary": "Themen-ETF auf Halbleiterhersteller und Ausruester.",
+  "description": "Der ETF fokussiert auf die Halbleiterwertschoepfungskette und ist damit stark vom Technologiezyklus abhaengig.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 36.8,
+    "currency": "USD",
+    "referenceMarket": "Xetra",
+    "changePct": 0.63
+  },
+  "isin": "IE00BMC38736",
+  "wkn": "A2QC5J",
+  "fundVolumeBn": 1.5,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Subsegmente",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Chipdesigner",
+          "share": 42.0
+        },
+        {
+          "label": "Fertiger",
+          "share": 28.0
+        },
+        {
+          "label": "Ausruster",
+          "share": 23.0
+        },
+        {
+          "label": "Rest",
+          "share": 7.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Themenfokus mit hoher Zyklik",
+    "Profitierte zuletzt stark von KI-Investitionen"
+  ],
+  "file": "vaneck-semiconductor.json"
+}

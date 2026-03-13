@@ -1,0 +1,61 @@
+{
+  "id": "ethereum",
+  "name": "Ethereum",
+  "symbol": "ETH",
+  "category": "Layer 1",
+  "consensusMechanism": "Proof of Stake",
+  "launchYear": 2015,
+  "network": "Ethereum",
+  "hasMaxSupply": false,
+  "currency": "USD",
+  "price": 3420.5,
+  "changePct": 1.76,
+  "marketCapBn": 410.0,
+  "summary": "Fuehrendes Smart-Contract-Netzwerk fuer DeFi und Tokenisierung.",
+  "description": "Ethereum ist die wichtigste Plattform fuer Smart Contracts, DeFi, NFTs und tokenisierte Anwendungen. Seit dem Merge wird das Netzwerk per Proof of Stake gesichert.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 3420.5,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 1.76
+  },
+  "circulatingSupply": 120100000,
+  "maxSupply": null,
+  "useCase": "Smart Contracts und tokenisierte Anwendungen",
+  "dominance": "Zweitgroesstes Krypto-Asset nach Marktkapitalisierung",
+  "founders": [
+    "Vitalik Buterin",
+    "Mitgruenderteam"
+  ],
+  "organization": "Ethereum Foundation / offenes Oekosystem",
+  "allocations": [
+    {
+      "title": "Use Cases",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "DeFi",
+          "share": 35.0
+        },
+        {
+          "label": "Layer-2 Settlement",
+          "share": 25.0
+        },
+        {
+          "label": "Tokenisierung",
+          "share": 20.0
+        },
+        {
+          "label": "NFT / Gaming",
+          "share": 20.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Groesstes Smart-Contract-Oekosystem",
+    "Gebuehren- und Skalierungsthema zentral"
+  ],
+  "file": "ethereum.json"
+}

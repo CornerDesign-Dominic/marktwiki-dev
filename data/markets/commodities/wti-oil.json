@@ -1,0 +1,56 @@
+{
+  "id": "wti-oil",
+  "name": "WTI Oel",
+  "symbol": "CL",
+  "category": "Energie",
+  "regionFocus": "USA",
+  "currency": "USD",
+  "unit": "Barrel",
+  "price": 78.9,
+  "changePct": 0.94,
+  "referenceMarket": "NYMEX",
+  "summary": "WTI ist die zentrale US-Rohoel-Benchmark.",
+  "description": "WTI bildet den US-Referenzmarkt fuer leichtes Rohoel ab. Pipelinekapazitaeten, US-Lagerdaten und Raffinerienachfrage beeinflussen den Preis stark.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 78.9,
+    "currency": "USD",
+    "unit": "Barrel",
+    "referenceMarket": "NYMEX",
+    "changePct": 0.94
+  },
+  "majorOrigins": [
+    "USA",
+    "Kanada"
+  ],
+  "mainUses": [
+    "Kraftstoffe",
+    "Petrochemie"
+  ],
+  "contracts": [
+    "WTI Crude Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "USA",
+      "share": 57.0
+    },
+    {
+      "label": "Kanada",
+      "share": 10.0
+    },
+    {
+      "label": "OPEC-Importe",
+      "share": 8.0
+    },
+    {
+      "label": "Rest",
+      "share": 25.0
+    }
+  ],
+  "marketNotes": [
+    "US-Lagerdaten oft kurzfristiger Taktgeber",
+    "Spread zu Brent wird aufmerksam verfolgt"
+  ],
+  "file": "wti-oil.json"
+}

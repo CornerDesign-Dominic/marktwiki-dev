@@ -1,0 +1,53 @@
+{
+  "id": "dogecoin",
+  "name": "Dogecoin",
+  "symbol": "DOGE",
+  "category": "Memecoin",
+  "consensusMechanism": "Proof of Work",
+  "launchYear": 2013,
+  "network": "Dogecoin",
+  "hasMaxSupply": false,
+  "currency": "USD",
+  "price": 0.17,
+  "changePct": 1.05,
+  "marketCapBn": 24.0,
+  "summary": "Community-getriebenes Krypto-Asset mit hoher Medienwirkung.",
+  "description": "Dogecoin startete als Spassprojekt und wird heute vor allem von Community, Social Media und Risikobereitschaft getrieben.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 0.17,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 1.05
+  },
+  "circulatingSupply": 143000000000,
+  "maxSupply": null,
+  "useCase": "Community-Asset und Mikrotransfers",
+  "dominance": "Wichtigster Memecoin nach Bekanntheit",
+  "organization": "Offenes Netzwerk",
+  "allocations": [
+    {
+      "title": "Einordnung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Community / Meme",
+          "share": 70.0
+        },
+        {
+          "label": "Zahlungen",
+          "share": 15.0
+        },
+        {
+          "label": "Spekulation",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Sehr stimmungsgetrieben",
+    "Kein knappes Angebot"
+  ],
+  "file": "dogecoin.json"
+}

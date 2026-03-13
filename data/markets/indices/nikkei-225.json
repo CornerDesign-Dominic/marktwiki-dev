@@ -1,0 +1,70 @@
+{
+  "id": "nikkei-225",
+  "name": "Nikkei 225",
+  "ticker": "NI225",
+  "region": "Asien",
+  "country": "Japan",
+  "type": "Blue Chip",
+  "componentBucket": "225 Werte",
+  "indexKind": "Preisindex",
+  "currency": "JPY",
+  "level": 38711.4,
+  "changePct": 0.47,
+  "componentCount": 225,
+  "operator": "Nikkei Inc.",
+  "calculationMethod": "Preisgewichtet",
+  "summary": "Wichtiger japanischer Aktienindex mit 225 Werten.",
+  "description": "Der Nikkei 225 ist einer der bekanntesten asiatischen Aktienindizes und wird preisgewichtet berechnet. Dadurch unterscheiden sich die Gewichte stark von marktkapitalisierten Indizes.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Technologie",
+          "share": 27.0
+        },
+        {
+          "label": "Industrie",
+          "share": 22.0
+        },
+        {
+          "label": "Konsum",
+          "share": 16.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 9.0
+        },
+        {
+          "label": "Rest",
+          "share": 26.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "Fast Retailing",
+      "weight": "10.2 %"
+    },
+    {
+      "name": "Tokyo Electron",
+      "weight": "6.3 %"
+    },
+    {
+      "name": "SoftBank Group",
+      "weight": "4.8 %"
+    },
+    {
+      "name": "Advantest",
+      "weight": "4.1 %"
+    },
+    {
+      "name": "KDDI",
+      "weight": "2.8 %"
+    }
+  ],
+  "file": "nikkei-225.json"
+}

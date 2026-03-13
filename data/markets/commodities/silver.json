@@ -1,0 +1,64 @@
+{
+  "id": "silver",
+  "name": "Silber",
+  "symbol": "XAG",
+  "category": "Edelmetalle",
+  "regionFocus": "Global",
+  "currency": "USD",
+  "unit": "Unze",
+  "price": 24.85,
+  "changePct": -0.17,
+  "referenceMarket": "LBMA / COMEX",
+  "summary": "Silber verbindet Edelmetallcharakter mit industrieller Nachfrage.",
+  "description": "Silber wird sowohl als Edelmetall als auch in Elektronik, Solar und Industrie genutzt. Dadurch reagiert der Preis auf Konjunktur und Edelmetallstimmung zugleich.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 24.85,
+    "currency": "USD",
+    "unit": "Unze",
+    "referenceMarket": "LBMA / COMEX",
+    "changePct": -0.17
+  },
+  "majorOrigins": [
+    "Mexiko",
+    "China",
+    "Peru",
+    "Chile"
+  ],
+  "mainUses": [
+    "Elektronik",
+    "Photovoltaik",
+    "Anlage"
+  ],
+  "contracts": [
+    "Silver Futures",
+    "Spot Silver"
+  ],
+  "originDistribution": [
+    {
+      "label": "Mexiko",
+      "share": 18.0
+    },
+    {
+      "label": "China",
+      "share": 13.0
+    },
+    {
+      "label": "Peru",
+      "share": 12.0
+    },
+    {
+      "label": "Chile",
+      "share": 7.0
+    },
+    {
+      "label": "Rest",
+      "share": 50.0
+    }
+  ],
+  "marketNotes": [
+    "Haeufig volatiler als Gold",
+    "Industrielle Nachfrage wichtiger Kurstreiber"
+  ],
+  "file": "silver.json"
+}

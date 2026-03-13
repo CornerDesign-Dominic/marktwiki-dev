@@ -1,0 +1,57 @@
+{
+  "id": "cardano",
+  "name": "Cardano",
+  "symbol": "ADA",
+  "category": "Layer 1",
+  "consensusMechanism": "Proof of Stake",
+  "launchYear": 2017,
+  "network": "Cardano",
+  "hasMaxSupply": true,
+  "currency": "USD",
+  "price": 0.73,
+  "changePct": 0.27,
+  "marketCapBn": 26.0,
+  "summary": "Forschungsorientiertes Layer-1-Netzwerk mit Proof of Stake.",
+  "description": "Cardano setzt auf einen forschungsgetriebenen Entwicklungsansatz und priorisiert formale Methoden, Skalierung und Governance.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 0.73,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.27
+  },
+  "circulatingSupply": 35600000000,
+  "maxSupply": 45000000000,
+  "useCase": "Smart Contracts, Governance und Identitaet",
+  "dominance": "Mittelgrosses Layer-1-Netzwerk",
+  "organization": "Input Output / Cardano Foundation",
+  "allocations": [
+    {
+      "title": "Use Cases",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Staking",
+          "share": 35.0
+        },
+        {
+          "label": "Smart Contracts",
+          "share": 30.0
+        },
+        {
+          "label": "Governance",
+          "share": 20.0
+        },
+        {
+          "label": "Identity",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Stark community- und governancegetrieben",
+    "Entwicklung oft langsamer als bei Wettbewerbern"
+  ],
+  "file": "cardano.json"
+}

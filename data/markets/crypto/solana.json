@@ -1,0 +1,57 @@
+{
+  "id": "solana",
+  "name": "Solana",
+  "symbol": "SOL",
+  "category": "Layer 1",
+  "consensusMechanism": "Proof of Stake",
+  "launchYear": 2020,
+  "network": "Solana",
+  "hasMaxSupply": false,
+  "currency": "USD",
+  "price": 142.8,
+  "changePct": -0.92,
+  "marketCapBn": 63.0,
+  "summary": "Schnelles Layer-1-Netzwerk mit Fokus auf hohe Transaktionskapazitaet.",
+  "description": "Solana zielt auf hohe Durchsaetze und niedrige Kosten und wird fuer DeFi, Memecoins, Gaming und Consumer-Apps genutzt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 142.8,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": -0.92
+  },
+  "circulatingSupply": 442000000,
+  "maxSupply": null,
+  "useCase": "Schnelle Smart-Contract-Plattform",
+  "dominance": "Grosses Layer-1-Netzwerk mit hoher Aktivitaet",
+  "organization": "Solana Foundation",
+  "allocations": [
+    {
+      "title": "Use Cases",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "DeFi",
+          "share": 35.0
+        },
+        {
+          "label": "Consumer Apps",
+          "share": 25.0
+        },
+        {
+          "label": "Trading / Memecoins",
+          "share": 25.0
+        },
+        {
+          "label": "Gaming",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Hohe Geschwindigkeit, aber historische Ausfallthemen",
+    "Stark nutzungsgetriebene Bewertung"
+  ],
+  "file": "solana.json"
+}

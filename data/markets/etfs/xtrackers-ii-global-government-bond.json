@@ -1,0 +1,63 @@
+{
+  "id": "xtrackers-ii-global-government-bond",
+  "name": "Xtrackers II Global Government Bond UCITS ETF",
+  "ticker": "XG7S",
+  "provider": "Xtrackers",
+  "region": "Global",
+  "assetClass": "Anleihen",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Optimiert",
+  "currency": "EUR",
+  "price": 27.3,
+  "changePct": 0.05,
+  "benchmark": "FTSE World Government Bond",
+  "ter": 0.2,
+  "aumBn": 2.1,
+  "summary": "ETF auf globale Staatsanleihen aus Industrielaendern.",
+  "description": "Der ETF bietet Zugang zu einem breiten Korb globaler Staatsanleihen und wird oft fuer defensivere Portfolios genutzt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 27.3,
+    "currency": "EUR",
+    "referenceMarket": "Xetra",
+    "changePct": 0.05
+  },
+  "isin": "LU0908508731",
+  "wkn": "DBX0AB",
+  "fundVolumeBn": 2.1,
+  "domicile": "Luxemburg",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Regionen",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "USA",
+          "share": 41.0
+        },
+        {
+          "label": "Japan",
+          "share": 16.0
+        },
+        {
+          "label": "Frankreich",
+          "share": 8.0
+        },
+        {
+          "label": "Italien",
+          "share": 7.0
+        },
+        {
+          "label": "Rest",
+          "share": 28.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Defensiverer Baustein als Aktien-ETF",
+    "Zinsniveau bestimmt Kursrisiko"
+  ],
+  "file": "xtrackers-ii-global-government-bond.json"
+}

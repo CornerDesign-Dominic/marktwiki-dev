@@ -1,0 +1,63 @@
+{
+  "id": "ishares-euro-government-bond",
+  "name": "iShares Euro Government Bond 7-10yr UCITS ETF",
+  "ticker": "IBGM",
+  "provider": "iShares",
+  "region": "Eurozone",
+  "assetClass": "Anleihen",
+  "distributionPolicy": "Ausschuettend",
+  "replicationMethod": "Physisch",
+  "currency": "EUR",
+  "price": 162.4,
+  "changePct": 0.03,
+  "benchmark": "Bloomberg Euro Government Bond 7-10",
+  "ter": 0.2,
+  "aumBn": 3.7,
+  "summary": "ETF auf mittel- bis laengerlaufende Staatsanleihen der Eurozone.",
+  "description": "Der ETF fokussiert auf Staatsanleihen mit Restlaufzeiten zwischen sieben und zehn Jahren. Damit ist die Zinssensitivitaet hoeher als bei Kurzlaeufern.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 162.4,
+    "currency": "EUR",
+    "referenceMarket": "Xetra",
+    "changePct": 0.03
+  },
+  "isin": "IE00B1FZS798",
+  "wkn": "A0H08X",
+  "fundVolumeBn": 3.7,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Laender",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Frankreich",
+          "share": 27.0
+        },
+        {
+          "label": "Italien",
+          "share": 24.0
+        },
+        {
+          "label": "Deutschland",
+          "share": 19.0
+        },
+        {
+          "label": "Spanien",
+          "share": 17.0
+        },
+        {
+          "label": "Rest",
+          "share": 13.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Euro-Staatsanleihen mittlerer Laufzeit",
+    "Zinsbewegungen stark kursrelevant"
+  ],
+  "file": "ishares-euro-government-bond.json"
+}

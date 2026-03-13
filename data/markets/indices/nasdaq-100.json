@@ -1,0 +1,70 @@
+{
+  "id": "nasdaq-100",
+  "name": "NASDAQ 100",
+  "ticker": "NDX",
+  "region": "USA",
+  "country": "USA",
+  "type": "Wachstum / Technologie",
+  "componentBucket": "100 Werte",
+  "indexKind": "Performanceindex",
+  "currency": "USD",
+  "level": 18045.3,
+  "changePct": 1.14,
+  "componentCount": 100,
+  "operator": "Nasdaq",
+  "calculationMethod": "Marktkapitalisierung, modifiziert",
+  "summary": "Technologie- und Wachstumsindex grosser Nasdaq-Werte.",
+  "description": "Der Nasdaq-100 enthaelt grosse nicht-finanzielle Unternehmen der Nasdaq und ist stark technologieorientiert.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Technologie",
+          "share": 57.0
+        },
+        {
+          "label": "Kommunikation",
+          "share": 16.0
+        },
+        {
+          "label": "Konsum",
+          "share": 15.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 7.0
+        },
+        {
+          "label": "Rest",
+          "share": 5.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "Microsoft",
+      "weight": "8.7 %"
+    },
+    {
+      "name": "Apple",
+      "weight": "8.3 %"
+    },
+    {
+      "name": "NVIDIA",
+      "weight": "7.8 %"
+    },
+    {
+      "name": "Amazon",
+      "weight": "5.2 %"
+    },
+    {
+      "name": "Broadcom",
+      "weight": "4.0 %"
+    }
+  ],
+  "file": "nasdaq-100.json"
+}

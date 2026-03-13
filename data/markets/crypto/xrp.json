@@ -1,0 +1,53 @@
+{
+  "id": "xrp",
+  "name": "XRP",
+  "symbol": "XRP",
+  "category": "Payments",
+  "consensusMechanism": "Federated Consensus",
+  "launchYear": 2012,
+  "network": "XRP Ledger",
+  "hasMaxSupply": true,
+  "currency": "USD",
+  "price": 0.62,
+  "changePct": 0.48,
+  "marketCapBn": 34.0,
+  "summary": "Krypto-Asset mit Fokus auf grenzueberschreitende Zahlungsabwicklung.",
+  "description": "XRP wird vor allem mit Zahlungs- und Settlement-Anwendungen assoziiert. Die Entwicklung haengt stark von regulatorischer Klarheit und Oekosystemadoption ab.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 0.62,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.48
+  },
+  "circulatingSupply": 55200000000,
+  "maxSupply": 100000000000,
+  "useCase": "Schnelles Settlement im Zahlungsverkehr",
+  "dominance": "Etabliertes Payment-Asset",
+  "organization": "XRP Ledger Foundation / Ripple-Oekosystem",
+  "allocations": [
+    {
+      "title": "Use Cases",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Payments",
+          "share": 60.0
+        },
+        {
+          "label": "Liquidity Solutions",
+          "share": 25.0
+        },
+        {
+          "label": "Tokenisierung",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Starker Fokus auf Zahlungsnarrativ",
+    "Regulatorische Verfahren beeinflussen die Wahrnehmung"
+  ],
+  "file": "xrp.json"
+}

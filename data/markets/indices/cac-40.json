@@ -1,0 +1,70 @@
+{
+  "id": "cac-40",
+  "name": "CAC 40",
+  "ticker": "PX1",
+  "region": "Europa",
+  "country": "Frankreich",
+  "type": "Blue Chip",
+  "componentBucket": "40 Werte",
+  "indexKind": "Preisindex",
+  "currency": "EUR",
+  "level": 8031.9,
+  "changePct": 0.12,
+  "componentCount": 40,
+  "operator": "Euronext",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Franzoesischer Leitindex mit 40 Standardwerten.",
+  "description": "Der CAC 40 umfasst die groessten franzoesischen Boersenunternehmen und wird an der Euronext Paris berechnet.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Luxus / Konsum",
+          "share": 24.0
+        },
+        {
+          "label": "Industrie",
+          "share": 18.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 17.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 12.0
+        },
+        {
+          "label": "Rest",
+          "share": 29.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "LVMH",
+      "weight": "11.5 %"
+    },
+    {
+      "name": "TotalEnergies",
+      "weight": "8.2 %"
+    },
+    {
+      "name": "Sanofi",
+      "weight": "7.1 %"
+    },
+    {
+      "name": "Schneider Electric",
+      "weight": "6.5 %"
+    },
+    {
+      "name": "L'Oreal",
+      "weight": "5.8 %"
+    }
+  ],
+  "file": "cac-40.json"
+}

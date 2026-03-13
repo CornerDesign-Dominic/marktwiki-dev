@@ -1,0 +1,63 @@
+{
+  "id": "xtrackers-msci-emerging-markets",
+  "name": "Xtrackers MSCI Emerging Markets UCITS ETF",
+  "ticker": "XMME",
+  "provider": "Xtrackers",
+  "region": "Schwellenlaender",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 54.22,
+  "changePct": -0.11,
+  "benchmark": "MSCI Emerging Markets",
+  "ter": 0.18,
+  "aumBn": 9.7,
+  "summary": "Aktien-ETF auf grosse und mittlere Schwellenlaenderwerte.",
+  "description": "Der ETF bietet Zugang zu einem breiten Schwellenlaenderuniversum und wird oft als Beimischung zu Industrielaender-ETFs genutzt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 54.22,
+    "currency": "USD",
+    "referenceMarket": "Xetra",
+    "changePct": -0.11
+  },
+  "isin": "IE00BTJRMP35",
+  "wkn": "A12GVR",
+  "fundVolumeBn": 9.7,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Laender",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "China",
+          "share": 25.0
+        },
+        {
+          "label": "Taiwan",
+          "share": 19.0
+        },
+        {
+          "label": "Indien",
+          "share": 18.0
+        },
+        {
+          "label": "Suedkorea",
+          "share": 11.0
+        },
+        {
+          "label": "Rest",
+          "share": 27.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Hoehere Laender- und Waehrungsrisiken",
+    "Guter Zugang zu EM-Aktien"
+  ],
+  "file": "xtrackers-msci-emerging-markets.json"
+}

@@ -1,0 +1,63 @@
+{
+  "id": "xtrackers-euro-stoxx-50",
+  "name": "Xtrackers EURO STOXX 50 UCITS ETF",
+  "ticker": "XESC",
+  "provider": "Xtrackers",
+  "region": "Eurozone",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Physisch",
+  "currency": "EUR",
+  "price": 84.7,
+  "changePct": 0.09,
+  "benchmark": "EURO STOXX 50",
+  "ter": 0.09,
+  "aumBn": 6.1,
+  "summary": "ETF auf 50 grosse Blue Chips der Eurozone.",
+  "description": "Der ETF konzentriert sich auf grosse, liquide Aktien aus der Eurozone und eignet sich als gezielte Europa-Allokation.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 84.7,
+    "currency": "EUR",
+    "referenceMarket": "Xetra",
+    "changePct": 0.09
+  },
+  "isin": "LU0274211217",
+  "wkn": "DBX1EU",
+  "fundVolumeBn": 6.1,
+  "domicile": "Luxemburg",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Laender",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Frankreich",
+          "share": 37.0
+        },
+        {
+          "label": "Deutschland",
+          "share": 28.0
+        },
+        {
+          "label": "Niederlande",
+          "share": 13.0
+        },
+        {
+          "label": "Spanien",
+          "share": 8.0
+        },
+        {
+          "label": "Rest",
+          "share": 14.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Kompakter Europa-Baustein",
+    "Hohe Gewichtung in Kernlaendern der Eurozone"
+  ],
+  "file": "xtrackers-euro-stoxx-50.json"
+}

@@ -1,0 +1,61 @@
+{
+  "id": "iron-ore",
+  "name": "Eisenerz",
+  "symbol": "FE",
+  "category": "Industriemetalle",
+  "regionFocus": "Australien / Brasilien",
+  "currency": "USD",
+  "unit": "Tonne",
+  "price": 107.2,
+  "changePct": -0.41,
+  "referenceMarket": "SGX / Platts",
+  "summary": "Eisenerz ist der Schluesselrohstoff fuer die Stahlproduktion.",
+  "description": "Die Nachfrage nach Eisenerz haengt vor allem von China und der globalen Stahlproduktion ab. Angebotsseitig dominieren wenige grosse Exporteure.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 107.2,
+    "currency": "USD",
+    "unit": "Tonne",
+    "referenceMarket": "SGX / Platts",
+    "changePct": -0.41
+  },
+  "majorOrigins": [
+    "Australien",
+    "Brasilien",
+    "Indien",
+    "Suedafrika"
+  ],
+  "mainUses": [
+    "Stahlproduktion"
+  ],
+  "contracts": [
+    "Iron Ore Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "Australien",
+      "share": 56.0
+    },
+    {
+      "label": "Brasilien",
+      "share": 18.0
+    },
+    {
+      "label": "Indien",
+      "share": 5.0
+    },
+    {
+      "label": "Suedafrika",
+      "share": 4.0
+    },
+    {
+      "label": "Rest",
+      "share": 17.0
+    }
+  ],
+  "marketNotes": [
+    "China ist wichtigster Nachfragefaktor",
+    "Frachtsaetze koennen die Preisbildung beeinflussen"
+  ],
+  "file": "iron-ore.json"
+}

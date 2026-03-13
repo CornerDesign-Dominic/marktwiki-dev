@@ -1,0 +1,62 @@
+{
+  "id": "uranium",
+  "name": "Uran",
+  "symbol": "U3O8",
+  "category": "Energie",
+  "regionFocus": "Kasachstan",
+  "currency": "USD",
+  "unit": "Pfund",
+  "price": 91.0,
+  "changePct": 0.22,
+  "referenceMarket": "UxC Spot",
+  "summary": "Uran ist der Kernbrennstoff fuer Atomkraftwerke.",
+  "description": "Uran wird ueber langfristige Liefervertraege und einen kleineren Spotmarkt gehandelt. Preisbewegungen haengen stark von Reaktorpolitik und Angebotsdisziplin ab.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 91.0,
+    "currency": "USD",
+    "unit": "Pfund",
+    "referenceMarket": "UxC Spot",
+    "changePct": 0.22
+  },
+  "majorOrigins": [
+    "Kasachstan",
+    "Kanada",
+    "Namibia",
+    "Australien"
+  ],
+  "mainUses": [
+    "Kernbrennstoff"
+  ],
+  "contracts": [
+    "Liefervertraege",
+    "Spotmarkt"
+  ],
+  "originDistribution": [
+    {
+      "label": "Kasachstan",
+      "share": 43.0
+    },
+    {
+      "label": "Kanada",
+      "share": 15.0
+    },
+    {
+      "label": "Namibia",
+      "share": 11.0
+    },
+    {
+      "label": "Australien",
+      "share": 8.0
+    },
+    {
+      "label": "Rest",
+      "share": 23.0
+    }
+  ],
+  "marketNotes": [
+    "Spotmarkt kleiner als bei Oel oder Metallen",
+    "Atompolitik und Neubauten zentral"
+  ],
+  "file": "uranium.json"
+}

@@ -1,0 +1,63 @@
+{
+  "id": "ishares-global-clean-energy",
+  "name": "iShares Global Clean Energy UCITS ETF",
+  "ticker": "INRG",
+  "provider": "iShares",
+  "region": "Global",
+  "assetClass": "Themen-ETF",
+  "distributionPolicy": "Ausschuettend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 8.46,
+  "changePct": 0.42,
+  "benchmark": "S&P Global Clean Energy",
+  "ter": 0.65,
+  "aumBn": 2.9,
+  "summary": "Themen-ETF auf erneuerbare Energien und saubere Technologien.",
+  "description": "Der ETF fokussiert auf Unternehmen aus Solar, Wind, Netzinfrastruktur und verwandten Bereichen. Thematische ETFs koennen deutlich schwankungsanfaelliger sein.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 8.46,
+    "currency": "USD",
+    "referenceMarket": "London Stock Exchange",
+    "changePct": 0.42
+  },
+  "isin": "IE00B1XNHC34",
+  "wkn": "A0MW0M",
+  "fundVolumeBn": 2.9,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Subthemen",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Solar",
+          "share": 27.0
+        },
+        {
+          "label": "Wind",
+          "share": 18.0
+        },
+        {
+          "label": "Versorger / Netze",
+          "share": 21.0
+        },
+        {
+          "label": "Ausruster",
+          "share": 16.0
+        },
+        {
+          "label": "Rest",
+          "share": 18.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Thematischer Fokus statt breiter Markt",
+    "Anfaellig fuer Zins- und Bewertungswechsel"
+  ],
+  "file": "ishares-global-clean-energy.json"
+}

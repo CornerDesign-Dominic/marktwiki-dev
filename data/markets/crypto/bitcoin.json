@@ -1,0 +1,56 @@
+{
+  "id": "bitcoin",
+  "name": "Bitcoin",
+  "symbol": "BTC",
+  "category": "Store of Value",
+  "consensusMechanism": "Proof of Work",
+  "launchYear": 2009,
+  "network": "Bitcoin",
+  "hasMaxSupply": true,
+  "currency": "USD",
+  "price": 63520.0,
+  "changePct": 2.31,
+  "marketCapBn": 1240.0,
+  "summary": "Groesste Kryptowaehrung mit Fokus auf Knappheit und Dezentralitaet.",
+  "description": "Bitcoin ist das erste grosse Krypto-Asset und wird vor allem als digitales knappes Gut eingeordnet. Das Netzwerk priorisiert Sicherheit und Dezentralitaet.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 63520.0,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 2.31
+  },
+  "circulatingSupply": 19640000,
+  "maxSupply": 21000000,
+  "useCase": "Digitales Reserve- und Wertspeicher-Asset",
+  "dominance": "Ca. 50 % Marktanteil im Kryptomarkt",
+  "founders": [
+    "Satoshi Nakamoto"
+  ],
+  "organization": "Offenes Netzwerk",
+  "allocations": [
+    {
+      "title": "Einordnung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Store of Value",
+          "share": 65.0
+        },
+        {
+          "label": "Zahlungen",
+          "share": 20.0
+        },
+        {
+          "label": "Settlement / Treasury",
+          "share": 15.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Begrenzt auf 21 Mio. BTC",
+    "Hoechste Netzwerksicherheit im Krypto-Sektor"
+  ],
+  "file": "bitcoin.json"
+}

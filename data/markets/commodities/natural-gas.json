@@ -1,0 +1,63 @@
+{
+  "id": "natural-gas",
+  "name": "Erdgas",
+  "symbol": "NG",
+  "category": "Energie",
+  "regionFocus": "USA / LNG",
+  "currency": "USD",
+  "unit": "MMBtu",
+  "price": 2.08,
+  "changePct": -0.63,
+  "referenceMarket": "NYMEX Henry Hub",
+  "summary": "Henry Hub ist die zentrale US-Gasbenchmark.",
+  "description": "Erdgaspreise werden stark von Wetter, Speicherstaenden, US-Foerderung und LNG-Exporten beeinflusst. Regional koennen Preisunterschiede erheblich sein.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 2.08,
+    "currency": "USD",
+    "unit": "MMBtu",
+    "referenceMarket": "NYMEX Henry Hub",
+    "changePct": -0.63
+  },
+  "majorOrigins": [
+    "USA",
+    "Russland",
+    "Iran",
+    "Katar"
+  ],
+  "mainUses": [
+    "Stromerzeugung",
+    "Industrie",
+    "Heizung"
+  ],
+  "contracts": [
+    "Natural Gas Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "USA",
+      "share": 24.0
+    },
+    {
+      "label": "Russland",
+      "share": 15.0
+    },
+    {
+      "label": "Iran",
+      "share": 7.0
+    },
+    {
+      "label": "Katar",
+      "share": 5.0
+    },
+    {
+      "label": "Rest",
+      "share": 49.0
+    }
+  ],
+  "marketNotes": [
+    "Sehr wetterabhaengig",
+    "LNG-Ausbau veraendert globale Preisbeziehungen"
+  ],
+  "file": "natural-gas.json"
+}

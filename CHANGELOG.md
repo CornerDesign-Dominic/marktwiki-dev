@@ -1,5 +1,23 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.48
+
+- Vier neue datengetriebene Marktbereiche fuer `Rohstoffe`, `ETFs`, `Indizes` und `Kryptowaehrungen` eingefuehrt.
+- Neue statische Datenstruktur unter `data/markets/` mit Indexdateien plus separaten Detail-JSONs je Eintrag angelegt.
+- Neue Uebersichtsseiten mit lokaler Suche, kombinierbaren Filtern, Sortierung und einspaltigen Kartenlisten umgesetzt.
+- Neue Detailseiten-Templates fuer Rohstoffe, ETFs, Indizes und Krypto mit strukturierten Faktenbloecken und leichten Verteilungsvisualisierungen ergaenzt.
+- Bestehende Marktseiten, globale Layoutlogik und vorhandene Aktien-/Waehrungsfunktionen bewusst unveraendert gelassen.
+
+---
+
+## Version 0.47
+
+- Neue statische Seite `haftungsausschluss.html` im bestehenden Stil der Rechtstexte angelegt.
+- Dezente Verlinkungen zum Haftungsausschluss auf markt- und datenbezogenen Seiten ergaenzt (`wechselkurse.html`, `aktien.html`, `indizes.html`, `etfs.html`, `krypto.html`, `rohstoffe.html`).
+- Dezente Verlinkungen zum Haftungsausschluss in den Rechnerseiten `tools/roi.html` und `tools/zinseszins.html` ergaenzt.
+
+---
+
 ## Version 0.46
 
 - Automatische taegliche Aktualisierung der Wechselkurse auf Basis der offiziellen ECB-Referenzkurse eingefuehrt.

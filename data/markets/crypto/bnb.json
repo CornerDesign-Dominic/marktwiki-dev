@@ -1,0 +1,53 @@
+{
+  "id": "bnb",
+  "name": "BNB",
+  "symbol": "BNB",
+  "category": "Exchange / Layer 1",
+  "consensusMechanism": "Proof of Staked Authority",
+  "launchYear": 2017,
+  "network": "BNB Chain",
+  "hasMaxSupply": false,
+  "currency": "USD",
+  "price": 562.7,
+  "changePct": 0.88,
+  "marketCapBn": 83.0,
+  "summary": "Netzwerk- und Boersen-Token mit Bezug zur BNB Chain.",
+  "description": "BNB wird fuer Gebuehren, Oekosystemanwendungen und als Utility-Token im BNB-Chain-Umfeld genutzt. Der Kurs ist stark an Aktivitaet und Vertrauen im Oekosystem gekoppelt.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 562.7,
+    "currency": "USD",
+    "referenceMarket": "Spotmarkt aggregiert",
+    "changePct": 0.88
+  },
+  "circulatingSupply": 147500000,
+  "maxSupply": null,
+  "useCase": "Netzwerkgebuehren und Oekosystem-Utility",
+  "dominance": "Groesseres Utility-Asset mit Oekosystembezug",
+  "organization": "BNB Chain / Binance-Oekosystem",
+  "allocations": [
+    {
+      "title": "Nutzung",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Netzwerkgebuehren",
+          "share": 40.0
+        },
+        {
+          "label": "Exchange Utility",
+          "share": 35.0
+        },
+        {
+          "label": "DeFi / Apps",
+          "share": 25.0
+        }
+      ]
+    }
+  ],
+  "highlights": [
+    "Eng mit Oekosystemaktivitaet verknuepft",
+    "Regulatorische Risiken besonders relevant"
+  ],
+  "file": "bnb.json"
+}

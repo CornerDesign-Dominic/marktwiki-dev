@@ -1,0 +1,89 @@
+{
+  "id": "ishares-core-msci-world-ucits",
+  "name": "iShares Core MSCI World UCITS ETF",
+  "ticker": "EUNL",
+  "provider": "iShares",
+  "region": "Global",
+  "assetClass": "Aktien",
+  "distributionPolicy": "Thesaurierend",
+  "replicationMethod": "Physisch",
+  "currency": "USD",
+  "price": 89.12,
+  "changePct": 0.21,
+  "benchmark": "MSCI World",
+  "ter": 0.2,
+  "aumBn": 68.4,
+  "summary": "Breit diversifizierter Weltaktien-ETF auf Industrielaender.",
+  "description": "Der ETF bildet den MSCI World physisch nach und richtet sich an langfristige Anleger mit Fokus auf Industrielaender. Die Fondsstruktur ist breit diversifiziert und kosteneffizient.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 89.12,
+    "currency": "USD",
+    "referenceMarket": "Xetra",
+    "changePct": 0.21
+  },
+  "isin": "IE00B4L5Y983",
+  "wkn": "A0RPWH",
+  "fundVolumeBn": 68.4,
+  "domicile": "Irland",
+  "fundType": "UCITS ETF",
+  "allocations": [
+    {
+      "title": "Regionen",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "USA",
+          "share": 71.0
+        },
+        {
+          "label": "Japan",
+          "share": 6.0
+        },
+        {
+          "label": "UK",
+          "share": 4.0
+        },
+        {
+          "label": "Frankreich",
+          "share": 3.0
+        },
+        {
+          "label": "Rest",
+          "share": 16.0
+        }
+      ]
+    },
+    {
+      "title": "Sektoren",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Technologie",
+          "share": 25.0
+        },
+        {
+          "label": "Finanzen",
+          "share": 15.0
+        },
+        {
+          "label": "Gesundheit",
+          "share": 12.0
+        },
+        {
+          "label": "Industrie",
+          "share": 11.0
+        },
+        {
+          "label": "Rest",
+          "share": 37.0
+        }
+      ]
+    }
+  ],
+  "profilePoints": [
+    "Klassischer Kernbaustein fuer Weltaktien",
+    "Fokus auf Industrielaender"
+  ],
+  "file": "ishares-core-msci-world-ucits.json"
+}

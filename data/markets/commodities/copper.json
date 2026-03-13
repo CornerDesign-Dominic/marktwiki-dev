@@ -1,0 +1,62 @@
+{
+  "id": "copper",
+  "name": "Kupfer",
+  "symbol": "HG",
+  "category": "Industriemetalle",
+  "regionFocus": "Lateinamerika",
+  "currency": "USD",
+  "unit": "Pfund",
+  "price": 4.18,
+  "changePct": 0.61,
+  "referenceMarket": "COMEX",
+  "summary": "Kupfer ist ein Konjunktur- und Elektrifizierungsmetall.",
+  "description": "Kupfer wird breit in Bau, Netzinfrastruktur, Elektronik und Elektromobilitaet eingesetzt. Es gilt als Fruehindikator fuer die globale Industrieaktivitaet.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 4.18,
+    "currency": "USD",
+    "unit": "Pfund",
+    "referenceMarket": "COMEX",
+    "changePct": 0.61
+  },
+  "majorOrigins": [
+    "Chile",
+    "Peru",
+    "DR Kongo"
+  ],
+  "mainUses": [
+    "Netze",
+    "Bau",
+    "Elektromobilitaet"
+  ],
+  "contracts": [
+    "Copper Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "Chile",
+      "share": 24.0
+    },
+    {
+      "label": "Peru",
+      "share": 10.0
+    },
+    {
+      "label": "DR Kongo",
+      "share": 8.0
+    },
+    {
+      "label": "China",
+      "share": 8.0
+    },
+    {
+      "label": "Rest",
+      "share": 50.0
+    }
+  ],
+  "marketNotes": [
+    "Wichtiger Rohstoff fuer Energiewende",
+    "Lagerdaten und China-Nachfrage stark kursrelevant"
+  ],
+  "file": "copper.json"
+}

@@ -1,0 +1,58 @@
+{
+  "id": "platinum",
+  "name": "Platin",
+  "symbol": "XPT",
+  "category": "Edelmetalle",
+  "regionFocus": "Suedafrika",
+  "currency": "USD",
+  "unit": "Unze",
+  "price": 932.4,
+  "changePct": 0.28,
+  "referenceMarket": "NYMEX",
+  "summary": "Platin ist ein spezialisiertes Edelmetall fuer Industrie und Schmuck.",
+  "description": "Platin wird stark in Katalysatoren, Chemieanlagen und Schmuck verarbeitet. Das Angebot ist regional konzentriert, was den Markt anfaellig fuer Produktionsstoerungen macht.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 932.4,
+    "currency": "USD",
+    "unit": "Unze",
+    "referenceMarket": "NYMEX",
+    "changePct": 0.28
+  },
+  "majorOrigins": [
+    "Suedafrika",
+    "Russland",
+    "Zimbabwe"
+  ],
+  "mainUses": [
+    "Autokatalysatoren",
+    "Industrie",
+    "Schmuck"
+  ],
+  "contracts": [
+    "Platinum Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "Suedafrika",
+      "share": 71.0
+    },
+    {
+      "label": "Russland",
+      "share": 11.0
+    },
+    {
+      "label": "Zimbabwe",
+      "share": 8.0
+    },
+    {
+      "label": "Rest",
+      "share": 10.0
+    }
+  ],
+  "marketNotes": [
+    "Angebot stark regional konzentriert",
+    "Automobilnachfrage sehr relevant"
+  ],
+  "file": "platinum.json"
+}

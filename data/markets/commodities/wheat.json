@@ -1,0 +1,62 @@
+{
+  "id": "wheat",
+  "name": "Weizen",
+  "symbol": "ZW",
+  "category": "Agrar",
+  "regionFocus": "Schwarzmeer / Nordamerika",
+  "currency": "USD",
+  "unit": "Bushel",
+  "price": 5.94,
+  "changePct": 0.36,
+  "referenceMarket": "CBOT",
+  "summary": "Weizen ist ein zentraler Agrarrohstoff fuer Nahrungsmittelketten.",
+  "description": "Weizenpreise reagieren auf Wetter, Erntequalitaet, Exportpolitik und geopolitische Risiken. Das Schwarzmeergebiet bleibt fuer den globalen Markt besonders wichtig.",
+  "lastUpdated": "2026-03-13",
+  "quote": {
+    "value": 5.94,
+    "currency": "USD",
+    "unit": "Bushel",
+    "referenceMarket": "CBOT",
+    "changePct": 0.36
+  },
+  "majorOrigins": [
+    "China",
+    "Indien",
+    "Russland",
+    "USA"
+  ],
+  "mainUses": [
+    "Lebensmittel",
+    "Futtermittel"
+  ],
+  "contracts": [
+    "Wheat Futures"
+  ],
+  "originDistribution": [
+    {
+      "label": "China",
+      "share": 17.0
+    },
+    {
+      "label": "Indien",
+      "share": 14.0
+    },
+    {
+      "label": "Russland",
+      "share": 11.0
+    },
+    {
+      "label": "USA",
+      "share": 6.0
+    },
+    {
+      "label": "Rest",
+      "share": 52.0
+    }
+  ],
+  "marketNotes": [
+    "Wetter und Exportverbote koennen abrupt wirken",
+    "Erntezyklen bestimmen die Saisonalitaet"
+  ],
+  "file": "wheat.json"
+}

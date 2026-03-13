@@ -1,0 +1,70 @@
+{
+  "id": "euro-stoxx-50",
+  "name": "EURO STOXX 50",
+  "ticker": "SX5E",
+  "region": "Europa",
+  "country": "Eurozone",
+  "type": "Blue Chip",
+  "componentBucket": "50 Werte",
+  "indexKind": "Preisindex",
+  "currency": "EUR",
+  "level": 4948.1,
+  "changePct": 0.21,
+  "componentCount": 50,
+  "operator": "STOXX",
+  "calculationMethod": "Marktkapitalisierung, free float",
+  "summary": "Leitindex grosser Unternehmen der Eurozone.",
+  "description": "Der EURO STOXX 50 buendelt die groessten und liquidesten Aktien der Eurozone zu einer europaweiten Benchmark.",
+  "lastUpdated": "2026-03-13",
+  "allocations": [
+    {
+      "title": "Laender",
+      "kind": "bars",
+      "items": [
+        {
+          "label": "Frankreich",
+          "share": 37.0
+        },
+        {
+          "label": "Deutschland",
+          "share": 28.0
+        },
+        {
+          "label": "Niederlande",
+          "share": 13.0
+        },
+        {
+          "label": "Spanien",
+          "share": 8.0
+        },
+        {
+          "label": "Rest",
+          "share": 14.0
+        }
+      ]
+    }
+  ],
+  "topComponents": [
+    {
+      "name": "ASML",
+      "weight": "8.9 %"
+    },
+    {
+      "name": "SAP",
+      "weight": "6.2 %"
+    },
+    {
+      "name": "LVMH",
+      "weight": "5.6 %"
+    },
+    {
+      "name": "TotalEnergies",
+      "weight": "4.4 %"
+    },
+    {
+      "name": "Siemens",
+      "weight": "4.1 %"
+    }
+  ],
+  "file": "euro-stoxx-50.json"
+}
