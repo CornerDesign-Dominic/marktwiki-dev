@@ -16,7 +16,7 @@ env:
   # - {date} fuer das Handelsdatum
   # - {API_KEY} fuer das GitHub Secret MASSIVE_API_KEY
   EOD_API_URL: "https://api.massive.com/v2/aggs/grouped/locale/us/market/stocks/{date}?adjusted=true&apiKey={API_KEY}"
-  # Optionales Handelsdatum. Leer = heutiges Datum in UTC.
+  # Optionales Handelsdatum. Leer = gestern in UTC.
   EOD_TRADING_DATE: ""
   EOD_OUTPUT_PATH: data/eod_stocks_latest.json
 
@@ -32,6 +32,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
+      - name: Resolve trading date
+        shell: bash
+        run: |
+          if [ -z "$EOD_TRADING_DATE" ]; then
+            echo "EOD_TRADING_DATE=$(date -u -d \"yesterday\" +%F)" >> "$GITHUB_ENV"
+          else
+            echo "EOD_TRADING_DATE=$EOD_TRADING_DATE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Show trading date
+        shell: bash
+        run: echo "Using EOD trading date: $EOD_TRADING_DATE"
 
       - name: Fetch stock EOD file
         env:
