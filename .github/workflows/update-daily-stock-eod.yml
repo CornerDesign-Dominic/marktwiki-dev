@@ -14,7 +14,7 @@ env:
   # API-Endpunkt hier anpassen. Platzhalter:
   # - {date} fuer das Handelsdatum
   # - {API_KEY} fuer das GitHub Secret MASSIVE_API_KEY
-  EOD_API_URL: "https://api.example.com/v2/aggs/grouped/locale/us/market/stocks/{date}?adjusted=true&apiKey={API_KEY}"
+  EOD_API_URL: https://api.massive.com/v2/aggs/grouped/locale/us/market/stocks/2026-03-11?apiKey={API_KEY}"
   # Optionales Handelsdatum. Leer = heutiges Datum in UTC.
   EOD_TRADING_DATE: ""
   # Optional fuer APIs, die statt Query-Parameter einen Header brauchen.
