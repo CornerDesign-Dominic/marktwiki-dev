@@ -406,7 +406,6 @@
       panelTitle.textContent = "";
       panelMeta.textContent = "";
       panelList.innerHTML = "";
-      delete panel.dataset.columns;
       setExpandedState("");
 
       if (restoreFocus && previousOpenKey) {
@@ -419,10 +418,8 @@
 
     const renderPanelContent = (item) => {
       const sectionCount = item.sections.length;
-      const columnCount = sectionCount >= 6 ? "3" : sectionCount >= 3 ? "2" : "1";
       panelTitle.textContent = item.label;
       panelMeta.textContent = `${sectionCount} ${sectionCount === 1 ? "Bereich" : "Bereiche"}`;
-      panel.dataset.columns = columnCount;
       panelList.innerHTML = item.sections.map((section) => {
         const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
         const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;

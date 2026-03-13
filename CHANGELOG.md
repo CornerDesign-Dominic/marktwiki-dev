@@ -8,6 +8,14 @@
 
 ---
 
+## Version 0.53
+
+- Header-Untermenue in `style.css` auf eine klare 2-Spalten-Anordnung mit mehr Breite pro Eintrag verfeinert, damit Menuepunkte moeglichst einzeilig bleiben.
+- Kartenoptik der einzelnen Untermenue-Links entfernt und die Eintraege auf leichte, textbasierte Zeilenlinks mit dezenten Hover-, Fokus- und Aktivzustaenden reduziert.
+- `layout.js` beim bestehenden gemeinsamen Untermenue-Panel belassen und nur die nicht mehr benoetigte inhaltsabhaengige Spaltenumschaltung zur Vereinfachung entfernt.
+
+---
+
 ## Version 0.51
 
 - Aufgeklapptes Untermenue-Panel im Header vergroessert und an derselben festen Position beibehalten.
