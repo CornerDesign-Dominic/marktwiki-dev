@@ -151,68 +151,60 @@
     container.innerHTML = `<p class="status-message${isError ? " error" : ""}">${message}</p>`;
   }
 
-  function renderOverviewCard(entry) {
-    const config = CATEGORY_CONFIG[entry.id];
+  function renderOverviewCard(categoryKey, items) {
+    const config = CATEGORY_CONFIG[categoryKey];
     if (!config) {
       return "";
     }
 
-    const leadLine = [normalizeText(entry.symbol), normalizeText(entry.lead)].filter(Boolean).join(" - ");
-    const changeClass = getChangeClass(entry.changePct);
+    const compactItems = items.slice(0, 5);
+    const rows = compactItems.map((item) => {
+      const changeClass = getChangeClass(item.changePct);
 
-    return `<a class="quote-overview-card" href="${href(config.page)}">
+      return `<div class="quote-overview-row">
+        <strong class="quote-overview-name">${normalizeText(item.name) || "k. A."}</strong>
+        <span class="quote-overview-symbol">${normalizeText(item.symbol) || "-"}</span>
+        <span class="quote-overview-value">${formatQuoteValue(item, "open", config.type)}</span>
+        <span class="quote-overview-value">${formatQuoteValue(item, "close", config.type)}</span>
+        <span class="quote-overview-value quote-change ${changeClass}">${formatPercent(item.changePct)}</span>
+      </div>`;
+    }).join("");
+
+    return `<section class="card quote-overview-card">
       <div class="quote-overview-card-head">
-        <div>
-          <h2>${config.title}</h2>
-          <p class="quote-overview-card-subline">${leadLine || "Lokale Kursvorlage"}</p>
-        </div>
-        <span class="badge">${entry.itemCount || 0} Werte</span>
+        <h2><a class="quote-overview-link" href="${href(config.page)}">${config.title}</a></h2>
       </div>
-      <dl class="quote-stats-grid">
-        <div class="quote-stat">
-          <dt>Eroeffnet mit</dt>
-          <dd>${formatQuoteValue(entry, "open", config.type)}</dd>
+      <div class="quote-overview-list" role="table" aria-label="${config.title}">
+        <div class="quote-overview-header" role="row">
+          <span>Wert</span>
+          <span>Symbol</span>
+          <span>Start</span>
+          <span>Schluss</span>
+          <span>Veraenderung</span>
         </div>
-        <div class="quote-stat">
-          <dt>Abgeschlossen mit</dt>
-          <dd>${formatQuoteValue(entry, "close", config.type)}</dd>
-        </div>
-        <div class="quote-stat">
-          <dt>Tageshoch</dt>
-          <dd>${formatQuoteValue(entry, "high", config.type)}</dd>
-        </div>
-        <div class="quote-stat">
-          <dt>Tagestief</dt>
-          <dd>${formatQuoteValue(entry, "low", config.type)}</dd>
-        </div>
-        <div class="quote-stat">
-          <dt>Veraenderung</dt>
-          <dd class="quote-change ${changeClass}">${formatPercent(entry.changePct)}</dd>
-        </div>
-        <div class="quote-stat">
-          <dt>Datenstand</dt>
-          <dd>${formatDate(entry.updatedAt)}</dd>
-        </div>
-      </dl>
-    </a>`;
+        ${rows}
+      </div>
+    </section>`;
   }
 
   async function initOverviewPage() {
     const container = document.querySelector("#quotes-overview");
-    const updatedNote = document.querySelector("#quotes-overview-updated");
-    if (!container || !updatedNote) {
+    if (!container) {
       return;
     }
 
     try {
-      const data = await loadJson("data/quotes/overview.json");
-      const cards = Array.isArray(data.cards) ? data.cards : [];
+      const entries = await Promise.all(Object.entries(CATEGORY_CONFIG).map(async ([categoryKey, config]) => {
+        const data = await loadJson(config.dataPath);
+        return {
+          categoryKey,
+          items: Array.isArray(data.items) ? data.items : []
+        };
+      }));
 
-      container.innerHTML = cards.map((entry) => renderOverviewCard(entry)).join("");
-      updatedNote.textContent = `Datenstand: ${formatDate(data.updatedAt)}. Quelle: ${normalizeText(data.source) || "Lokale JSON-Dateien"}.`;
+      container.innerHTML = entries.map((entry) => renderOverviewCard(entry.categoryKey, entry.items)).join("");
     } catch (error) {
       renderMessage(container, "Die Kursuebersicht konnte nicht geladen werden.", true);
-      updatedNote.textContent = "";
     }
   }
 

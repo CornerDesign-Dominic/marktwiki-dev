@@ -36,6 +36,28 @@
       "changePct": -1.27
     },
     {
+      "name": "Rheinmetall AG",
+      "symbol": "RHM",
+      "market": "Xetra",
+      "currency": "EUR",
+      "open": 568.2,
+      "close": 579.4,
+      "high": 582.8,
+      "low": 564.9,
+      "changePct": 1.97
+    },
+    {
+      "name": "adidas AG",
+      "symbol": "ADS",
+      "market": "Xetra",
+      "currency": "EUR",
+      "open": 219.6,
+      "close": 223.85,
+      "high": 224.9,
+      "low": 217.4,
+      "changePct": 1.94
+    },
+    {
       "name": "SAP SE",
       "symbol": "SAP",
       "market": "Xetra",
@@ -45,28 +67,6 @@
       "high": 179.4,
       "low": 175.82,
       "changePct": 1.33
-    },
-    {
-      "name": "Siemens AG",
-      "symbol": "SIE",
-      "market": "Xetra",
-      "currency": "EUR",
-      "open": 182.1,
-      "close": 180.76,
-      "high": 183.04,
-      "low": 179.92,
-      "changePct": -0.74
-    },
-    {
-      "name": "ASML Holding",
-      "symbol": "ASML",
-      "market": "Euronext Amsterdam",
-      "currency": "EUR",
-      "open": 937.5,
-      "close": 944.7,
-      "high": 949.2,
-      "low": 931.6,
-      "changePct": 0.77
     }
   ]
 }
