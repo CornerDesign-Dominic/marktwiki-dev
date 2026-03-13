@@ -16,6 +16,14 @@
 
 ---
 
+## Version 0.54
+
+- Positionierung des gemeinsamen Header-Untermenues in `layout.js` so erweitert, dass das Panel horizontal am aktiven Hauptmenuepunkt ausgerichtet und bei Resize stabil nachgefuehrt wird.
+- Vertikale Anbindung des Untermenues in `style.css` direkt unter die Hauptnavigation gesetzt und durch eine durchgehende Hover-Zone ohne funktionale Luecke zwischen Trigger und Panel abgesichert.
+- Bestehende 2-spaltige, textbasierte Linkstruktur des Untermenues beibehalten, damit die Eintraege leicht, einzeilig orientiert und ohne Kacheloptik bleiben.
+
+---
+
 ## Version 0.51
 
 - Aufgeklapptes Untermenue-Panel im Header vergroessert und an derselben festen Position beibehalten.

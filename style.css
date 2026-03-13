@@ -282,8 +282,8 @@ img {
 
 .nav-submenu-panel {
   position: absolute;
-  top: calc(100% + 0.9rem);
-  left: 50%;
+  top: calc(100% - 1px);
+  left: 0;
   width: min(760px, calc(100vw - 2rem));
   height: 23rem;
   padding: 1.35rem 1.4rem 1.5rem;
@@ -294,7 +294,7 @@ img {
   box-shadow: var(--shadow-elevated);
   opacity: 0;
   visibility: hidden;
-  transform: translate(-50%, -8px);
+  transform: translateY(-6px);
   transition: opacity 0.16s ease, transform 0.16s ease, visibility 0.16s ease;
   pointer-events: none;
   z-index: 30;
@@ -302,10 +302,19 @@ img {
   flex-direction: column;
 }
 
+.nav-submenu-panel::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -0.85rem;
+  height: 0.85rem;
+}
+
 .nav-wrap.submenu-open .nav-submenu-panel {
   opacity: 1;
   visibility: visible;
-  transform: translate(-50%, 0);
+  transform: translateY(0);
   pointer-events: auto;
 }
 

@@ -379,11 +379,34 @@
     let openKey = "";
     let stickyOpen = false;
 
+    const clamp = (value, min, max) => {
+      return Math.min(Math.max(value, min), max);
+    };
+
     const clearCloseTimer = () => {
       if (closeTimer) {
         window.clearTimeout(closeTimer);
         closeTimer = 0;
       }
+    };
+
+    const updatePanelPosition = (key) => {
+      const toggle = navRoot.querySelector(`[data-nav-toggle="${key}"]`);
+      if (!(toggle instanceof HTMLElement)) {
+        panel.style.removeProperty("left");
+        return;
+      }
+
+      const wrapRect = navWrap.getBoundingClientRect();
+      const toggleRect = toggle.getBoundingClientRect();
+      const panelWidth = panel.offsetWidth;
+      const toggleCenter = toggleRect.left - wrapRect.left + (toggleRect.width / 2);
+      const minLeft = 0;
+      const maxLeft = Math.max(wrapRect.width - panelWidth, 0);
+      const idealLeft = toggleCenter - (panelWidth / 2);
+      const resolvedLeft = clamp(idealLeft, minLeft, maxLeft);
+
+      panel.style.left = `${resolvedLeft}px`;
     };
 
     const setExpandedState = (expandedKey = "") => {
@@ -442,6 +465,7 @@
       navWrap.classList.add("submenu-open");
       panel.hidden = false;
       panel.setAttribute("aria-hidden", "false");
+      updatePanelPosition(key);
       setExpandedState(key);
     };
 
@@ -503,7 +527,18 @@
       navWrap.addEventListener("mouseenter", () => {
         clearCloseTimer();
       });
+
+      panel.addEventListener("mouseenter", () => {
+        clearCloseTimer();
+      });
     }
+
+    window.addEventListener("resize", () => {
+      if (!openKey) {
+        return;
+      }
+      updatePanelPosition(openKey);
+    });
 
     panel.addEventListener("keydown", (event) => {
       if (event.key === "Escape") {
