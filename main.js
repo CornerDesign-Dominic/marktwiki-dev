@@ -16,6 +16,7 @@
   const DEFAULT_DISPLAY_CURRENCY = "EUR";
   const DEFAULT_STOCK_SORT_FIELD = "marketCap";
   const DEFAULT_STOCK_SORT_DIRECTION = "desc";
+  const STOCKS_PAGE_SIZE = 50;
   const SUPPORTED_DISPLAY_CURRENCIES = new Set(["EUR", "USD"]);
   const RAW_CURRENCY_ALIAS = {
     GBp: "GBX"
@@ -887,6 +888,71 @@
 
   function getStockExchangeLabel(company) {
     return normalizeText(company?.exchangeFullName) || normalizeText(company?.exchange);
+  }
+
+  function clampPageNumber(value, totalPages) {
+    const parsedValue = Number.parseInt(String(value || ""), 10);
+    const safeTotalPages = Math.max(1, totalPages || 1);
+    if (!Number.isFinite(parsedValue) || parsedValue < 1) {
+      return 1;
+    }
+    return Math.min(parsedValue, safeTotalPages);
+  }
+
+  function renderStocksPagination(container, options = {}) {
+    if (!container) {
+      return;
+    }
+
+    const {
+      currentPage = 1,
+      totalPages = 1,
+      onPageChange = null
+    } = options;
+
+    container.innerHTML = "";
+
+    if (totalPages <= 1) {
+      container.hidden = true;
+      return;
+    }
+
+    const paginationInner = document.createElement("div");
+    paginationInner.className = "stocks-pagination-inner";
+
+    const previousButton = document.createElement("button");
+    previousButton.type = "button";
+    previousButton.className = "btn stocks-pagination-button";
+    previousButton.textContent = "Zurueck";
+    previousButton.disabled = currentPage <= 1;
+
+    const info = document.createElement("p");
+    info.className = "muted stocks-pagination-info";
+    info.textContent = `Seite ${currentPage} von ${totalPages}`;
+
+    const nextButton = document.createElement("button");
+    nextButton.type = "button";
+    nextButton.className = "btn stocks-pagination-button";
+    nextButton.textContent = "Weiter";
+    nextButton.disabled = currentPage >= totalPages;
+
+    if (typeof onPageChange === "function") {
+      previousButton.addEventListener("click", () => {
+        if (currentPage > 1) {
+          onPageChange(currentPage - 1);
+        }
+      });
+
+      nextButton.addEventListener("click", () => {
+        if (currentPage < totalPages) {
+          onPageChange(currentPage + 1);
+        }
+      });
+    }
+
+    paginationInner.append(previousButton, info, nextButton);
+    container.appendChild(paginationInner);
+    container.hidden = false;
   }
 
   function fillSelectOptions(select, values, allLabel) {
@@ -1951,6 +2017,7 @@
 
   async function initStocks() {
     const list = document.querySelector("#stocks-list");
+    const pagination = document.querySelector("#stocks-pagination");
     const favoritesList = document.querySelector("#stocks-favorites-list");
     const watchlistToggle = document.querySelector("#stocks-watchlist-toggle");
     const searchInput = document.querySelector("#stocks-search");
@@ -1985,6 +2052,7 @@
     let watchlistVisible = favoriteSymbols.size > 0;
     let hasStoredWatchlistPreference = false;
     let stockRenderVersion = 0;
+    let currentStocksPage = clampPageNumber(params.get("page"), 1);
 
     if (favoritesList) {
       try {
@@ -2051,6 +2119,54 @@
         watchlistVisible = favoriteCompanies.length > 0;
       }
       updateWatchlistVisibility();
+    };
+
+    const updateStocksUrlState = () => {
+      const nextParams = new URLSearchParams();
+      const query = normalizeText(searchInput?.value);
+      const selectedCountry = normalizeText(countryFilter?.value);
+      const selectedCurrency = normalizeText(currencyFilter?.value);
+      const selectedSector = normalizeText(sectorFilter?.value);
+      const selectedIndustry = normalizeText(industryFilter?.value);
+      const selectedExchange = normalizeText(exchangeFilter?.value);
+      const selectedSort = normalizeText(sortSelect?.value) || DEFAULT_STOCK_SORT_FIELD;
+      const selectedDirection = normalizeText(sortDirectionSelect?.value) || DEFAULT_STOCK_SORT_DIRECTION;
+      const selectedDisplayCurrency = resolveDisplayCurrency(displayCurrencyFilter?.value || displayCurrency);
+
+      if (query) {
+        nextParams.set("q", query);
+      }
+      if (selectedCountry) {
+        nextParams.set("country", selectedCountry);
+      }
+      if (selectedCurrency) {
+        nextParams.set("currency", selectedCurrency);
+      }
+      if (selectedSector) {
+        nextParams.set("sector", selectedSector);
+      }
+      if (selectedIndustry) {
+        nextParams.set("industry", selectedIndustry);
+      }
+      if (selectedExchange) {
+        nextParams.set("exchange", selectedExchange);
+      }
+      if (selectedSort && selectedSort !== DEFAULT_STOCK_SORT_FIELD) {
+        nextParams.set("sort", selectedSort);
+      }
+      if (selectedDirection && selectedDirection !== DEFAULT_STOCK_SORT_DIRECTION) {
+        nextParams.set("direction", selectedDirection);
+      }
+      if (selectedDisplayCurrency !== DEFAULT_DISPLAY_CURRENCY) {
+        nextParams.set("displayCurrency", selectedDisplayCurrency);
+      }
+      if (currentStocksPage > 1) {
+        nextParams.set("page", String(currentStocksPage));
+      }
+
+      const nextQuery = nextParams.toString();
+      const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
+      window.history.replaceState({}, "", nextUrl);
     };
 
     watchlistToggle?.addEventListener("click", () => {
@@ -2245,52 +2361,10 @@
       return sorted;
     };
 
-    const updateStocksUrlState = () => {
-      const nextParams = new URLSearchParams();
-      const query = normalizeText(searchInput?.value);
-      const selectedCountry = normalizeText(countryFilter?.value);
-      const selectedCurrency = normalizeText(currencyFilter?.value);
-      const selectedSector = normalizeText(sectorFilter?.value);
-      const selectedIndustry = normalizeText(industryFilter?.value);
-      const selectedExchange = normalizeText(exchangeFilter?.value);
-      const selectedSort = normalizeText(sortSelect?.value) || DEFAULT_STOCK_SORT_FIELD;
-      const selectedDirection = normalizeText(sortDirectionSelect?.value) || DEFAULT_STOCK_SORT_DIRECTION;
-      const selectedDisplayCurrency = resolveDisplayCurrency(displayCurrencyFilter?.value || displayCurrency);
-
-      if (query) {
-        nextParams.set("q", query);
-      }
-      if (selectedCountry) {
-        nextParams.set("country", selectedCountry);
-      }
-      if (selectedCurrency) {
-        nextParams.set("currency", selectedCurrency);
-      }
-      if (selectedSector) {
-        nextParams.set("sector", selectedSector);
-      }
-      if (selectedIndustry) {
-        nextParams.set("industry", selectedIndustry);
-      }
-      if (selectedExchange) {
-        nextParams.set("exchange", selectedExchange);
-      }
-      if (selectedSort && selectedSort !== DEFAULT_STOCK_SORT_FIELD) {
-        nextParams.set("sort", selectedSort);
-      }
-      if (selectedDirection && selectedDirection !== DEFAULT_STOCK_SORT_DIRECTION) {
-        nextParams.set("direction", selectedDirection);
-      }
-      if (selectedDisplayCurrency !== DEFAULT_DISPLAY_CURRENCY) {
-        nextParams.set("displayCurrency", selectedDisplayCurrency);
-      }
-
-      const nextQuery = nextParams.toString();
-      const nextUrl = nextQuery ? `${window.location.pathname}?${nextQuery}` : window.location.pathname;
-      window.history.replaceState({}, "", nextUrl);
-    };
-
-    const applyStockFilters = async () => {
+    const applyStockFilters = async (options = {}) => {
+      const {
+        resetPage = false
+      } = options;
       const currentRenderVersion = ++stockRenderVersion;
       const query = normalizeForMatch(searchInput?.value || "");
       const selectedCountry = normalizeText(countryFilter?.value);
@@ -2313,8 +2387,18 @@
         return matchesSearch && matchesCountry && matchesCurrency && matchesSector && matchesIndustry && matchesExchange;
       });
       const sorted = sortCompanies(filtered, selectedSort, selectedDirection === "asc" ? "asc" : "desc");
+      const totalPages = Math.max(1, Math.ceil(sorted.length / STOCKS_PAGE_SIZE));
 
-      await renderStockCards(list, sorted, {
+      if (resetPage) {
+        currentStocksPage = 1;
+      } else {
+        currentStocksPage = clampPageNumber(currentStocksPage, totalPages);
+      }
+
+      const pageStart = (currentStocksPage - 1) * STOCKS_PAGE_SIZE;
+      const pagedCompanies = sorted.slice(pageStart, pageStart + STOCKS_PAGE_SIZE);
+
+      await renderStockCards(list, pagedCompanies, {
         favoriteSymbols,
         onToggleFavorite: persistAndRefresh,
         displayCurrency,
@@ -2329,8 +2413,19 @@
       await renderFavorites();
 
       if (resultsCount) {
-        resultsCount.textContent = `${sorted.length} von ${companies.length} Unternehmen`;
+        resultsCount.textContent = sorted.length > 0
+          ? `${sorted.length} von ${companies.length} Unternehmen | Seite ${currentStocksPage} von ${totalPages}`
+          : `0 von ${companies.length} Unternehmen`;
       }
+
+      renderStocksPagination(pagination, {
+        currentPage: currentStocksPage,
+        totalPages,
+        onPageChange: (nextPage) => {
+          currentStocksPage = clampPageNumber(nextPage, totalPages);
+          applyStockFilters();
+        }
+      });
 
       updateStocksUrlState();
     };
@@ -2363,17 +2458,18 @@
       if (displayCurrencyFilter) {
         displayCurrencyFilter.value = displayCurrency;
       }
-      applyStockFilters();
+      currentStocksPage = 1;
+      applyStockFilters({ resetPage: true });
     };
 
-    searchInput?.addEventListener("input", applyStockFilters);
-    countryFilter?.addEventListener("change", applyStockFilters);
-    currencyFilter?.addEventListener("change", applyStockFilters);
-    sectorFilter?.addEventListener("change", applyStockFilters);
-    industryFilter?.addEventListener("change", applyStockFilters);
-    exchangeFilter?.addEventListener("change", applyStockFilters);
-    sortSelect?.addEventListener("change", applyStockFilters);
-    sortDirectionSelect?.addEventListener("change", applyStockFilters);
+    searchInput?.addEventListener("input", () => applyStockFilters({ resetPage: true }));
+    countryFilter?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
+    currencyFilter?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
+    sectorFilter?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
+    industryFilter?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
+    exchangeFilter?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
+    sortSelect?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
+    sortDirectionSelect?.addEventListener("change", () => applyStockFilters({ resetPage: true }));
     resetButton?.addEventListener("click", resetStocksFilters);
     displayCurrencyFilter?.addEventListener("change", () => {
       displayCurrency = writeDisplayCurrency(displayCurrencyFilter.value);

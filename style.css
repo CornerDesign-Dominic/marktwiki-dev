@@ -929,6 +929,30 @@ input[type="number"] {
   font-size: 0.85rem;
 }
 
+.stocks-pagination {
+  margin-top: 1rem;
+}
+
+.stocks-pagination-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.stocks-pagination-info {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.stocks-pagination-button[disabled] {
+  opacity: 0.55;
+  cursor: default;
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
 .exchange-rates-page-title {
   margin: 0;
 }
