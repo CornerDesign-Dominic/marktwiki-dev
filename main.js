@@ -8,6 +8,7 @@
     categories: "kategorien.json",
     topics: "themen.json",
     companiesIndex: "companies/index.json",
+    companyMarketData: "company-market-data.json",
     exchangeRates: "exchange-rates.json"
   };
   const FAVORITES_STORAGE_KEY = "favorites";
@@ -115,6 +116,7 @@
   const exchangeRateDisplayCache = new Map();
   const currencyNameCache = new Map();
   let exchangeRatesPromise = null;
+  let companyMarketDataPromise = null;
   let currencyDisplayNameFormatter = null;
 
   async function loadJson(path) {
@@ -464,6 +466,110 @@
     });
 
     return exchangeRatesPromise;
+  }
+
+  function normalizeCompanyMarketEntry(entry) {
+    if (!entry || typeof entry !== "object") {
+      return null;
+    }
+
+    const symbol = normalizeCompanySymbol(entry.symbol);
+    if (!symbol) {
+      return null;
+    }
+
+    return {
+      symbol,
+      companyName: normalizeText(entry.companyName) || symbol,
+      companyFile: normalizeText(entry.companyFile),
+      currency: normalizeCurrencyForRates(entry.currency) || "",
+      exchange: normalizeText(entry.exchange),
+      exchangeFullName: normalizeText(entry.exchangeFullName),
+      open: toNumber(entry.open),
+      close: toNumber(entry.close),
+      high: toNumber(entry.high),
+      low: toNumber(entry.low),
+      volume: toNumber(entry.volume),
+      vwap: toNumber(entry.vwap),
+      tradesCount: toNumber(entry.tradesCount),
+      tradeTimestamp: toNumber(entry.tradeTimestamp),
+      tradeDate: normalizeText(entry.tradeDate),
+      change: toNumber(entry.change),
+      changePercentage: toNumber(entry.changePct ?? entry.changePercentage),
+      sourceFile: normalizeText(entry.sourceFile)
+    };
+  }
+
+  async function loadCompanyMarketData() {
+    if (companyMarketDataPromise) {
+      return companyMarketDataPromise;
+    }
+
+    companyMarketDataPromise = loadJson(`data/${DATA_FILES.companyMarketData}`)
+      .then((payload) => {
+        const items = Array.isArray(payload?.items) ? payload.items : [];
+        const marketDataBySymbol = new Map();
+
+        items.forEach((entry) => {
+          const normalized = normalizeCompanyMarketEntry(entry);
+          if (!normalized) {
+            return;
+          }
+
+          marketDataBySymbol.set(normalized.symbol, normalized);
+        });
+
+        return marketDataBySymbol;
+      })
+      .catch((error) => {
+        console.warn("Gematchte Unternehmens-Marktdaten konnten nicht geladen werden.", error);
+        return new Map();
+      });
+
+    return companyMarketDataPromise;
+  }
+
+  function mergeCompanyWithMarketData(company, marketDataBySymbol) {
+    if (!company || typeof company !== "object") {
+      return company;
+    }
+
+    const symbol = normalizeCompanySymbol(company.symbol);
+    if (!symbol) {
+      return company;
+    }
+
+    const marketData = marketDataBySymbol instanceof Map ? marketDataBySymbol.get(symbol) : null;
+    if (!marketData) {
+      return {
+        ...company,
+        symbol
+      };
+    }
+
+    const price = toNumber(marketData.close);
+    const change = toNumber(marketData.change);
+    const changePercentage = toNumber(marketData.changePercentage);
+    const volume = toNumber(marketData.volume);
+    const mergedCurrency = normalizeCurrencyForRates(company.currency) || marketData.currency;
+
+    return {
+      ...company,
+      symbol,
+      currency: mergedCurrency,
+      price: price === null ? toNumber(company.price) : price,
+      change: change === null ? toNumber(company.change) : change,
+      changePercentage: changePercentage === null ? toNumber(company.changePercentage) : changePercentage,
+      volume: volume === null ? toNumber(company.volume) : volume,
+      open: marketData.open,
+      close: marketData.close,
+      high: marketData.high,
+      low: marketData.low,
+      marketDataDate: marketData.tradeDate,
+      marketDataTimestamp: marketData.tradeTimestamp,
+      marketDataSource: marketData.sourceFile,
+      marketData
+    };
   }
 
   function convertCurrencyValue(value, sourceCurrency, targetCurrency, ratesData) {
@@ -849,7 +955,10 @@
   }
 
   async function loadCompanyIndex() {
-    const payload = await loadJson(`data/${DATA_FILES.companiesIndex}`);
+    const [payload, marketDataBySymbol] = await Promise.all([
+      loadJson(`data/${DATA_FILES.companiesIndex}`),
+      loadCompanyMarketData()
+    ]);
     const sourceEntries = Array.isArray(payload)
       ? payload
       : payload && Array.isArray(payload.companies)
@@ -859,6 +968,7 @@
     if (sourceEntries) {
       return sourceEntries
         .map((entry) => normalizeCompanyIndexEntry(entry))
+        .map((entry) => mergeCompanyWithMarketData(entry, marketDataBySymbol))
         .filter(Boolean);
     }
 
@@ -1981,6 +2091,9 @@
 
     const priceLine = document.createElement("p");
     priceLine.className = "stock-price-line";
+    const priceLineLabel = normalizeText(company.marketDataDate)
+      ? `Schlusskurs (${formatDate(company.marketDataDate)})`
+      : "Kurs";
     const targetCurrency = resolveDisplayCurrency(displayCurrency);
     const convertedPrice = ratesData ? getConvertedCompanyValue(company, "price", targetCurrency, ratesData) : null;
     const primaryPrice = convertedPrice === null
@@ -1989,8 +2102,8 @@
     const originalPrice = formatCurrency(company.price, originalCurrency);
     const baseCurrencyCode = normalizeCurrencyForRates(originalCurrency) || "Basiswaehrung";
     priceLine.textContent = convertedPrice === null
-      ? `Kurs: ${primaryPrice}`
-      : `Kurs: ${primaryPrice} | ${baseCurrencyCode}: ${originalPrice}`;
+      ? `${priceLineLabel}: ${primaryPrice}`
+      : `${priceLineLabel}: ${primaryPrice} | ${baseCurrencyCode}: ${originalPrice}`;
 
     const facts = document.createElement("dl");
     facts.className = "stock-meta stock-facts stock-facts-compact";
@@ -2634,6 +2747,67 @@
     ];
   }
 
+  function createLatestSessionFactItems(company, options = {}) {
+    const {
+      displayCurrency = DEFAULT_DISPLAY_CURRENCY,
+      ratesData = null
+    } = options;
+
+    if (!company || typeof company !== "object" || !company.marketData) {
+      return [];
+    }
+
+    const sourceCurrency = normalizeCurrencyForRates(company.currency);
+    return [
+      {
+        label: "Handelsdatum",
+        value: formatDate(company.marketDataDate)
+      },
+      {
+        label: "Eroeffnung",
+        value: formatCurrencyWithOptionalBase(company.open, {
+          sourceCurrency,
+          displayCurrency,
+          ratesData,
+          formatter: formatCurrency
+        })
+      },
+      {
+        label: "Schlusskurs",
+        value: formatCurrencyWithOptionalBase(company.close ?? company.price, {
+          sourceCurrency,
+          displayCurrency,
+          ratesData,
+          formatter: formatCurrency
+        })
+      },
+      {
+        label: "Tageshoch",
+        value: formatCurrencyWithOptionalBase(company.high, {
+          sourceCurrency,
+          displayCurrency,
+          ratesData,
+          formatter: formatCurrency
+        })
+      },
+      {
+        label: "Tagestief",
+        value: formatCurrencyWithOptionalBase(company.low, {
+          sourceCurrency,
+          displayCurrency,
+          ratesData,
+          formatter: formatCurrency
+        })
+      },
+      {
+        label: "Volumen",
+        value: formatCompactNumber(company.volume)
+      }
+    ].filter((entry) => {
+      return !(typeof entry.value === "string" && entry.value === "k. A.");
+    });
+  }
+
   function createStocksFilterLink(value, key) {
     const filterValue = normalizeText(value);
     const filterKey = normalizeText(key);
@@ -2970,6 +3144,10 @@
     const displayChange = ratesData
       ? convertCurrencyValue(company.change, companyCurrency, selectedDisplayCurrency, ratesData)
       : null;
+    const latestSessionFactItems = createLatestSessionFactItems(company, {
+      displayCurrency: selectedDisplayCurrency,
+      ratesData
+    });
     const backLink = document.createElement("a");
     backLink.className = "back-link";
     backLink.href = `${basePath}/aktien.html`;
@@ -3060,7 +3238,7 @@
     priceBox.className = "company-price-block";
     const priceLabel = document.createElement("span");
     priceLabel.className = "company-metric-label";
-    priceLabel.textContent = "Kurs";
+    priceLabel.textContent = company.marketData ? "Schlusskurs" : "Kurs";
     const priceValue = document.createElement("strong");
     priceValue.className = "company-price-value";
     priceValue.textContent = displayPrice === null
@@ -3076,7 +3254,7 @@
     changeBox.className = `company-change-row tone-${tone}`;
     const changeLabel = document.createElement("span");
     changeLabel.className = "company-metric-label";
-    changeLabel.textContent = "Veraenderung zum Vortag";
+    changeLabel.textContent = company.marketData ? "Tagesveraenderung (Open zu Close)" : "Veraenderung zum Vortag";
     const changeValue = document.createElement("strong");
     changeValue.className = "company-change-value";
     const signedChange = displayChange === null
@@ -3177,7 +3355,10 @@
                 formatter: formatCurrency
               })
             },
-            { label: "Volume", value: formatCompactNumber(company.volume) }
+            { label: "Volume", value: formatCompactNumber(company.volume) },
+            ...(normalizeText(company.marketDataDate)
+              ? [{ label: "Handelsdatum", value: formatDate(company.marketDataDate) }]
+              : [])
           ]
         },
         {
@@ -3253,6 +3434,12 @@
             { label: "Average Volume", value: formatCompactNumber(company.averageVolume) }
           ]
         },
+        ...(latestSessionFactItems.length
+          ? [{
+            title: "Letzte Handelssitzung",
+            items: latestSessionFactItems
+          }]
+          : []),
         {
           title: "Bandbreite und Profil",
           items: [
@@ -3377,9 +3564,10 @@
 
     renderMessage(article, "Unternehmensdaten werden geladen ...");
 
-    const [index, ratesData] = await Promise.all([
+    const [index, ratesData, marketDataBySymbol] = await Promise.all([
       loadCompanyIndex(),
-      loadExchangeRates()
+      loadExchangeRates(),
+      loadCompanyMarketData()
     ]);
     const entry = findCompanyBySymbol(index, symbol);
 
@@ -3389,7 +3577,10 @@
     }
 
     const fileName = normalizeText(entry.file) || `${symbol}.json`;
-    const company = await loadJson(`data/companies/${fileName}`);
+    const company = mergeCompanyWithMarketData(
+      await loadJson(`data/companies/${fileName}`),
+      marketDataBySymbol
+    );
 
     if (!company || typeof company !== "object") {
       renderMessage(article, "Unternehmensdaten sind unvollstaendig.", true);
