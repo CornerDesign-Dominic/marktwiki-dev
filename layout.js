@@ -550,6 +550,16 @@
   function renderHeader(config = {}) {
     const { basePath, activeNav } = readLayoutConfig(config);
     const navMarkup = NAV_ITEMS.map((item) => navItemMarkup(basePath, activeNav, item)).join("");
+    const themeToggleMarkup = `<div class="header-edge-toggle">
+      <div class="theme-toggle-wrap">
+        <button type="button" class="theme-toggle" data-theme-toggle role="switch" aria-checked="false" aria-label="Light Mode aktivieren">
+          <span class="theme-toggle-track" aria-hidden="true">
+            <span class="theme-toggle-thumb"></span>
+          </span>
+          <span class="sr-only">Darstellung wechseln</span>
+        </button>
+      </div>
+    </div>`;
 
     return `<header class="site-header">
     <div class="container nav-wrap">
@@ -563,19 +573,12 @@
           ${navMarkup}
         </ul>
       </nav>
-      <div class="theme-toggle-wrap">
-        <button type="button" class="theme-toggle" data-theme-toggle role="switch" aria-checked="false" aria-label="Light Mode aktivieren">
-          <span class="theme-toggle-track" aria-hidden="true">
-            <span class="theme-toggle-thumb"></span>
-          </span>
-          <span class="sr-only">Darstellung wechseln</span>
-        </button>
-      </div>
       <div id="main-nav-submenu-panel" class="nav-submenu-panel" hidden aria-hidden="true">
         <p class="nav-submenu-title" data-submenu-title></p>
         <ul class="nav-submenu-list" data-submenu-list></ul>
       </div>
     </div>
+    ${themeToggleMarkup}
   </header>`;
   }
 
