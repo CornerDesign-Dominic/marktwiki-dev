@@ -31,8 +31,36 @@
   --link: #7dd3fc;
   --hover: #0ea5e9;
   --border: #334155;
+  --divider-soft: rgba(255, 255, 255, 0.08);
+  --divider-strong: rgba(255, 255, 255, 0.32);
+  --shadow-elevated: 0 14px 28px rgba(2, 8, 23, 0.38);
+  --shadow-floating: 0 12px 24px rgba(2, 6, 23, 0.35);
+  --theme-toggle-track-bg: color-mix(in srgb, var(--bg) 82%, #ffffff 18%);
+  --theme-toggle-thumb-bg: #ffffff;
+  --theme-toggle-border: color-mix(in srgb, var(--border) 72%, #ffffff 28%);
+  --theme-toggle-focus: color-mix(in srgb, var(--accent) 30%, transparent);
   --radius: 8px;
   --container: 1100px;
+}
+
+:root[data-theme="light"] {
+  --bg: #f3f6fb;
+  --bg-secondary: #ffffff;
+  --surface: #ffffff;
+  --text: #0f172a;
+  --text-secondary: #475569;
+  --accent: #0284c7;
+  --link: #0369a1;
+  --hover: #075985;
+  --border: #cbd5e1;
+  --divider-soft: rgba(15, 23, 42, 0.12);
+  --divider-strong: rgba(15, 23, 42, 0.2);
+  --shadow-elevated: 0 14px 28px rgba(15, 23, 42, 0.12);
+  --shadow-floating: 0 12px 24px rgba(15, 23, 42, 0.14);
+  --theme-toggle-track-bg: color-mix(in srgb, var(--bg) 88%, var(--accent) 12%);
+  --theme-toggle-thumb-bg: #ffffff;
+  --theme-toggle-border: color-mix(in srgb, var(--border) 88%, var(--accent) 12%);
+  --theme-toggle-focus: color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
 * {
@@ -92,7 +120,7 @@ img {
 
 .nav-wrap {
   display: grid;
-  grid-template-columns: 1fr minmax(220px, 340px) 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 340px) minmax(0, 1fr) auto;
   align-items: center;
   gap: 1rem;
   min-height: 72px;
@@ -132,6 +160,60 @@ img {
 .main-nav {
   min-width: 0;
   justify-self: end;
+}
+
+.theme-toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.8rem;
+  height: 1.7rem;
+  padding: 0;
+  border: 1px solid var(--theme-toggle-border);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--theme-toggle-focus);
+}
+
+.theme-toggle-track {
+  position: relative;
+  width: 2.15rem;
+  height: 1.05rem;
+  border-radius: 999px;
+  background: var(--theme-toggle-track-bg);
+  transition: background-color 0.18s ease;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 0.92rem;
+  height: 0.92rem;
+  border-radius: 50%;
+  background: var(--theme-toggle-thumb-bg);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.24);
+  transition: transform 0.18s ease;
+}
+
+.theme-toggle[aria-checked="true"] .theme-toggle-thumb {
+  transform: translateX(1.12rem);
 }
 
 .main-nav > ul {
@@ -200,7 +282,7 @@ img {
   border-radius: 10px;
   background: var(--bg-secondary);
   background: color-mix(in srgb, var(--bg-secondary) 92%, #ffffff 8%);
-  box-shadow: 0 14px 28px rgba(2, 8, 23, 0.38);
+  box-shadow: var(--shadow-elevated);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-4px);
@@ -342,7 +424,7 @@ p {
 .wiki-article section {
   margin-top: 2rem;
   padding-top: 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--divider-soft);
 }
 
 .wiki-article .link-list {
@@ -360,7 +442,7 @@ p {
 .wiki-article .article-block + .article-block {
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 3px solid rgba(255, 255, 255, 0.32);
+  border-top: 3px solid var(--divider-strong);
 }
 
 .wiki-article .article-block-foundation {
@@ -382,7 +464,7 @@ p {
 .wiki-article .article-block section + section {
   margin-top: 0;
   padding-top: 0.625rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--divider-soft);
 }
 
 .wiki-article .article-block section > :first-child {
@@ -969,7 +1051,7 @@ input[type="number"] {
   border-radius: 9px;
   border: 1px solid color-mix(in srgb, var(--border) 82%, var(--accent) 18%);
   background: color-mix(in srgb, var(--bg) 88%, var(--surface) 12%);
-  box-shadow: 0 12px 24px color-mix(in srgb, #000 14%, transparent);
+  box-shadow: var(--shadow-floating);
 }
 
 .currency-combobox-option {
@@ -2302,8 +2384,8 @@ input[type="number"] {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg-secondary);
-  background: color-mix(in srgb, var(--surface) 92%, #000 8%);
-  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.35);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: var(--shadow-floating);
   pointer-events: none;
   line-height: 1.35;
 }
@@ -2863,7 +2945,7 @@ input[type="number"] {
   }
 
   .nav-wrap {
-    flex-direction: row;
+    grid-template-columns: auto minmax(160px, 1fr) auto auto;
     align-items: center;
     padding: 0.4rem 0;
   }
@@ -2876,8 +2958,7 @@ input[type="number"] {
   }
 
   .header-search {
-    min-width: 180px;
-    flex-basis: 240px;
+    min-width: 160px;
   }
 
   .main-nav > ul {
@@ -2886,6 +2967,11 @@ input[type="number"] {
     flex-wrap: nowrap;
     gap: 0.5rem;
     overflow-x: auto;
+  }
+
+  .theme-toggle {
+    width: 2.55rem;
+    height: 1.6rem;
   }
 
   .nav-submenu-panel {
@@ -3142,7 +3228,7 @@ input[type="number"] {
   .wiki-article .article-block + .article-block {
     margin-top: 1.25rem;
     padding-top: 1.25rem;
-    border-top: 3px solid rgba(255, 255, 255, 0.32);
+    border-top: 3px solid var(--divider-strong);
   }
 
   .article-toc {

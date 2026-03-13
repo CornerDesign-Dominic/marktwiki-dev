@@ -1,9 +1,13 @@
 ﻿(() => {
   "use strict";
 
+  const THEME_STORAGE_KEY = "marktwiki-theme";
+  const DEFAULT_THEME = "dark";
+  const LIGHT_THEME = "light";
   let searchDataPromise;
   let searchInitialized = false;
   let navSubmenusInitialized = false;
+  let themeToggleInitialized = false;
   const NAV_ITEMS = [
     {
       key: "wiki",
@@ -34,6 +38,74 @@
       ]
     }
   ];
+
+  function normalizeTheme(value) {
+    return value === LIGHT_THEME ? LIGHT_THEME : DEFAULT_THEME;
+  }
+
+  function readStoredTheme() {
+    try {
+      return normalizeTheme(window.localStorage.getItem(THEME_STORAGE_KEY));
+    } catch (error) {
+      return DEFAULT_THEME;
+    }
+  }
+
+  function persistTheme(theme) {
+    try {
+      window.localStorage.setItem(THEME_STORAGE_KEY, normalizeTheme(theme));
+    } catch (error) {
+      // localStorage kann blockiert sein; das Theme bleibt dann nur temporaer aktiv.
+    }
+  }
+
+  function applyTheme(theme) {
+    const resolvedTheme = normalizeTheme(theme);
+    document.documentElement.setAttribute("data-theme", resolvedTheme);
+    document.documentElement.style.colorScheme = resolvedTheme;
+    return resolvedTheme;
+  }
+
+  function getThemeToggleLabel(theme) {
+    return normalizeTheme(theme) === LIGHT_THEME ? "Dark Mode aktivieren" : "Light Mode aktivieren";
+  }
+
+  function syncThemeToggle(toggle, theme) {
+    if (!toggle) {
+      return;
+    }
+
+    const isLight = normalizeTheme(theme) === LIGHT_THEME;
+    const label = getThemeToggleLabel(theme);
+    toggle.setAttribute("aria-checked", isLight ? "true" : "false");
+    toggle.setAttribute("aria-label", label);
+    toggle.setAttribute("title", label);
+  }
+
+  function initThemeToggle() {
+    const toggle = document.querySelector("[data-theme-toggle]");
+    if (!toggle) {
+      return;
+    }
+
+    syncThemeToggle(toggle, document.documentElement.getAttribute("data-theme"));
+
+    if (themeToggleInitialized) {
+      return;
+    }
+
+    toggle.addEventListener("click", () => {
+      const currentTheme = normalizeTheme(document.documentElement.getAttribute("data-theme"));
+      const nextTheme = currentTheme === LIGHT_THEME ? DEFAULT_THEME : LIGHT_THEME;
+      applyTheme(nextTheme);
+      persistTheme(nextTheme);
+      syncThemeToggle(toggle, nextTheme);
+    });
+
+    themeToggleInitialized = true;
+  }
+
+  applyTheme(readStoredTheme());
 
   function normalizeBasePath(value) {
     const trimmed = String(value || ".").trim();
@@ -491,6 +563,14 @@
           ${navMarkup}
         </ul>
       </nav>
+      <div class="theme-toggle-wrap">
+        <button type="button" class="theme-toggle" data-theme-toggle role="switch" aria-checked="false" aria-label="Light Mode aktivieren">
+          <span class="theme-toggle-track" aria-hidden="true">
+            <span class="theme-toggle-thumb"></span>
+          </span>
+          <span class="sr-only">Darstellung wechseln</span>
+        </button>
+      </div>
       <div id="main-nav-submenu-panel" class="nav-submenu-panel" hidden aria-hidden="true">
         <p class="nav-submenu-title" data-submenu-title></p>
         <ul class="nav-submenu-list" data-submenu-list></ul>
@@ -533,6 +613,7 @@
 
   function injectHeader(config = {}) {
     injectMarkup(renderHeader(config), "afterbegin");
+    initThemeToggle();
     initHeaderSearch(config);
     initNavSubmenus();
   }

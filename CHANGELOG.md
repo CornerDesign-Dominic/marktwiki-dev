@@ -1,5 +1,13 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.49
+
+- Umschaltbaren Dark-/Light-Mode auf Basis zentraler Theme-Variablen in `style.css` eingefuehrt; Dark Mode bleibt ohne gespeicherte Auswahl der feste Standard.
+- Kompakten Theme-Switch ganz rechts im globalen Header ueber `layout.js` ergaenzt, sodass alle Seiten mit gemeinsamer Header-Logik die Umschaltung automatisch erhalten.
+- Theme-Auswahl per `localStorage` unter `marktwiki-theme` persistent gemacht und beim erneuten Laden fruehzeitig wiederhergestellt.
+
+---
+
 ## Version 0.48
 
 - Vier neue datengetriebene Marktbereiche fuer `Rohstoffe`, `ETFs`, `Indizes` und `Kryptowaehrungen` eingefuehrt.
