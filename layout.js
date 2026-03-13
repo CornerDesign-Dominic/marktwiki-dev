@@ -360,8 +360,9 @@
     const navRoot = document.querySelector(".main-nav");
     const panel = document.querySelector("#main-nav-submenu-panel");
     const panelTitle = panel?.querySelector("[data-submenu-title]");
+    const panelMeta = panel?.querySelector("[data-submenu-meta]");
     const panelList = panel?.querySelector("[data-submenu-list]");
-    if (!navRoot || !navWrap || !panel || !panelTitle || !panelList) {
+    if (!navRoot || !navWrap || !panel || !panelTitle || !panelMeta || !panelList) {
       return;
     }
 
@@ -403,7 +404,9 @@
       panel.hidden = true;
       panel.setAttribute("aria-hidden", "true");
       panelTitle.textContent = "";
+      panelMeta.textContent = "";
       panelList.innerHTML = "";
+      delete panel.dataset.columns;
       setExpandedState("");
 
       if (restoreFocus && previousOpenKey) {
@@ -415,7 +418,11 @@
     };
 
     const renderPanelContent = (item) => {
+      const sectionCount = item.sections.length;
+      const columnCount = sectionCount >= 6 ? "3" : sectionCount >= 3 ? "2" : "1";
       panelTitle.textContent = item.label;
+      panelMeta.textContent = `${sectionCount} ${sectionCount === 1 ? "Bereich" : "Bereiche"}`;
+      panel.dataset.columns = columnCount;
       panelList.innerHTML = item.sections.map((section) => {
         const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
         const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;
@@ -575,10 +582,13 @@
       </nav>
       <div id="main-nav-submenu-panel" class="nav-submenu-panel" hidden aria-hidden="true">
         <div class="nav-submenu-head">
-          <p class="nav-submenu-eyebrow">Bereich</p>
-          <p class="nav-submenu-title" data-submenu-title></p>
+          <div class="nav-submenu-head-copy">
+            <p class="nav-submenu-eyebrow">Bereich</p>
+            <p class="nav-submenu-title" data-submenu-title></p>
+          </div>
+          <p class="nav-submenu-meta" data-submenu-meta></p>
         </div>
-        <div class="nav-submenu-scroll">
+        <div class="nav-submenu-body">
           <ul class="nav-submenu-list" data-submenu-list></ul>
         </div>
       </div>

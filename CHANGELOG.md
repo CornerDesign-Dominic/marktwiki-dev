@@ -1,5 +1,13 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.52
+
+- Gemeinsames Header-Untermenue in `layout.js` beim bisherigen Single-Panel belassen, aber um festen Kopfbereich mit Bereichszaehler und inhaltsabhaengige Spaltenlogik erweitert.
+- Untermenue-Fenster in `style.css` deutlich vergroessert und fuer alle Hauptmenues auf eine feste mittige Position mit konsistenter Breite und fester Hoehe je Breakpoint umgestellt.
+- Internen Scrollbereich des Untermenues vollstaendig entfernt und die Linkflaechen als grosszuegige, ruhige Grid-Karten mit verbesserten Hover-, Fokus- und Aktivzustaenden neu aufgebaut.
+
+---
+
 ## Version 0.51
 
 - Aufgeklapptes Untermenue-Panel im Header vergroessert und an derselben festen Position beibehalten.
