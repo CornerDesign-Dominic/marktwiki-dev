@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Glossar | MarktWiki</title>
+  <meta name="description" content="Kompaktes Glossar mit kurzen Erklaerungen zu wirtschaftlichen Begriffen im MarktWiki.">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./layout.js"></script>
+  <script src="./glossar.js" defer></script>
+</head>
+<body data-base-path=".">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+  <main>
+    <div class="container">
+      <section class="card">
+        <h1>Glossar</h1>
+        <p>
+          Hier werden wirtschaftliche Begriffe kurz und verstaendlich definiert.
+          Das Glossar dient als schnelle Referenz fuer zentrale Fachbegriffe aus
+          Wirtschaft, Finanzen und Kapitalmarkt.
+        </p>
+
+        <div class="filter-row glossary-toolbar">
+          <label for="glossary-search">Begriff suchen</label>
+          <input
+            id="glossary-search"
+            type="search"
+            placeholder="Zum Beispiel: ETF, Inflation oder Rendite"
+            aria-describedby="glossary-status"
+            autocomplete="off"
+            spellcheck="false">
+        </div>
+
+        <p id="glossary-status" class="muted">Glossar wird geladen...</p>
+      </section>
+
+      <section class="section-space" aria-labelledby="glossary-heading">
+        <h2 id="glossary-heading" class="sr-only">Glossarbegriffe</h2>
+        <nav id="glossary-letter-nav" class="badge-row glossary-letter-nav" aria-label="Buchstaben"></nav>
+        <div id="glossary-list" class="glossary-groups" data-error-target="glossary"></div>
+      </section>
+    </div>
+  </main>
+
+  <script>window.MarktWikiLayout.injectFooter();</script>
+</body>
+</html>

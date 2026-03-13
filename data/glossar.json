@@ -1,0 +1,176 @@
+[
+  {
+    "begriff": "Aktie",
+    "definition": "Eine Aktie ist ein Anteil an einer Aktiengesellschaft und verleiht dem Inhaber bestimmte Vermoegens- und Mitwirkungsrechte.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Dividende", "Marktkapitalisierung"]
+  },
+  {
+    "begriff": "Anlageklasse",
+    "definition": "Eine Anlageklasse ist eine Gruppe von Investments mit aehnlichen Merkmalen, zum Beispiel Aktien, Anleihen oder Immobilien.",
+    "kategorie": "Investieren",
+    "verwandteBegriffe": ["Diversifikation", "Portfolio"]
+  },
+  {
+    "begriff": "Anleihe",
+    "definition": "Eine Anleihe ist ein verzinsliches Wertpapier, mit dem sich Staaten oder Unternehmen Geld von Anlegern leihen.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Kupon", "Rendite"]
+  },
+  {
+    "begriff": "Arbitrage",
+    "definition": "Arbitrage nutzt Preisunterschiede desselben Vermoegenswerts an verschiedenen Maerkten aus, um einen Gewinn zu erzielen.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Liquiditaet", "Volatilitaet"]
+  },
+  {
+    "begriff": "Bilanz",
+    "definition": "Die Bilanz stellt Vermoegen und Kapital eines Unternehmens zu einem bestimmten Stichtag gegenueber.",
+    "kategorie": "Rechnungswesen",
+    "verwandteBegriffe": ["Eigenkapital", "Liquiditaet"]
+  },
+  {
+    "begriff": "Bonitaet",
+    "definition": "Bonitaet beschreibt die Zahlungsfaehigkeit und Kreditwuerdigkeit eines Unternehmens oder einer Person.",
+    "kategorie": "Finanzierung",
+    "verwandteBegriffe": ["Liquiditaet", "Kredit"]
+  },
+  {
+    "begriff": "Cashflow",
+    "definition": "Der Cashflow zeigt, wie viel Geld in einem Zeitraum tatsaechlich in ein Unternehmen hinein- und hinausfliesst.",
+    "kategorie": "Unternehmensanalyse",
+    "verwandteBegriffe": ["Liquiditaet", "Bilanz"]
+  },
+  {
+    "begriff": "Deflation",
+    "definition": "Deflation ist ein anhaltender Rueckgang des allgemeinen Preisniveaus in einer Volkswirtschaft.",
+    "kategorie": "Volkswirtschaft",
+    "verwandteBegriffe": ["Inflation", "Kaufkraft"]
+  },
+  {
+    "begriff": "Derivat",
+    "definition": "Ein Derivat ist ein Finanzinstrument, dessen Wert sich von einem anderen Basiswert ableitet.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Option", "Volatilitaet"]
+  },
+  {
+    "begriff": "Diversifikation",
+    "definition": "Diversifikation bedeutet, Kapital auf verschiedene Anlagen zu verteilen, um Risiken zu streuen.",
+    "kategorie": "Investieren",
+    "verwandteBegriffe": ["Portfolio", "Anlageklasse"]
+  },
+  {
+    "begriff": "Dividende",
+    "definition": "Die Dividende ist der Teil eines Unternehmensgewinns, der an Aktionaere ausgeschuettet wird.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Aktie", "Rendite"]
+  },
+  {
+    "begriff": "EBIT",
+    "definition": "EBIT ist das Ergebnis vor Zinsen und Steuern und dient als Kennzahl fuer die operative Ertragskraft eines Unternehmens.",
+    "kategorie": "Unternehmensanalyse",
+    "verwandteBegriffe": ["Marge", "Umsatz"]
+  },
+  {
+    "begriff": "Eigenkapital",
+    "definition": "Eigenkapital ist das Kapital, das den Eigentuemern eines Unternehmens zuzurechnen ist.",
+    "kategorie": "Rechnungswesen",
+    "verwandteBegriffe": ["Bilanz", "Fremdkapital"]
+  },
+  {
+    "begriff": "ETF",
+    "definition": "Ein ETF ist ein boersengehandelter Fonds, der meist einen Index moeglichst genau nachbildet.",
+    "kategorie": "Investieren",
+    "verwandteBegriffe": ["Index", "Diversifikation"]
+  },
+  {
+    "begriff": "Fremdkapital",
+    "definition": "Fremdkapital umfasst die finanziellen Mittel, die einem Unternehmen von externen Kapitalgebern zur Verfuegung gestellt werden.",
+    "kategorie": "Rechnungswesen",
+    "verwandteBegriffe": ["Eigenkapital", "Bilanz"]
+  },
+  {
+    "begriff": "Inflation",
+    "definition": "Inflation ist ein anhaltender Anstieg des allgemeinen Preisniveaus, durch den die Kaufkraft des Geldes sinkt.",
+    "kategorie": "Volkswirtschaft",
+    "verwandteBegriffe": ["Deflation", "Kaufkraft"]
+  },
+  {
+    "begriff": "Index",
+    "definition": "Ein Index bildet die Entwicklung einer definierten Gruppe von Wertpapieren oder anderen Messgroessen ab.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["ETF", "Marktkapitalisierung"]
+  },
+  {
+    "begriff": "Kapitalmarkt",
+    "definition": "Der Kapitalmarkt ist der Markt fuer mittel- und langfristige Finanzierung sowie fuer den Handel mit Wertpapieren.",
+    "kategorie": "Finanzmaerkte",
+    "verwandteBegriffe": ["Aktie", "Anleihe"]
+  },
+  {
+    "begriff": "Kaufkraft",
+    "definition": "Kaufkraft beschreibt, wie viele Waren und Dienstleistungen mit einem bestimmten Geldbetrag gekauft werden koennen.",
+    "kategorie": "Volkswirtschaft",
+    "verwandteBegriffe": ["Inflation", "Deflation"]
+  },
+  {
+    "begriff": "Kredit",
+    "definition": "Ein Kredit ist die zeitlich begrenzte Ueberlassung von Geld gegen spaetere Rueckzahlung und meist gegen Zinsen.",
+    "kategorie": "Finanzierung",
+    "verwandteBegriffe": ["Bonitaet", "Zins"]
+  },
+  {
+    "begriff": "Liquiditaet",
+    "definition": "Liquiditaet beschreibt die Faehigkeit, faellige Zahlungsverpflichtungen rechtzeitig zu erfuellen.",
+    "kategorie": "Finanzierung",
+    "verwandteBegriffe": ["Cashflow", "Bonitaet"]
+  },
+  {
+    "begriff": "Marge",
+    "definition": "Die Marge zeigt, welcher Anteil des Umsatzes nach Abzug bestimmter Kosten oder auf einer bestimmten Ergebnisstufe verbleibt.",
+    "kategorie": "Unternehmensanalyse",
+    "verwandteBegriffe": ["EBIT", "Umsatz"]
+  },
+  {
+    "begriff": "Marktkapitalisierung",
+    "definition": "Die Marktkapitalisierung ergibt sich aus Aktienkurs mal Anzahl der ausstehenden Aktien und beschreibt den Boersenwert eines Unternehmens.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Aktie", "Index"]
+  },
+  {
+    "begriff": "Portfolio",
+    "definition": "Ein Portfolio ist die Gesamtheit der von einer Person oder Institution gehaltenen Anlagen.",
+    "kategorie": "Investieren",
+    "verwandteBegriffe": ["Diversifikation", "Anlageklasse"]
+  },
+  {
+    "begriff": "Rendite",
+    "definition": "Die Rendite gibt an, wie hoch der Ertrag einer Kapitalanlage im Verhaeltnis zum eingesetzten Kapital ist.",
+    "kategorie": "Investieren",
+    "verwandteBegriffe": ["Dividende", "Zins"]
+  },
+  {
+    "begriff": "Rezession",
+    "definition": "Eine Rezession ist eine Phase wirtschaftlichen Rueckgangs mit sinkender Produktion und haeufig auch sinkender Nachfrage.",
+    "kategorie": "Volkswirtschaft",
+    "verwandteBegriffe": ["Konjunktur", "Inflation"]
+  },
+  {
+    "begriff": "Volatilitaet",
+    "definition": "Volatilitaet misst, wie stark die Kurse eines Wertpapiers oder Marktes in einem Zeitraum schwanken.",
+    "kategorie": "Kapitalmarkt",
+    "verwandteBegriffe": ["Risiko", "Arbitrage"]
+  },
+  {
+    "begriff": "Waehrungskurs",
+    "definition": "Der Waehrungskurs gibt an, in welchem Verhaeltnis zwei Waehrungen zueinander getauscht werden koennen.",
+    "kategorie": "Finanzmaerkte",
+    "verwandteBegriffe": ["Devisenmarkt", "Kaufkraft"]
+  },
+  {
+    "begriff": "Zins",
+    "definition": "Der Zins ist der Preis fuer die zeitweise Ueberlassung von Kapital.",
+    "kategorie": "Finanzierung",
+    "verwandteBegriffe": ["Kredit", "Rendite"]
+  }
+]

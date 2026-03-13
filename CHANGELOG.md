@@ -1,6 +1,16 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.50
+
+- Neue statische Glossarseite `glossar.html` im bestehenden MarktWiki-Layout angelegt, bewusst ohne Verlinkung in Navigation, Header oder Footer.
+- Neue JSON-Datenquelle `data/glossar.json` mit knapp 30 kompakten, alphabetisch nutzbaren Wirtschaftsbegriffen eingefuehrt.
+- Leichte Vanilla-JavaScript-Logik in `glossar.js` umgesetzt: Laden der Daten, lokale Suche, alphabetische Gruppierung und inline aufklappbare Definitions-Cards.
+- `style.css` nur behutsam um seitenlokale Glossar-Klassen im bestehenden Designsystem erweitert; bestehende Seiten und Funktionen bleiben unveraendert.
+
+---
+
 ## Version 0.49
+
 
 - Umschaltbaren Dark-/Light-Mode auf Basis zentraler Theme-Variablen in `style.css` eingefuehrt; Dark Mode bleibt ohne gespeicherte Auswahl der feste Standard.
 - Kompakten Theme-Switch ganz rechts im globalen Header ueber `layout.js` ergaenzt, sodass alle Seiten mit gemeinsamer Header-Logik die Umschaltung automatisch erhalten.
