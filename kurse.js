@@ -1,6 +1,10 @@
 (() => {
   "use strict";
 
+  const DISPLAY_CURRENCY_STORAGE_KEY = "displayCurrency";
+  const DEFAULT_DISPLAY_CURRENCY = "EUR";
+  const SUPPORTED_DISPLAY_CURRENCIES = new Set(["EUR", "USD"]);
+
   const CATEGORY_CONFIG = {
     aktien: {
       title: "Aktien",
@@ -44,6 +48,11 @@
     return String(value ?? "").trim();
   }
 
+  function resolveDisplayCurrency(value) {
+    const normalized = normalizeText(value).toUpperCase();
+    return SUPPORTED_DISPLAY_CURRENCIES.has(normalized) ? normalized : DEFAULT_DISPLAY_CURRENCY;
+  }
+
   function normalizeBasePath(value) {
     const trimmed = normalizeText(value);
     if (!trimmed || trimmed === "./") {
@@ -63,6 +72,22 @@
       throw new Error(`Datei konnte nicht geladen werden: ${path}`);
     }
     return response.json();
+  }
+
+  function readStoredDisplayCurrency() {
+    try {
+      return resolveDisplayCurrency(window.localStorage.getItem(DISPLAY_CURRENCY_STORAGE_KEY));
+    } catch (error) {
+      return DEFAULT_DISPLAY_CURRENCY;
+    }
+  }
+
+  function persistDisplayCurrency(currency) {
+    try {
+      window.localStorage.setItem(DISPLAY_CURRENCY_STORAGE_KEY, resolveDisplayCurrency(currency));
+    } catch (error) {
+      // localStorage kann blockiert sein; die Auswahl bleibt dann nur temporaer aktiv.
+    }
   }
 
   function formatNumber(value, maximumFractionDigits = 2, minimumFractionDigits = 2) {
@@ -112,7 +137,29 @@
     return numericValue > 0 ? "positive" : "negative";
   }
 
-  function formatQuoteValue(item, field, type) {
+  function convertValue(value, sourceCurrency, targetCurrency, ratesData) {
+    const numericValue = Number(value);
+    const normalizedSource = normalizeText(sourceCurrency).toUpperCase();
+    const normalizedTarget = resolveDisplayCurrency(targetCurrency);
+
+    if (!Number.isFinite(numericValue) || !normalizedSource || normalizedSource === normalizedTarget) {
+      return numericValue;
+    }
+
+    if (normalizedSource === "EUR" && normalizedTarget === "USD") {
+      const eurToUsd = Number(ratesData?.rates?.USD);
+      return Number.isFinite(eurToUsd) && eurToUsd > 0 ? numericValue * eurToUsd : numericValue;
+    }
+
+    if (normalizedSource === "USD" && normalizedTarget === "EUR") {
+      const eurToUsd = Number(ratesData?.rates?.USD);
+      return Number.isFinite(eurToUsd) && eurToUsd > 0 ? numericValue / eurToUsd : numericValue;
+    }
+
+    return numericValue;
+  }
+
+  function formatQuoteValue(item, field, type, displayCurrency = DEFAULT_DISPLAY_CURRENCY, ratesData = null) {
     const numericValue = Number(item?.[field]);
     if (!Number.isFinite(numericValue)) {
       return "k. A.";
@@ -129,11 +176,19 @@
     if (type === "unit-price") {
       const currency = normalizeText(item?.currency);
       const unit = normalizeText(item?.unit);
-      return [formatNumber(numericValue, 2, 2), currency, unit ? `/ ${unit}` : ""].filter(Boolean).join(" ").trim();
+      const resolvedCurrency = currency ? resolveDisplayCurrency(displayCurrency) : "";
+      const convertedValue = convertValue(numericValue, currency, resolvedCurrency, ratesData);
+      return [formatNumber(convertedValue, 2, 2), resolvedCurrency || currency, unit ? `/ ${unit}` : ""].filter(Boolean).join(" ").trim();
     }
 
     const currency = normalizeText(item?.currency);
-    return currency ? `${formatNumber(numericValue, 2, 2)} ${currency}` : formatNumber(numericValue, 2, 2);
+    if (!currency) {
+      return formatNumber(numericValue, 2, 2);
+    }
+
+    const resolvedCurrency = resolveDisplayCurrency(displayCurrency);
+    const convertedValue = convertValue(numericValue, currency, resolvedCurrency, ratesData);
+    return `${formatNumber(convertedValue, 2, 2)} ${resolvedCurrency}`;
   }
 
   function normalizeForSearch(value) {
@@ -151,7 +206,7 @@
     container.innerHTML = `<p class="status-message${isError ? " error" : ""}">${message}</p>`;
   }
 
-  function renderOverviewCard(categoryKey, items) {
+  function renderOverviewCard(categoryKey, items, displayCurrency, ratesData) {
     const config = CATEGORY_CONFIG[categoryKey];
     if (!config) {
       return "";
@@ -164,8 +219,8 @@
       return `<div class="quote-overview-row">
         <strong class="quote-overview-name">${normalizeText(item.name) || "k. A."}</strong>
         <span class="quote-overview-symbol">${normalizeText(item.symbol) || "-"}</span>
-        <span class="quote-overview-value">${formatQuoteValue(item, "open", config.type)}</span>
-        <span class="quote-overview-value">${formatQuoteValue(item, "close", config.type)}</span>
+        <span class="quote-overview-value">${formatQuoteValue(item, "open", config.type, displayCurrency, ratesData)}</span>
+        <span class="quote-overview-value">${formatQuoteValue(item, "close", config.type, displayCurrency, ratesData)}</span>
         <span class="quote-overview-value quote-change ${changeClass}">${formatPercent(item.changePct)}</span>
       </div>`;
     }).join("");
@@ -189,20 +244,50 @@
 
   async function initOverviewPage() {
     const container = document.querySelector("#quotes-overview");
+    const toggle = document.querySelector(".quotes-currency-toggle");
     if (!container) {
       return;
     }
 
     try {
-      const entries = await Promise.all(Object.entries(CATEGORY_CONFIG).map(async ([categoryKey, config]) => {
-        const data = await loadJson(config.dataPath);
-        return {
-          categoryKey,
-          items: Array.isArray(data.items) ? data.items : []
-        };
-      }));
+      const [ratesData, entries] = await Promise.all([
+        loadJson("data/exchange-rates.json"),
+        Promise.all(Object.entries(CATEGORY_CONFIG).map(async ([categoryKey, config]) => {
+          const data = await loadJson(config.dataPath);
+          return {
+            categoryKey,
+            items: Array.isArray(data.items) ? data.items : []
+          };
+        }))
+      ]);
 
-      container.innerHTML = entries.map((entry) => renderOverviewCard(entry.categoryKey, entry.items)).join("");
+      let selectedCurrency = readStoredDisplayCurrency();
+
+      const syncToggleState = () => {
+        toggle?.querySelectorAll("[data-display-currency]").forEach((button) => {
+          const isActive = resolveDisplayCurrency(button.getAttribute("data-display-currency")) === selectedCurrency;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", isActive ? "true" : "false");
+        });
+      };
+
+      const renderOverview = () => {
+        container.innerHTML = entries.map((entry) => {
+          return renderOverviewCard(entry.categoryKey, entry.items, selectedCurrency, ratesData);
+        }).join("");
+      };
+
+      syncToggleState();
+      renderOverview();
+
+      toggle?.querySelectorAll("[data-display-currency]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedCurrency = resolveDisplayCurrency(button.getAttribute("data-display-currency"));
+          persistDisplayCurrency(selectedCurrency);
+          syncToggleState();
+          renderOverview();
+        });
+      });
     } catch (error) {
       renderMessage(container, "Die Kursuebersicht konnte nicht geladen werden.", true);
     }

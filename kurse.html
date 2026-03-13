@@ -18,6 +18,19 @@
         <h1>Kurse</h1>
       </header>
 
+      <section class="card quotes-display-card" aria-labelledby="quotes-display-heading">
+        <div class="quotes-display-card-row">
+          <div class="quotes-display-copy">
+            <h2 id="quotes-display-heading">Anzeigewaehrung</h2>
+            <p>USD oder EUR fuer den kompakten Marktueberblick.</p>
+          </div>
+          <div class="quotes-currency-toggle" role="group" aria-label="Anzeigewaehrung waehlen">
+            <button type="button" class="quotes-currency-button" data-display-currency="USD" aria-pressed="false">USD</button>
+            <button type="button" class="quotes-currency-button" data-display-currency="EUR" aria-pressed="false">EUR</button>
+          </div>
+        </div>
+      </section>
+
       <section class="section-space" aria-labelledby="quotes-overview-heading">
         <h2 id="quotes-overview-heading" class="sr-only">Kurskategorien</h2>
         <div id="quotes-overview" class="card-grid quotes-overview-grid">
