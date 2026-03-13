@@ -113,8 +113,6 @@
   const normalizedValueCache = new Map();
   const exchangeRateDisplayCache = new Map();
   const currencyNameCache = new Map();
-  const stockMarketDataCache = new Map();
-  let stockMarketDataPromise = null;
   let exchangeRatesPromise = null;
   let currencyDisplayNameFormatter = null;
 
@@ -748,6 +746,37 @@
     return normalizeText(value).toUpperCase();
   }
 
+  function normalizeCompanyIndexEntry(entry) {
+    if (!entry || typeof entry !== "object") {
+      return null;
+    }
+
+    const symbol = normalizeCompanySymbol(entry.symbol);
+    if (!symbol) {
+      return null;
+    }
+
+    const file = normalizeText(entry.file) || `${symbol}.json`;
+    return {
+      ...entry,
+      symbol,
+      file,
+      companyName: normalizeText(entry.companyName) || symbol,
+      currency: normalizeCurrencyForRates(entry.currency) || "",
+      country: normalizeCountryCode(entry.country) || normalizeText(entry.country),
+      sector: normalizeText(entry.sector),
+      industry: normalizeText(entry.industry),
+      exchange: normalizeText(entry.exchange),
+      exchangeFullName: normalizeText(entry.exchangeFullName),
+      ceo: normalizeText(entry.ceo),
+      description: normalizeText(entry.description),
+      image: normalizeText(entry.image),
+      defaultImage: entry.defaultImage === true,
+      price: toNumber(entry.price),
+      marketCap: toNumber(entry.marketCap)
+    };
+  }
+
   function readFavorites() {
     try {
       const rawValue = window.localStorage.getItem(FAVORITES_STORAGE_KEY);
@@ -820,13 +849,16 @@
 
   async function loadCompanyIndex() {
     const payload = await loadJson(`data/${DATA_FILES.companiesIndex}`);
+    const sourceEntries = Array.isArray(payload)
+      ? payload
+      : payload && Array.isArray(payload.companies)
+        ? payload.companies
+        : null;
 
-    if (Array.isArray(payload)) {
-      return payload;
-    }
-
-    if (payload && Array.isArray(payload.companies)) {
-      return payload.companies;
+    if (sourceEntries) {
+      return sourceEntries
+        .map((entry) => normalizeCompanyIndexEntry(entry))
+        .filter(Boolean);
     }
 
     throw new Error("Ungueltige Unternehmensindex-Struktur.");
@@ -854,13 +886,7 @@
   }
 
   function getStockExchangeLabel(company) {
-    const symbol = normalizeCompanySymbol(company?.symbol);
-    if (!symbol) {
-      return "";
-    }
-
-    const metrics = stockMarketDataCache.get(symbol);
-    return normalizeText(metrics?.exchange);
+    return normalizeText(company?.exchangeFullName) || normalizeText(company?.exchange);
   }
 
   function fillSelectOptions(select, values, allLabel) {
@@ -1774,48 +1800,16 @@
     renderCurrencyDetail(container, { ...profile, code: resolvedCode, name: resolvedName }, ratesData);
   }
 
-  async function loadStockMarketData(indexCompanies) {
-    if (stockMarketDataPromise) {
-      return stockMarketDataPromise;
-    }
-
-    const entries = Array.isArray(indexCompanies) ? indexCompanies : [];
-    stockMarketDataPromise = Promise.all(entries.map(async (entry) => {
-      const symbol = normalizeCompanySymbol(entry?.symbol);
-      if (!symbol) {
-        return;
-      }
-
-      const fileName = normalizeText(entry?.file) || `${symbol}.json`;
-
-      try {
-        const company = await loadJson(`data/companies/${fileName}`);
-        stockMarketDataCache.set(symbol, {
-          marketCap: toNumber(company?.marketCap),
-          currency: normalizeText(company?.currency) || normalizeText(entry?.currency),
-          exchange: normalizeText(company?.exchangeFullName) || normalizeText(company?.exchange)
-        });
-      } catch (error) {
-        stockMarketDataCache.set(symbol, {
-          marketCap: null,
-          currency: normalizeText(entry?.currency),
-          exchange: ""
-        });
-      }
-    }));
-
-    await stockMarketDataPromise;
-    return stockMarketDataCache;
-  }
-
-  function renderStockCards(list, companies, options = {}) {
+  async function renderStockCards(list, companies, options = {}) {
     list.innerHTML = "";
     const {
       favoriteSymbols = new Set(),
       onToggleFavorite = null,
       emptyMessage = "Keine Unternehmen fuer diese Suche/Filter gefunden.",
       displayCurrency = DEFAULT_DISPLAY_CURRENCY,
-      ratesData = null
+      ratesData = null,
+      batchSize = 60,
+      isRenderCurrent = null
     } = options;
 
     if (!companies.length) {
@@ -1823,16 +1817,31 @@
       return;
     }
 
-    companies.forEach((company) => {
-      const symbol = normalizeCompanySymbol(company?.symbol);
-      const isFavorite = symbol ? favoriteSymbols.has(symbol) : false;
-      list.appendChild(createStockCard(company, {
-        isFavorite,
-        onToggleFavorite,
-        displayCurrency,
-        ratesData
-      }));
-    });
+    for (let index = 0; index < companies.length; index += Math.max(1, batchSize)) {
+      if (typeof isRenderCurrent === "function" && !isRenderCurrent()) {
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      const batch = companies.slice(index, index + Math.max(1, batchSize));
+
+      batch.forEach((company) => {
+        const symbol = normalizeCompanySymbol(company?.symbol);
+        const isFavorite = symbol ? favoriteSymbols.has(symbol) : false;
+        fragment.appendChild(createStockCard(company, {
+          isFavorite,
+          onToggleFavorite,
+          displayCurrency,
+          ratesData
+        }));
+      });
+
+      list.appendChild(fragment);
+
+      if (index + batchSize < companies.length) {
+        await new Promise((resolve) => window.requestAnimationFrame(resolve));
+      }
+    }
   }
 
   function createStockCard(company, options = {}) {
@@ -1971,11 +1980,11 @@
       loadCompanyIndex(),
       loadExchangeRates()
     ]);
-    await loadStockMarketData(companies);
     let favoriteSymbols = new Set(readFavorites());
     let displayCurrency = readDisplayCurrency();
     let watchlistVisible = favoriteSymbols.size > 0;
     let hasStoredWatchlistPreference = false;
+    let stockRenderVersion = 0;
 
     if (favoritesList) {
       try {
@@ -2020,7 +2029,7 @@
       applyStockFilters();
     };
 
-    const renderFavorites = () => {
+    const renderFavorites = async () => {
       if (!favoritesList) {
         return;
       }
@@ -2030,7 +2039,7 @@
         return symbol && favoriteSymbols.has(symbol);
       });
 
-      renderStockCards(favoritesList, favoriteCompanies, {
+      await renderStockCards(favoritesList, favoriteCompanies, {
         favoriteSymbols,
         onToggleFavorite: persistAndRefresh,
         displayCurrency,
@@ -2179,17 +2188,15 @@
         sorted.sort((a, b) => {
           const symbolA = normalizeCompanySymbol(a?.symbol);
           const symbolB = normalizeCompanySymbol(b?.symbol);
-          const metricsA = symbolA ? stockMarketDataCache.get(symbolA) : null;
-          const metricsB = symbolB ? stockMarketDataCache.get(symbolB) : null;
           const capA = getNormalizedValue(
             `${symbolA || normalizeText(a?.companyName)}|marketCap`,
-            metricsA?.marketCap,
-            metricsA?.currency || a?.currency,
+            a?.marketCap,
+            a?.currency,
             ratesData);
           const capB = getNormalizedValue(
             `${symbolB || normalizeText(b?.companyName)}|marketCap`,
-            metricsB?.marketCap,
-            metricsB?.currency || b?.currency,
+            b?.marketCap,
+            b?.currency,
             ratesData);
 
           if (capA === null && capB === null) {
@@ -2284,6 +2291,7 @@
     };
 
     const applyStockFilters = async () => {
+      const currentRenderVersion = ++stockRenderVersion;
       const query = normalizeForMatch(searchInput?.value || "");
       const selectedCountry = normalizeText(countryFilter?.value);
       const selectedCurrency = normalizeText(currencyFilter?.value);
@@ -2306,13 +2314,19 @@
       });
       const sorted = sortCompanies(filtered, selectedSort, selectedDirection === "asc" ? "asc" : "desc");
 
-      renderStockCards(list, sorted, {
+      await renderStockCards(list, sorted, {
         favoriteSymbols,
         onToggleFavorite: persistAndRefresh,
         displayCurrency,
-        ratesData
+        ratesData,
+        isRenderCurrent: () => currentRenderVersion === stockRenderVersion
       });
-      renderFavorites();
+
+      if (currentRenderVersion !== stockRenderVersion) {
+        return;
+      }
+
+      await renderFavorites();
 
       if (resultsCount) {
         resultsCount.textContent = `${sorted.length} von ${companies.length} Unternehmen`;
