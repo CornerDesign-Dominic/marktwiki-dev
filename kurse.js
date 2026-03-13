@@ -1,9 +1,9 @@
 (() => {
   "use strict";
 
-  const DISPLAY_CURRENCY_STORAGE_KEY = "displayCurrency";
-  const DEFAULT_DISPLAY_CURRENCY = "EUR";
-  const SUPPORTED_DISPLAY_CURRENCIES = new Set(["EUR", "USD"]);
+  const DISPLAY_CURRENCY_STORAGE_KEY = "quotesDisplayCurrency";
+  const DEFAULT_DISPLAY_CURRENCY = "ORIGINAL";
+  const SUPPORTED_DISPLAY_CURRENCIES = new Set(["ORIGINAL", "EUR", "USD"]);
 
   const CATEGORY_CONFIG = {
     aktien: {
@@ -137,6 +137,10 @@
     return numericValue > 0 ? "positive" : "negative";
   }
 
+  function isOriginalDisplayCurrency(value) {
+    return resolveDisplayCurrency(value) === "ORIGINAL";
+  }
+
   function convertValue(value, sourceCurrency, targetCurrency, ratesData) {
     const numericValue = Number(value);
     const normalizedSource = normalizeText(sourceCurrency).toUpperCase();
@@ -176,6 +180,9 @@
     if (type === "unit-price") {
       const currency = normalizeText(item?.currency);
       const unit = normalizeText(item?.unit);
+      if (isOriginalDisplayCurrency(displayCurrency)) {
+        return [formatNumber(numericValue, 2, 2), currency, unit ? `/ ${unit}` : ""].filter(Boolean).join(" ").trim();
+      }
       const resolvedCurrency = currency ? resolveDisplayCurrency(displayCurrency) : "";
       const convertedValue = convertValue(numericValue, currency, resolvedCurrency, ratesData);
       return [formatNumber(convertedValue, 2, 2), resolvedCurrency || currency, unit ? `/ ${unit}` : ""].filter(Boolean).join(" ").trim();
@@ -184,6 +191,10 @@
     const currency = normalizeText(item?.currency);
     if (!currency) {
       return formatNumber(numericValue, 2, 2);
+    }
+
+    if (isOriginalDisplayCurrency(displayCurrency)) {
+      return `${formatNumber(numericValue, 2, 2)} ${currency}`;
     }
 
     const resolvedCurrency = resolveDisplayCurrency(displayCurrency);
@@ -212,6 +223,7 @@
       return "";
     }
 
+    const title = categoryKey === "waehrungen" ? "Waehrungen" : config.title;
     const compactItems = items.slice(0, 5);
     const rows = compactItems.map((item) => {
       const changeClass = getChangeClass(item.changePct);
@@ -227,9 +239,9 @@
 
     return `<section class="card quote-overview-card">
       <div class="quote-overview-card-head">
-        <h2><a class="quote-overview-link" href="${href(config.page)}">${config.title}</a></h2>
+        <h2><a class="quote-overview-link" href="${href(config.page)}">${title}</a></h2>
       </div>
-      <div class="quote-overview-list" role="table" aria-label="${config.title}">
+      <div class="quote-overview-list" role="table" aria-label="${title}">
         <div class="quote-overview-header" role="row">
           <span>Wert</span>
           <span>Symbol</span>

@@ -2919,6 +2919,10 @@ input[type="number"] {
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 40%, var(--border) 60%);
 }
 
+.quotes-currency-button[data-display-currency="ORIGINAL"] {
+  min-width: 8.9rem;
+}
+
 .quotes-overview-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.95rem;
@@ -2950,12 +2954,17 @@ input[type="number"] {
 }
 
 .quote-overview-link {
-  color: var(--text);
+  color: color-mix(in srgb, var(--accent) 76%, #9dd6ff 24%);
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 0.16em;
+  cursor: pointer;
 }
 
 .quote-overview-link:hover,
 .quote-overview-link:focus-visible {
-  color: var(--accent);
+  color: #b9e2ff;
+  text-decoration-thickness: 2px;
 }
 
 .quote-change {
