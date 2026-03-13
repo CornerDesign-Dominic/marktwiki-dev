@@ -83,3 +83,22 @@ Bei Änderungen am Projekt gilt:
 1. `PROJECT_RULES.md` lesen  
 2. Änderungen im `CHANGELOG.md` dokumentieren  
 3. Bestehendes Design und Struktur möglichst beibehalten
+---
+
+# TÃ¤gliche Aktien-Marktdaten
+
+- Zentrale tÃ¤gliche Marktdaten fÃ¼r Unternehmensseiten: `data/company-market-data.json`
+- Datenbasis fÃ¼r `kurse-aktien`: `data/quotes/aktien.json`
+- Unternehmens-Stammdaten bleiben unter `data/companies/...` und werden nicht tÃ¤glich mit Kursdaten Ã¼berschrieben.
+
+## Skripte
+
+- API-Abruf: `scripts/fetch-eod-stock-data.mjs`
+- Matching und Filterung gegen `data/companies/index.json`: `scripts/process-eod-stock-data.mjs`
+
+## GitHub Action
+
+- Workflow: `.github/workflows/update-daily-stock-eod.yml`
+- Secret fÃ¼r den API-Key: `MASSIVE_API_KEY`
+- API-Endpunkt-Konfiguration: `EOD_API_URL` im Workflow
+- Zieldatei fÃ¼r den tÃ¤glichen EOD-Abruf: `EOD_SOURCE_FILE` und `EOD_OUTPUT_PATH` im Workflow

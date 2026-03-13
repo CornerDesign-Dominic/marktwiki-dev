@@ -1,0 +1,68 @@
+name: Update daily stock EOD data
+
+on:
+  schedule:
+    # Beispiel: 21:15 UTC. Bitte bei Bedarf anpassen.
+    - cron: "15 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  EOD_SOURCE_FILE: data/eod_stocks_latest.json
+  # API-Endpunkt hier anpassen. Platzhalter:
+  # - {date} fuer das Handelsdatum
+  # - {API_KEY} fuer das GitHub Secret MASSIVE_API_KEY
+  EOD_API_URL: "https://api.example.com/v2/aggs/grouped/locale/us/market/stocks/{date}?adjusted=true&apiKey={API_KEY}"
+  # Optionales Handelsdatum. Leer = heutiges Datum in UTC.
+  EOD_TRADING_DATE: ""
+  # Optional fuer APIs, die statt Query-Parameter einen Header brauchen.
+  EOD_API_AUTH_HEADER: ""
+  EOD_API_AUTH_VALUE: ""
+  EOD_OUTPUT_PATH: data/eod_stocks_latest.json
+
+jobs:
+  update-daily-stock-eod:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch stock EOD file
+        env:
+          EOD_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
+          EOD_API_AUTH_VALUE: ${{ secrets.MASSIVE_API_KEY }}
+        run: node scripts/fetch-eod-stock-data.mjs
+
+      - name: Process matched stock EOD data
+        run: node scripts/process-eod-stock-data.mjs "$EOD_SOURCE_FILE"
+
+      - name: Check for data changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- "$EOD_SOURCE_FILE" data/company-market-data.json data/quotes/aktien.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit updated stock EOD data
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$EOD_SOURCE_FILE" data/company-market-data.json data/quotes/aktien.json
+          git commit -m "chore: update daily stock eod data"
+
+      - name: Push changes
+        if: steps.changes.outputs.changed == 'true'
+        run: git push
