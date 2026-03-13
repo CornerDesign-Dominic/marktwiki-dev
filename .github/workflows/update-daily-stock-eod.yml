@@ -2,8 +2,8 @@ name: Update daily stock EOD data
 
 on:
   schedule:
-    # Beispiel: 21:15 UTC. Bitte bei Bedarf anpassen.
-    - cron: "15 21 * * *"
+    # Wochentags nach Handelsende in den USA.
+    - cron: "15 21 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -32,19 +32,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
-
-      - name: Resolve trading date
-        shell: bash
-        run: |
-          if [ -z "$EOD_TRADING_DATE" ]; then
-            echo "EOD_TRADING_DATE=$(date -u -d \"yesterday\" +%F)" >> "$GITHUB_ENV"
-          else
-            echo "EOD_TRADING_DATE=$EOD_TRADING_DATE" >> "$GITHUB_ENV"
-          fi
-
-      - name: Show trading date
-        shell: bash
-        run: echo "Using EOD trading date: $EOD_TRADING_DATE"
 
       - name: Fetch stock EOD file
         env:

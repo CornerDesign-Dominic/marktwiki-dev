@@ -1,4 +1,4 @@
-import { mkdir, rename, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -17,11 +17,23 @@ function resolveRepoPath(filePath) {
 function resolveTradingDate() {
   const explicitDate = normalizeText(process.env.EOD_TRADING_DATE);
   if (explicitDate) {
-    return explicitDate;
+    return {
+      value: explicitDate,
+      isExplicit: true
+    };
   }
 
   const date = new Date();
   date.setUTCDate(date.getUTCDate() - 1);
+  return {
+    value: date.toISOString().slice(0, 10),
+    isExplicit: false
+  };
+}
+
+function shiftDateString(dateText, days) {
+  const date = new Date(`${dateText}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
 }
 
@@ -53,6 +65,10 @@ function ensureEodPayload(payload) {
   }
 
   return payload;
+}
+
+function hasUsableResults(payload) {
+  return Array.isArray(payload?.results) && payload.results.length > 0;
 }
 
 function redactUrl(rawUrl) {
@@ -92,39 +108,98 @@ async function writeJsonAtomically(filePath, payload) {
 
 async function main() {
   const outputPath = resolveRepoPath(process.env.EOD_OUTPUT_PATH || "data/eod_stocks_latest.json");
-  const tradingDate = resolveTradingDate();
-  const { url } = buildRequestUrl(tradingDate);
-  console.log(`Requesting Massive EOD data: ${redactUrl(url)}`);
-  console.log("Authentication mode: query parameter apiKey");
-  console.log(`Resolved trading date: ${tradingDate}`);
+  const tradingDateConfig = resolveTradingDate();
+  const attemptedDates = [tradingDateConfig.value];
 
-  const response = await fetch(url, {
-    headers: {
-      "user-agent": "MarktWiki EOD Stock Data Updater"
+  if (!tradingDateConfig.isExplicit) {
+    for (let offset = 1; offset <= 4; offset += 1) {
+      attemptedDates.push(shiftDateString(tradingDateConfig.value, -offset));
     }
-  });
-
-  if (!response.ok) {
-    const errorBody = await readErrorBody(response);
-    const baseMessage = `EOD-Daten konnten nicht geladen werden (HTTP ${response.status}) fuer ${tradingDate}.`;
-
-    if (response.status === 403) {
-      throw new Error(`${baseMessage}${errorBody ? ` Antwort: ${errorBody}` : ""} Massive blockiert in der Regel Abrufe fuer den aktuellen Tag vor EOD.`);
-    }
-
-    if (response.status === 401) {
-      throw new Error(`${baseMessage}${errorBody ? ` Antwort: ${errorBody}` : ""} Massive-Authentifizierung ist fehlgeschlagen.`);
-    }
-
-    throw new Error(`${baseMessage}${errorBody ? ` Antwort: ${errorBody}` : ""}`);
   }
 
-  const payload = ensureEodPayload(await response.json());
+  let payload = null;
+  let selectedTradingDate = "";
+  let lastErrorMessage = "";
+
+  for (const attemptedDate of attemptedDates) {
+    const { url } = buildRequestUrl(attemptedDate);
+    console.log(`Requesting Massive EOD data: ${redactUrl(url)}`);
+    console.log("Authentication mode: query parameter apiKey");
+    console.log(`Trying trading date: ${attemptedDate}`);
+
+    const response = await fetch(url, {
+      headers: {
+        "user-agent": "MarktWiki EOD Stock Data Updater"
+      }
+    });
+
+    if (response.ok) {
+      const nextPayload = ensureEodPayload(await response.json());
+      if (hasUsableResults(nextPayload)) {
+        payload = nextPayload;
+        selectedTradingDate = attemptedDate;
+        break;
+      }
+
+      lastErrorMessage = `Massive lieferte fuer ${attemptedDate} keine verwertbaren Results.`;
+      console.warn(lastErrorMessage);
+      if (tradingDateConfig.isExplicit) {
+        throw new Error(lastErrorMessage);
+      }
+      continue;
+    }
+
+    const errorBody = await readErrorBody(response);
+    const baseMessage = `EOD-Daten konnten nicht geladen werden (HTTP ${response.status}) fuer ${attemptedDate}.`;
+    lastErrorMessage = `${baseMessage}${errorBody ? ` Antwort: ${errorBody}` : ""}`;
+
+    if (response.status === 401) {
+      throw new Error(`${lastErrorMessage} Massive-Authentifizierung ist fehlgeschlagen.`);
+    }
+
+    if (response.status === 403) {
+      console.warn(`${lastErrorMessage} Massive blockiert Abrufe vor EOD oder fuer ungueltige Handelstage.`);
+      if (tradingDateConfig.isExplicit) {
+        throw new Error(lastErrorMessage);
+      }
+      continue;
+    }
+
+    if (response.status === 404) {
+      console.warn(`${lastErrorMessage} Wahrscheinlich kein Handelstag oder keine Daten verfuegbar.`);
+      if (tradingDateConfig.isExplicit) {
+        throw new Error(lastErrorMessage);
+      }
+      continue;
+    }
+
+    throw new Error(lastErrorMessage);
+  }
+
+  if (!payload) {
+    throw new Error(lastErrorMessage || "Massive-EOD-Daten konnten fuer keinen der geprueften Handelstage geladen werden.");
+  }
+
+  const jsonOutput = `${JSON.stringify(payload, null, 2)}\n`;
+  let existingContent = null;
+
+  try {
+    existingContent = await readFile(outputPath, "utf8");
+  } catch (error) {
+    if (!error || error.code !== "ENOENT") {
+      throw error;
+    }
+  }
+
+  if (existingContent === jsonOutput) {
+    console.log(`Keine Aenderung erforderlich. Stand der Massive-Daten: ${selectedTradingDate}`);
+    return;
+  }
 
   await writeJsonAtomically(outputPath, payload);
 
   console.log(JSON.stringify({
-    tradingDate,
+    tradingDate: selectedTradingDate,
     outputPath: path.relative(repoRoot, outputPath).replace(/\\/g, "/"),
     resultsCount: Array.isArray(payload.results) ? payload.results.length : 0
   }, null, 2));

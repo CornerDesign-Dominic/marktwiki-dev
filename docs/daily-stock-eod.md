@@ -20,4 +20,6 @@
 - GitHub Secret fuer den API-Key: `MASSIVE_API_KEY`
 - Massive wird per Query-Parameter `apiKey=...` an den grouped-daily-aggregates-Endpoint angebunden.
 - API-Endpunkt-Konfiguration: `EOD_API_URL` im Workflow
+- Handelsdatum-Logik liegt komplett in `scripts/fetch-eod-stock-data.mjs`
+- Das Skript startet standardmaessig mit gestern und prueft danach bis zu 5 Tage rueckwaerts
 - Quell-/Zieldatei fuer den taeglichen Download: `EOD_SOURCE_FILE` und `EOD_OUTPUT_PATH` im Workflow
