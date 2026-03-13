@@ -1,0 +1,72 @@
+{
+  "updatedAt": "2026-03-13",
+  "source": "Lokale JSON-Vorlage",
+  "items": [
+    {
+      "name": "Apple Inc.",
+      "symbol": "AAPL",
+      "market": "NASDAQ",
+      "currency": "USD",
+      "open": 186.42,
+      "close": 189.13,
+      "high": 190.05,
+      "low": 184.88,
+      "changePct": 1.45
+    },
+    {
+      "name": "Microsoft Corp.",
+      "symbol": "MSFT",
+      "market": "NASDAQ",
+      "currency": "USD",
+      "open": 409.8,
+      "close": 414.22,
+      "high": 415.9,
+      "low": 407.35,
+      "changePct": 1.08
+    },
+    {
+      "name": "NVIDIA Corp.",
+      "symbol": "NVDA",
+      "market": "NASDAQ",
+      "currency": "USD",
+      "open": 915.2,
+      "close": 903.55,
+      "high": 922.8,
+      "low": 899.4,
+      "changePct": -1.27
+    },
+    {
+      "name": "SAP SE",
+      "symbol": "SAP",
+      "market": "Xetra",
+      "currency": "EUR",
+      "open": 176.6,
+      "close": 178.94,
+      "high": 179.4,
+      "low": 175.82,
+      "changePct": 1.33
+    },
+    {
+      "name": "Siemens AG",
+      "symbol": "SIE",
+      "market": "Xetra",
+      "currency": "EUR",
+      "open": 182.1,
+      "close": 180.76,
+      "high": 183.04,
+      "low": 179.92,
+      "changePct": -0.74
+    },
+    {
+      "name": "ASML Holding",
+      "symbol": "ASML",
+      "market": "Euronext Amsterdam",
+      "currency": "EUR",
+      "open": 937.5,
+      "close": 944.7,
+      "high": 949.2,
+      "low": 931.6,
+      "changePct": 0.77
+    }
+  ]
+}

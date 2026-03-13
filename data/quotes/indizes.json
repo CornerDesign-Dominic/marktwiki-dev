@@ -1,0 +1,72 @@
+{
+  "updatedAt": "2026-03-13",
+  "source": "Lokale JSON-Vorlage",
+  "items": [
+    {
+      "name": "DAX",
+      "symbol": "DAX",
+      "market": "Deutschland",
+      "currency": "EUR",
+      "open": 18266.52,
+      "close": 18412.36,
+      "high": 18458.8,
+      "low": 18198.41,
+      "changePct": 0.8
+    },
+    {
+      "name": "EURO STOXX 50",
+      "symbol": "SX5E",
+      "market": "Eurozone",
+      "currency": "EUR",
+      "open": 4988.44,
+      "close": 5010.92,
+      "high": 5024.3,
+      "low": 4975.11,
+      "changePct": 0.45
+    },
+    {
+      "name": "S&P 500",
+      "symbol": "SPX",
+      "market": "USA",
+      "currency": "USD",
+      "open": 5162.2,
+      "close": 5188.74,
+      "high": 5194.08,
+      "low": 5144.62,
+      "changePct": 0.51
+    },
+    {
+      "name": "NASDAQ 100",
+      "symbol": "NDX",
+      "market": "USA",
+      "currency": "USD",
+      "open": 18002.5,
+      "close": 18140.44,
+      "high": 18188.1,
+      "low": 17952.4,
+      "changePct": 0.77
+    },
+    {
+      "name": "Nikkei 225",
+      "symbol": "NI225",
+      "market": "Japan",
+      "currency": "JPY",
+      "open": 38962.3,
+      "close": 38744.28,
+      "high": 39044.9,
+      "low": 38698.15,
+      "changePct": -0.56
+    },
+    {
+      "name": "FTSE 100",
+      "symbol": "UKX",
+      "market": "Grossbritannien",
+      "currency": "GBP",
+      "open": 7758.6,
+      "close": 7798.41,
+      "high": 7812.75,
+      "low": 7742.33,
+      "changePct": 0.51
+    }
+  ]
+}

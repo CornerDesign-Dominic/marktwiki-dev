@@ -1,0 +1,72 @@
+{
+  "updatedAt": "2026-03-13",
+  "source": "Lokale JSON-Vorlage",
+  "items": [
+    {
+      "name": "Vanguard FTSE All-World UCITS ETF",
+      "symbol": "VWCE",
+      "market": "Xetra",
+      "currency": "USD",
+      "open": 121.1,
+      "close": 122.46,
+      "high": 122.88,
+      "low": 120.92,
+      "changePct": 1.12
+    },
+    {
+      "name": "iShares Core MSCI World UCITS ETF",
+      "symbol": "EUNL",
+      "market": "Xetra",
+      "currency": "USD",
+      "open": 88.96,
+      "close": 89.41,
+      "high": 89.62,
+      "low": 88.71,
+      "changePct": 0.51
+    },
+    {
+      "name": "iShares Core S&P 500 UCITS ETF",
+      "symbol": "SXR8",
+      "market": "Xetra",
+      "currency": "USD",
+      "open": 548.4,
+      "close": 551.26,
+      "high": 552.1,
+      "low": 546.72,
+      "changePct": 0.52
+    },
+    {
+      "name": "Invesco EQQQ Nasdaq-100 UCITS ETF",
+      "symbol": "EQQQ",
+      "market": "London Stock Exchange",
+      "currency": "USD",
+      "open": 455.2,
+      "close": 459.78,
+      "high": 460.95,
+      "low": 453.6,
+      "changePct": 1.01
+    },
+    {
+      "name": "SPDR MSCI World Small Cap UCITS ETF",
+      "symbol": "WOSC",
+      "market": "Xetra",
+      "currency": "USD",
+      "open": 73.94,
+      "close": 73.31,
+      "high": 74.05,
+      "low": 73.02,
+      "changePct": -0.85
+    },
+    {
+      "name": "Xtrackers MSCI Emerging Markets UCITS ETF",
+      "symbol": "XMME",
+      "market": "Xetra",
+      "currency": "USD",
+      "open": 54.02,
+      "close": 54.38,
+      "high": 54.51,
+      "low": 53.9,
+      "changePct": 0.67
+    }
+  ]
+}

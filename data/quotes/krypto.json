@@ -1,0 +1,72 @@
+{
+  "updatedAt": "2026-03-13",
+  "source": "Lokale JSON-Vorlage",
+  "items": [
+    {
+      "name": "Bitcoin",
+      "symbol": "BTC",
+      "market": "Bitcoin",
+      "currency": "USD",
+      "open": 63140.0,
+      "close": 64520.0,
+      "high": 64880.0,
+      "low": 62640.0,
+      "changePct": 2.19
+    },
+    {
+      "name": "Ethereum",
+      "symbol": "ETH",
+      "market": "Ethereum",
+      "currency": "USD",
+      "open": 3402.2,
+      "close": 3461.7,
+      "high": 3478.1,
+      "low": 3388.4,
+      "changePct": 1.75
+    },
+    {
+      "name": "BNB",
+      "symbol": "BNB",
+      "market": "BNB Chain",
+      "currency": "USD",
+      "open": 558.4,
+      "close": 565.3,
+      "high": 568.2,
+      "low": 553.6,
+      "changePct": 1.24
+    },
+    {
+      "name": "Solana",
+      "symbol": "SOL",
+      "market": "Solana",
+      "currency": "USD",
+      "open": 144.6,
+      "close": 141.3,
+      "high": 146.2,
+      "low": 139.8,
+      "changePct": -2.28
+    },
+    {
+      "name": "XRP",
+      "symbol": "XRP",
+      "market": "XRP Ledger",
+      "currency": "USD",
+      "open": 0.618,
+      "close": 0.627,
+      "high": 0.633,
+      "low": 0.612,
+      "changePct": 1.46
+    },
+    {
+      "name": "Cardano",
+      "symbol": "ADA",
+      "market": "Cardano",
+      "currency": "USD",
+      "open": 0.724,
+      "close": 0.718,
+      "high": 0.731,
+      "low": 0.709,
+      "changePct": -0.83
+    }
+  ]
+}

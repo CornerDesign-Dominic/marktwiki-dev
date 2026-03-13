@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Waehrungskurse | MarktWiki</title>
+  <meta name="description" content="Kompakte Waehrungskurse in tabellarischer Form, vorbereitet fuer lokale JSON-Daten und ohne Einzelwert-Detailseiten.">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./layout.js"></script>
+  <script src="./kurse.js" defer></script>
+</head>
+<body data-base-path="." data-nav="quotes-currencies" data-quote-category="waehrungen">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+  <main>
+    <div class="container">
+      <section class="card hero quotes-page-hero">
+        <h1>Waehrungen</h1>
+        <p class="muted quotes-intro-copy">Reine Kursansicht fuer Waehrungspaare. Die Seite ist fuer lokale JSON-Feeds vorbereitet und vermeidet bewusst jeden Sprung auf Detailprofile.</p>
+        <p id="quotes-category-updated" class="quotes-updated-note"></p>
+      </section>
+
+      <section class="card section-space quotes-controls" aria-labelledby="quotes-controls-heading">
+        <h2 id="quotes-controls-heading" class="sr-only">Waehrungskurse filtern</h2>
+        <div class="quotes-controls-grid">
+          <div class="field">
+            <label for="quotes-search">Waehrungspaare suchen</label>
+            <input id="quotes-search" type="search" placeholder="Pair, Symbol oder Markt ..." autocomplete="off" spellcheck="false">
+          </div>
+          <p id="quotes-results-count" class="quotes-results-count" role="status" aria-live="polite"></p>
+        </div>
+      </section>
+
+      <section class="section-space" aria-labelledby="quotes-table-heading">
+        <h2 id="quotes-table-heading" class="sr-only">Waehrungskurse</h2>
+        <div class="quotes-table-shell">
+          <table class="quotes-table">
+            <thead>
+              <tr>
+                <th scope="col">Wert</th>
+                <th scope="col">Eroeffnet mit</th>
+                <th scope="col">Abgeschlossen mit</th>
+                <th scope="col">Tageshoch</th>
+                <th scope="col">Tagestief</th>
+                <th scope="col">Veraenderung</th>
+              </tr>
+            </thead>
+            <tbody id="quotes-table-body">
+              <tr><td colspan="6"><p class="status-message">Waehrungskurse werden geladen ...</p></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>window.MarktWikiLayout.injectFooter();</script>
+</body>
+</html>

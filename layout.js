@@ -31,6 +31,19 @@
       ]
     },
     {
+      key: "quotes",
+      label: "Kurse",
+      sections: [
+        { key: "quotes-home", label: "Kurse", path: "kurse.html", aliases: ["quotes"] },
+        { key: "quotes-stocks", label: "Aktien", path: "kurse-aktien.html" },
+        { key: "quotes-etfs", label: "ETFs", path: "kurse-etfs.html" },
+        { key: "quotes-indices", label: "Indizes", path: "kurse-indizes.html" },
+        { key: "quotes-crypto", label: "Krypto", path: "kurse-krypto.html" },
+        { key: "quotes-currencies", label: "Währungen", path: "kurse-waehrungen.html" },
+        { key: "quotes-commodities", label: "Rohstoffe", path: "kurse-rohstoffe.html" }
+      ]
+    },
+    {
       key: "tools",
       label: "Tools",
       sections: [

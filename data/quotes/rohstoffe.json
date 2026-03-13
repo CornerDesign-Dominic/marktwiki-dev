@@ -1,0 +1,78 @@
+{
+  "updatedAt": "2026-03-13",
+  "source": "Lokale JSON-Vorlage",
+  "items": [
+    {
+      "name": "Gold",
+      "symbol": "XAU",
+      "market": "LBMA / COMEX",
+      "currency": "USD",
+      "unit": "Unze",
+      "open": 2888.1,
+      "close": 2915.4,
+      "high": 2922.6,
+      "low": 2879.8,
+      "changePct": 0.95
+    },
+    {
+      "name": "Silber",
+      "symbol": "XAG",
+      "market": "LBMA / COMEX",
+      "currency": "USD",
+      "unit": "Unze",
+      "open": 31.62,
+      "close": 31.18,
+      "high": 31.74,
+      "low": 31.05,
+      "changePct": -1.39
+    },
+    {
+      "name": "Brent Oel",
+      "symbol": "BZ",
+      "market": "ICE Futures Europe",
+      "currency": "USD",
+      "unit": "Barrel",
+      "open": 82.94,
+      "close": 83.61,
+      "high": 84.22,
+      "low": 82.28,
+      "changePct": 0.81
+    },
+    {
+      "name": "WTI Oel",
+      "symbol": "CL",
+      "market": "NYMEX",
+      "currency": "USD",
+      "unit": "Barrel",
+      "open": 78.42,
+      "close": 79.08,
+      "high": 79.34,
+      "low": 77.88,
+      "changePct": 0.84
+    },
+    {
+      "name": "Kupfer",
+      "symbol": "HG",
+      "market": "COMEX",
+      "currency": "USD",
+      "unit": "Pfund",
+      "open": 4.08,
+      "close": 4.13,
+      "high": 4.16,
+      "low": 4.04,
+      "changePct": 1.23
+    },
+    {
+      "name": "Erdgas",
+      "symbol": "NG",
+      "market": "NYMEX Henry Hub",
+      "currency": "USD",
+      "unit": "MMBtu",
+      "open": 1.92,
+      "close": 1.88,
+      "high": 1.95,
+      "low": 1.84,
+      "changePct": -2.08
+    }
+  ]
+}

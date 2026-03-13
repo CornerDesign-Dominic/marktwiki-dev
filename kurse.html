@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kurse | MarktWiki</title>
+  <meta name="description" content="Kompakte Kursuebersicht fuer Aktien, ETFs, Indizes, Krypto, Waehrungen und Rohstoffe in einem reinen Kursbereich ohne Einzelwert-Detailseiten.">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./layout.js"></script>
+  <script src="./kurse.js" defer></script>
+</head>
+<body data-base-path="." data-nav="quotes-home">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+
+  <main>
+    <div class="container">
+      <section class="card hero quotes-page-hero">
+        <h1>Kurse</h1>
+        <p class="muted quotes-intro-copy">Zentraler Kursbereich fuer kompakte Marktstaende. Die Seite ist bewusst rein kursorientiert aufgebaut und verzichtet aktuell komplett auf Detailseiten fuer einzelne Werte.</p>
+        <p id="quotes-overview-updated" class="quotes-updated-note"></p>
+      </section>
+
+      <section class="section-space" aria-labelledby="quotes-overview-heading">
+        <h2 id="quotes-overview-heading" class="sr-only">Kurskategorien</h2>
+        <div id="quotes-overview" class="card-grid quotes-overview-grid">
+          <p class="status-message">Kurskategorien werden geladen ...</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>window.MarktWikiLayout.injectFooter();</script>
+</body>
+</html>
