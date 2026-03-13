@@ -18,5 +18,6 @@
 
 - Workflow-Datei: `.github/workflows/update-daily-stock-eod.yml`
 - GitHub Secret fuer den API-Key: `MASSIVE_API_KEY`
+- Massive wird per Query-Parameter `apiKey=...` an den grouped-daily-aggregates-Endpoint angebunden.
 - API-Endpunkt-Konfiguration: `EOD_API_URL` im Workflow
 - Quell-/Zieldatei fuer den taeglichen Download: `EOD_SOURCE_FILE` und `EOD_OUTPUT_PATH` im Workflow

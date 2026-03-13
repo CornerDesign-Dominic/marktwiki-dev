@@ -11,15 +11,13 @@ permissions:
 
 env:
   EOD_SOURCE_FILE: data/eod_stocks_latest.json
+  # Massive grouped daily aggregates endpoint.
   # API-Endpunkt hier anpassen. Platzhalter:
   # - {date} fuer das Handelsdatum
   # - {API_KEY} fuer das GitHub Secret MASSIVE_API_KEY
-  EOD_API_URL: https://api.massive.com/v2/aggs/grouped/locale/us/market/stocks/2026-03-11?apiKey={API_KEY}"
+  EOD_API_URL: "https://api.massive.com/v2/aggs/grouped/locale/us/market/stocks/{date}?adjusted=true&apiKey={API_KEY}"
   # Optionales Handelsdatum. Leer = heutiges Datum in UTC.
   EOD_TRADING_DATE: ""
-  # Optional fuer APIs, die statt Query-Parameter einen Header brauchen.
-  EOD_API_AUTH_HEADER: ""
-  EOD_API_AUTH_VALUE: ""
   EOD_OUTPUT_PATH: data/eod_stocks_latest.json
 
 jobs:
@@ -37,8 +35,7 @@ jobs:
 
       - name: Fetch stock EOD file
         env:
-          EOD_API_KEY: ${{ secrets.MASSIVE_API_KEY  }}
-          EOD_API_AUTH_VALUE: ${{ secrets.MASSIVE_API_KEY  }}
+          EOD_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
         run: node scripts/fetch-eod-stock-data.mjs
 
       - name: Process matched stock EOD data
