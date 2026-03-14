@@ -32,7 +32,7 @@ Diese Datei enthaelt nur projektweite Regeln. Alles, was speziell Schreibstil, A
 
 ## 4. Referenzhierarchie fuer neue Arbeiten
 
-- Zuerst aktuelle Root-Seiten, `pages/`-Detailseiten, `layout.js`, `style.css`, `main.js` und `markets.js` pruefen.
+- Zuerst aktuelle Root-Seiten, `pages/`-Detailseiten, `assets/js/layout.js`, `assets/css/style.css`, `assets/js/main.js` und `assets/js/markets.js` pruefen.
 - Bestehende neuere Karten-, Listen-, Filter-, Detail- und Navigationsmuster haben Vorrang vor aelteren Einzelmustern im Wiki.
 - Wiki-spezifische Muster gelten nur dort als Referenz, wo es wirklich um Wiki- oder Artikelseiten geht.
 - Vor Wiederverwendung alter Templates immer pruefen, ob es im Projekt bereits eine modernere, konsistentere Loesung gibt.
@@ -40,8 +40,8 @@ Diese Datei enthaelt nur projektweite Regeln. Alles, was speziell Schreibstil, A
 ## 5. UI- und UX-Konsistenz
 
 - Neue Seiten sollen sich in Navigation, Abstandssystem, Kartenoptik, Typografie und Interaktionslogik in das bestehende Projekt einfuegen.
-- Header, Footer, Suchlogik, Theme-Umschaltung und Hauptnavigation werden zentral ueber `layout.js` gesteuert und nicht seitenweise neu erfunden.
-- Gemeinsame Komponenten und Klassen aus `style.css` sollen bevorzugt wiederverwendet werden.
+- Header, Footer, Suchlogik, Theme-Umschaltung und Hauptnavigation werden zentral ueber `assets/js/layout.js` gesteuert und nicht seitenweise neu erfunden.
+- Gemeinsame Komponenten und Klassen aus `assets/css/style.css` sollen bevorzugt wiederverwendet werden.
 - Karten, Listen und Detailbereiche sollen sich an den aktuell genutzten Mustern orientieren, zum Beispiel:
   - `category-link-card` und `article-card-list` fuer Wiki-Uebersichten
   - `topic-card` fuer einfache Einstiegs- oder Tool-Karten

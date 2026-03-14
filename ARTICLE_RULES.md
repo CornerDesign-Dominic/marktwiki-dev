@@ -152,9 +152,9 @@ Wenn ein Definitionsabschnitt vorhanden ist, soll er mit der bestehenden Definit
 </div>
 ```
 
-- Die Copy-Funktion und automatische Nachruestung werden zentral ueber `layout.js` bereitgestellt.
+- Die Copy-Funktion und automatische Nachruestung werden zentral ueber `assets/js/layout.js` bereitgestellt.
 - Die Inhaltsnavigation wird fuer passende Artikel aus den vorhandenen H2-IDs erzeugt.
-- Struktur, Klassen und Anker eines Wiki-Artikels muessen deshalb mit `layout.js` und `style.css` zusammenspielen.
+- Struktur, Klassen und Anker eines Wiki-Artikels muessen deshalb mit `assets/js/layout.js` und `assets/css/style.css` zusammenspielen.
 
 ## 10. Ablageort und Dateibenennung
 
@@ -183,6 +183,6 @@ Beispiele:
 ## 12. Bezug auf aktuelle Projektstandards
 
 - Fuer den Textaufbau eines Wiki-Artikels sind `wiki/inventar.html` und `wiki/_template.html` die massgeblichen Referenzen.
-- Fuer allgemeine Projektlogik, Navigation, gemeinsame Karten- und Layoutmuster sind die aktuellen Root-Seiten, `pages/`-Detailseiten sowie `layout.js`, `style.css`, `main.js` und `markets.js` wichtiger als aeltere Wiki-Muster.
+- Fuer allgemeine Projektlogik, Navigation, gemeinsame Karten- und Layoutmuster sind die aktuellen Root-Seiten, `pages/`-Detailseiten sowie `assets/js/layout.js`, `assets/css/style.css`, `assets/js/main.js` und `assets/js/markets.js` wichtiger als aeltere Wiki-Muster.
 - Wenn Artikel in andere Projektbereiche eingebettet oder verlinkt werden, muessen Benennung, Rueckwege und Anschluss an die aktuelle Bereichslogik passen.
 - Alte JSON-Themenpfade wie `data/themen.json` koennen weiter bestehen, sind aber kein alleiniger Massstab fuer neue dateibasierte Wiki-Artikel.

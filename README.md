@@ -17,7 +17,7 @@ MarktWiki ist ein statisches Webprojekt fuer Wirtschafts-, Markt- und Finanzinha
 ## Wichtige Strukturhinweise
 
 - Das Wiki ist ein Teil des Projekts, aber nicht mehr die einzige Referenz fuer neue Arbeiten.
-- Fuer aktuelle Navigations-, Layout- und Bereichslogik sind vor allem `layout.js`, `style.css`, die Root-Seiten sowie die datengetriebenen Listen- und Detailseiten unter `pages/` relevant.
+- Fuer aktuelle Navigations-, Layout- und Bereichslogik sind vor allem `assets/js/layout.js`, `assets/css/style.css`, die Root-Seiten sowie die datengetriebenen Listen- und Detailseiten unter `pages/` relevant.
 - Aeltere JSON-basierte Themenpfade wie `themen.html`, `pages/thema.html` und `data/themen.json` existieren weiterhin, bilden aber nicht allein den aktuellen Standard fuer neue Seiten oder neue Dokumentationsregeln.
 
 ## Welche Regeln bei Aenderungen gelten
@@ -28,10 +28,10 @@ MarktWiki ist ein statisches Webprojekt fuer Wirtschafts-, Markt- und Finanzinha
 
 ## Wichtige Referenzen im aktuellen Projekt
 
-- Globale Navigation, Header/Footer, Suche und Theme-Logik: `layout.js`
-- Gemeinsame Styles, Karten, Listen, Detail-Layouts und Artikel-TOC: `style.css`
-- Datengetriebene Themen- und Unternehmenslogik: `main.js`
-- Marktlisten und Marktdetailseiten: `markets.js`
+- Globale Navigation, Header/Footer, Suche und Theme-Logik: `assets/js/layout.js`
+- Gemeinsame Styles, Karten, Listen, Detail-Layouts und Artikel-TOC: `assets/css/style.css`
+- Datengetriebene Themen- und Unternehmenslogik: `assets/js/main.js`
+- Marktlisten und Marktdetailseiten: `assets/js/markets.js`
 - Wiki-Referenzartikel und Artikeltemplate: `wiki/inventar.html`, `wiki/_template.html`
 
 ## Daten und QA
