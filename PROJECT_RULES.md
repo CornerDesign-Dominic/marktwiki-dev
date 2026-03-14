@@ -1,435 +1,71 @@
-﻿# MarktWiki Projektregeln
+# MarktWiki Projektregeln
 
----
+## Zweck der Datei
 
-# 1 Projektziel
+Diese Datei enthaelt nur projektweite Regeln. Alles, was speziell Schreibstil, Artikelaufbau, Slugs, Wiki-Ablage oder redaktionelle Inhalte betrifft, steht in `ARTICLE_RULES.md`.
 
-## 1.1 Grundidee
+## 1. Projektverstaendnis
 
-MarktWiki ist ein statisches Wirtschaftswiki.
+- MarktWiki ist ein statisches Gesamtprojekt mit mehreren Bereichen: Wiki, Maerkte, Kurse, Detailseiten, Tools, Daten- und QA-Skripten.
+- Das Wiki ist wichtig, aber nicht mehr die einzige oder automatisch massgebliche Referenz fuer neue Arbeiten.
+- Neue Dokumentation und neue Umsetzungen muessen den tatsaechlichen aktuellen Projektstand abbilden, nicht einen frueheren Wiki-zentrierten Zustand.
 
-Ziel:
+## 2. Technische Leitplanken
 
-- wirtschaftliche Themen verständlich erklären
-- strukturiertes Wissen zu Wirtschaft, Unternehmen und Finanzen bereitstellen
-- praktische Werkzeuge anbieten
-- später Vergleichsseiten integrieren
-- langfristig Affiliate Monetarisierung ermöglichen
+- Die produktive Seite bleibt vollstaendig statisch.
+- Erlaubt sind HTML, CSS, Vanilla JavaScript und statische JSON-Daten.
+- Build-Zwang, Laufzeit-Backend, Datenbank oder Framework-Migrationen sind ohne klaren Projektentscheid nicht gewuenscht.
+- Hosting muss mit einem statischen Deployment, insbesondere GitHub Pages, vereinbar bleiben.
 
-## 1.2 Projektanforderungen
+## 3. Strukturprinzipien
 
-Die Seite soll langfristig:
+- Bestehende Verzeichnislogik beibehalten:
+  - Root-Ebene fuer zentrale Bereichsseiten
+  - `wiki/` fuer dateibasierte Wiki-Seiten
+  - `pages/` fuer datengetriebene Detailseiten
+  - `tools/` fuer Rechner und QA-Helfer
+  - `data/` fuer statische Datenquellen
+  - `scripts/` fuer Datenaufbereitung
+  - `docs/` fuer technische Zusatzdokumentation
+- Neue Inhalte oder Seiten sollen an den passendsten bestehenden Bereich andocken, statt neue Parallelstrukturen einzufuehren.
+- Aeltere Reststrukturen duerfen vorhanden bleiben, sollen aber nicht ungeprueft als neuer Standard kopiert werden.
 
-- leicht wartbar
-- leicht erweiterbar
-- statisch betreibbar
-- klar strukturiert
-- inhaltlich konsistent
+## 4. Referenzhierarchie fuer neue Arbeiten
 
-bleiben.
+- Zuerst aktuelle Root-Seiten, `pages/`-Detailseiten, `layout.js`, `style.css`, `main.js` und `markets.js` pruefen.
+- Bestehende neuere Karten-, Listen-, Filter-, Detail- und Navigationsmuster haben Vorrang vor aelteren Einzelmustern im Wiki.
+- Wiki-spezifische Muster gelten nur dort als Referenz, wo es wirklich um Wiki- oder Artikelseiten geht.
+- Vor Wiederverwendung alter Templates immer pruefen, ob es im Projekt bereits eine modernere, konsistentere Loesung gibt.
 
-Der **Kern des Projekts ist das Wiki**.
+## 5. UI- und UX-Konsistenz
 
-Werkzeuge und Vergleichsseiten sind Ergänzungen, aber nicht der Fokus.
+- Neue Seiten sollen sich in Navigation, Abstandssystem, Kartenoptik, Typografie und Interaktionslogik in das bestehende Projekt einfuegen.
+- Header, Footer, Suchlogik, Theme-Umschaltung und Hauptnavigation werden zentral ueber `layout.js` gesteuert und nicht seitenweise neu erfunden.
+- Gemeinsame Komponenten und Klassen aus `style.css` sollen bevorzugt wiederverwendet werden.
+- Karten, Listen und Detailbereiche sollen sich an den aktuell genutzten Mustern orientieren, zum Beispiel:
+  - `category-link-card` und `article-card-list` fuer Wiki-Uebersichten
+  - `topic-card` fuer einfache Einstiegs- oder Tool-Karten
+  - `stock-card`, `market-list-card`, `quote-overview-card` fuer datengetriebene Listen
+  - `company-detail-*`, `market-detail-*`, `currency-detail-*` fuer aktuelle Detailseiten
+- Veraltete oder isolierte Einzelmuster nicht zum neuen Standard erklaeren, nur weil sie zuerst existierten.
 
----
+## 6. Inhalts- und Datenprinzipien
 
-# 2 Technologie Regeln
+- Bestehende statische Datenquellen nur erweitern oder umbauen, wenn die reale Seitenlogik sie weiterhin nutzt.
+- Bei datengetriebenen Seiten muessen Struktur, Benennung und Felder an die vorhandene Implementierung anschliessen.
+- Neue Dokumentation soll klar zwischen aktiv genutzten Pfaden und Legacy-/Uebergangspfaden unterscheiden.
 
-## 2.1 Architektur
+## 7. Dokumentation und Aenderungen
 
-Die Seite muss vollständig statisch bleiben.
+- `README.md` beschreibt das Gesamtprojekt und verweist auf die relevanten Regeldateien.
+- `PROJECT_RULES.md` regelt das Projekt allgemein.
+- `ARTICLE_RULES.md` ist die einzige zentrale Regelquelle fuer Wiki- und Artikelinhalte.
+- `CONTENT_RULES.md` und `KONVENTIONEN.md` bleiben nur als schlanke Verweise bestehen, solange externe oder alte Links auf sie zeigen koennten.
+- `CHANGELOG.md` bleibt die Historie; bestehende Eintraege nicht rueckwirkend umformulieren.
 
-Erlaubt:
+## 8. Nicht gewuenscht
 
-- HTML
-- CSS
-- Vanilla JavaScript
-
-Nicht erlaubt:
-
-- Backend Server
-- Node Server im Livebetrieb
-- Datenbank
-- Framework-Zwang
-
-## 2.2 Hosting
-
-Die Seite muss **GitHub Pages kompatibel** bleiben.
-
----
-
-# 3 Designprinzipien
-
-## 3.1 Grundprinzip
-
-Das Design von MarktWiki soll:
-
-- ruhig
-- sachlich
-- modern
-- zeitlos
-- professionell
-
-sein.
-
-Die Seite soll wirken wie ein **modernes Wirtschaftslexikon**.
-
-## 3.2 Fokus
-
-Die Seite richtet sich an Nutzer, die Informationen suchen.
-
-Deshalb stehen im Vordergrund:
-
-- Lesbarkeit
-- Struktur
-- Übersichtlichkeit
-
-Zu vermeiden:
-
-- Blogdesign
-- Marketing-Landingpages
-- visuelle Überladung
-
----
-
-# 4 Layout und Typografie
-
-## 4.1 Inhaltsbreite
-
-Die maximale Inhaltsbreite beträgt:
-
-1000px
-
-Dies gilt für:
-
-- Wikiartikel
-- Inhaltsseiten
-- Hauptcontentbereiche
-
-## 4.2 Textlayout
-
-Zeilenabstand:
-
-1.6
-
-Empfohlene Absatzlänge:
-
-2 bis 4 Sätze
-
-Absatzabstand:
-
-mindestens 1em
-
-## 4.3 Überschriften
-
-H1  
-Seitentitel
-
-H2  
-Hauptabschnitte:
-
-- Definition
-- Erklärung
-- Beispiel
-- Praxisbezug
-- Zusammenfassung
-
-H3  
-optionale Unterpunkte
-
-Regel:
-
-Überschriften müssen klar sichtbar sein, dürfen aber **nicht überdimensioniert wirken**.
-
-## 4.4 Abstände
-
-Empfohlene Abstände:
-
-zwischen Überschrift und Text  
-16px
-
-zwischen Abschnitten  
-32px
-
-zwischen größeren Inhaltsblöcken  
-48px
-
----
-
-# 5 Farbpalette
-
-Die Farbpalette ist fest definiert.
-
-Hintergrund  
-#0f172a
-
-Sekundärer Hintergrund  
-#111827
-
-Contentkarten  
-#1f2937
-
-Textfarbe  
-#ffffff
-
-Sekundärer Text  
-#cbd5e1
-
-Akzentfarbe  
-#38bdf8
-
-Linkfarbe  
-#7dd3fc
-
-Hoverfarbe  
-#0ea5e9
-
-Borderfarbe  
-#334155
-
-Neue Farben dürfen **nicht ohne triftigen Grund eingeführt werden**.
-
----
-
-# 6 UI Elemente
-
-## 6.1 Karten
-
-Karten werden verwendet für:
-
-- Kategorien
-- Themenlisten
-- Navigationselemente
-- verwandte Themen
-
-Kartendesign:
-
-Hintergrund  
-#1f2937
-
-Border  
-1px solid #334155
-
-Radius  
-8px
-
-Padding  
-24px
-
-Wikiartikel selbst sollen hauptsächlich aus **Fließtext** bestehen.
-
-## 6.2 Infoboxen
-
-Infoboxen sind optional.
-
-Sie können genutzt werden für:
-
-- Merksätze
-- Praxishinweise
-- kurze Definitionen
-- Abgrenzungen
-
-Infobox Design:
-
-Hintergrund  
-#111827
-
-Border  
-1px solid #334155
-
-Radius  
-8px
-
-Padding  
-16px bis 20px
-
-Infoboxen sollen **sparsam eingesetzt werden**.
-
----
-
-# 7 Bilder
-
-Bilder sind optional.
-
-Wenn Bilder verwendet werden:
-
-- müssen sie inhaltlich sinnvoll sein
-- dürfen das Layout nicht dominieren
-- sollen die Breite des Contentbereichs nicht überschreiten
-
-Bilder liegen im Ordner:
-
-/assets/img
-
----
-
-# 8 Wiki Struktur
-
-## 8.1 Hierarchie
-
-Das Wiki folgt einer festen Struktur:
-
-Hauptkategorie  
-Unterkategorie  
-Thema
-
-Beispiele für Hauptkategorien:
-
-- Buchführung
-- Rechnungswesen
-- BWL
-- VWL
-- Logistik
-- Recht & Steuern
-- Personal
-- Finanzierung
-- Kapitalmarkt
-
----
-
-# 9 Standard für Wiki-Themenseiten
-
-## 9.1 Ziel
-
-Themenseiten sind der Kern des Projekts.
-
-Sie müssen:
-
-- einheitlich
-- klar strukturiert
-- gut lesbar
-
-sein.
-
-## 9.2 Grundlayout
-
-Eine Themenseite besteht aus:
-
-1 Seitenkopf  
-2 Hauptartikel  
-3 optionale Infoboxen  
-4 verwandte Inhalte
-
-Monetarisierung spielt auf Themenseiten vorerst keine Rolle.
-
----
-
-## 9.3 Seitenkopf
-
-Der Seitenkopf enthält:
-
-- Titel des Themas
-- kurze Einleitung
-- optional Kategorie / Unterkategorie
-
-Regeln:
-
-- kein großer Hero-Bereich
-- keine Marketingoptik
-- kompakte Darstellung
-
----
-
-## 9.4 Hauptartikel
-
-Der Hauptartikel folgt immer dieser Struktur:
-
-1 Titel  
-2 Einleitung  
-3 Definition  
-4 Erklärung  
-5 Beispiel  
-6 Praxisbezug  
-7 Zusammenfassung  
-
-Die Reihenfolge ist verpflichtend.
-
-Der Artikel soll hauptsächlich aus **Fließtext** bestehen.
-
-Die konkreten verbindlichen Redaktions- und Strukturregeln für Wiki-Artikel sind in `ARTICLE_RULES.md` dokumentiert.
-
----
-
-## 9.5 Verwandte Inhalte
-
-Am Ende der Seite können erscheinen:
-
-- verwandte Themen
-- passende Werkzeuge
-
-Ziel:
-
-Stärkung der internen Navigation.
-
----
-
-# 10 Inhaltsverwaltung
-
-## 10.1 Wikiartikel (neu)
-
-Neue Wikiartikel werden als eigene HTML-Dateien im Ordner
-
-/wiki
-
-angelegt.
-
-Beispiel:
-
-- /wiki/inventur.html
-- /wiki/bilanzanalyse.html
-- /wiki/eigenkapitalquote.html
-
-Als Startpunkt dient die Vorlage:
-
-- /wiki/_template.html
-
-## 10.2 JSON-Dateien
-
-Die JSON-Dateien bleiben fuer bestehende Datenstrukturen nutzbar:
-
-- /data/themen.json
-
-Sie sind fuer neue Wikiartikel jedoch nicht mehr zwingend erforderlich.
----
-
-# 11 Werkzeuge
-
-Werkzeuge liegen im Ordner:
-
-/tools
-
-Beispiele:
-
-- ROI Rechner
-- Zinseszins Rechner
-
-Tools laufen ausschließlich im Browser.
-
----
-
-# 12 SEO Regeln
-
-Jede Seite muss enthalten:
-
-- title
-- meta description
-
-Optional später:
-
-- Open Graph Tags
-- strukturierte Daten
-
----
-
-# 13 Nicht erwünscht
-
-Folgendes soll vermieden werden:
-
-- komplexe Frameworks
-- Backend Server
-- unnötige JavaScript Libraries
-- komplizierte Buildprozesse
-- unnötige Designänderungen
-
-Das Projekt soll bewusst **leichtgewichtig und verständlich aufgebaut bleiben**.
+- Neue konkurrierende Regeldateien ohne klaren Mehrwert
+- Dokumentation, die nur das Wiki beschreibt und andere aktive Projektbereiche ausblendet
+- Neue Umsetzungen, die sich blind an veralteten Wiki-Mustern orientieren
+- Unnoetige Designabweichungen, wenn es bereits ein aktuelles Projektmuster gibt

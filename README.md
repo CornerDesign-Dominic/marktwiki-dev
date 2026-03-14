@@ -1,104 +1,41 @@
 # MarktWiki
 
-MarktWiki ist ein **statisches Wirtschafts-Wiki** mit verständlichen Erklärungen zu Themen aus Wirtschaft, Unternehmen, Finanzen und Märkten.  
-Neben den Wissensartikeln enthält die Seite auch praktische **Rechner und Tools** für wirtschaftliche Fragestellungen.
+MarktWiki ist ein statisches Webprojekt fuer Wirtschafts-, Markt- und Finanzinhalte. Das Repository enthaelt nicht nur das Wiki, sondern auch mehrere aktuell gepflegte Markt-, Kurs-, Detail- und Tool-Bereiche auf Basis von HTML, CSS, Vanilla JavaScript und statischen JSON-Daten.
 
-Ziel ist eine leicht verständliche Wissensplattform zu Bereichen wie:
+## Projektbereiche
 
-- Buchhaltung / Rechnungswesen  
-- Betriebswirtschaft (BWL)  
-- Volkswirtschaft (VWL)  
-- Logistik  
-- Recht und Steuern  
-- Personal  
-- Finanzierung und Kapitalmarkt  
+- `index.html`: Startseite des Gesamtprojekts
+- `wiki/`: dateibasierte Wiki-Struktur mit Kategorien, Unterkategorien und Fachartikeln
+- `maerkte.html`, `aktien.html`, `indizes.html`, `wechselkurse.html`, `rohstoffe.html`, `krypto.html`, `etfs.html`: aktuelle Marktbereiche auf Root-Ebene
+- `kurse.html` plus `kurse-*.html`: eigener Kursbereich mit kompakten Uebersichten
+- `pages/`: aktuelle Detailseiten fuer Unternehmen, Waehrungen und weitere Marktobjekte
+- `tools/`: statische Rechner und lokale QA-Skripte
+- `data/`: Inhalts-, Markt- und Stammdaten
+- `scripts/`: Datenaufbereitung und Aktualisierung statischer Quellen
+- `docs/`: technische Zusatzdokumentation fuer einzelne Daten- oder Prozessbereiche
 
----
+## Wichtige Strukturhinweise
 
-# Funktionen
+- Das Wiki ist ein Teil des Projekts, aber nicht mehr die einzige Referenz fuer neue Arbeiten.
+- Fuer aktuelle Navigations-, Layout- und Bereichslogik sind vor allem `layout.js`, `style.css`, die Root-Seiten sowie die datengetriebenen Listen- und Detailseiten unter `pages/` relevant.
+- Aeltere JSON-basierte Themenpfade wie `themen.html`, `pages/thema.html` und `data/themen.json` existieren weiterhin, bilden aber nicht allein den aktuellen Standard fuer neue Seiten oder neue Dokumentationsregeln.
 
-## Wikiartikel
-Strukturierte Artikel mit einheitlichem Aufbau:
+## Welche Regeln bei Aenderungen gelten
 
-- Einleitung  
-- Definition  
-- Erklärung  
-- Beispiel  
-- Praxisbezug  
-- Zusammenfassung  
+- `PROJECT_RULES.md`: projektweite technische, strukturelle und UI-/UX-Leitplanken
+- `ARTICLE_RULES.md`: verbindliche Regeln fuer Wiki- und Artikelinhalte, inklusive Ablage, Slugs, Abschnittslogik und interne Verlinkung
+- `CHANGELOG.md`: Historie des Projekts; bestehende Eintraege nicht umschreiben, neue relevante Aenderungen oben ergaenzen
 
-Die Artikel sind dateibasiert organisiert und lassen sich leicht erweitern.
+## Wichtige Referenzen im aktuellen Projekt
 
----
+- Globale Navigation, Header/Footer, Suche und Theme-Logik: `layout.js`
+- Gemeinsame Styles, Karten, Listen, Detail-Layouts und Artikel-TOC: `style.css`
+- Datengetriebene Themen- und Unternehmenslogik: `main.js`
+- Marktlisten und Marktdetailseiten: `markets.js`
+- Wiki-Referenzartikel und Artikeltemplate: `wiki/inventar.html`, `wiki/_template.html`
 
-## Rechner und Tools
+## Daten und QA
 
-Interaktive Werkzeuge zur Unterstützung bei wirtschaftlichen Fragestellungen.
-
-Beispiele:
-
-- Spar- und Zinsrechner  
-- Zinseszinsrechner  
-- ROI-Rechner  
-
-Die Rechner visualisieren Ergebnisse zusätzlich mit:
-
-- Verteilungsbalken (Startkapital / Einzahlungen / Zinsen)  
-- Jahresdiagrammen zur Entwicklung des Kapitals  
-
----
-
-
----
-
-# Technologie
-
-Das Projekt ist bewusst **leichtgewichtig** aufgebaut.
-
-Technologien:
-
-- HTML  
-- CSS  
-- Vanilla JavaScript  
-
-Keine Frameworks, keine Datenbank und kein Backend.  
-Die Seite ist vollständig **statisch** und kann einfach gehostet werden (z. B. GitHub Pages).
-
----
-
-# Ziel des Projekts
-
-MarktWiki soll langfristig wachsen zu einer Plattform mit:
-
-- verständlichen Wirtschaftsartikeln  
-- interaktiven Finanz- und Wirtschaftstools  
-- Vergleichsseiten zu Finanzprodukten (z. B. Broker, ETFs, Konten)  
-
----
-
-# Entwicklung
-
-Bei Änderungen am Projekt gilt:
-
-1. `PROJECT_RULES.md` lesen  
-2. Änderungen im `CHANGELOG.md` dokumentieren  
-3. Bestehendes Design und Struktur möglichst beibehalten
----
-
-# TÃ¤gliche Aktien-Marktdaten
-
-- Zentrale tÃ¤gliche Marktdaten fÃ¼r Unternehmensseiten: `data/company-market-data.json`
-- Datenbasis fÃ¼r `kurse-aktien`: `data/quotes/aktien.json`
-- Unternehmens-Stammdaten bleiben unter `data/companies/...` und werden nicht tÃ¤glich mit Kursdaten Ã¼berschrieben.
-
-## Skripte
-
-- API-Abruf: `scripts/fetch-eod-stock-data.mjs`
-- Matching und Filterung gegen `data/companies/index.json`: `scripts/process-eod-stock-data.mjs`
-
-## GitHub Action
-
-- Workflow: `.github/workflows/update-daily-stock-eod.yml`
-- Secret fÃ¼r den API-Key: `MASSIVE_API_KEY`
-- API-Endpunkt-Konfiguration: `EOD_API_URL` im Workflow
-- Zieldatei fÃ¼r den tÃ¤glichen EOD-Abruf: `EOD_SOURCE_FILE` und `EOD_OUTPUT_PATH` im Workflow
+- Unternehmens- und Marktdaten liegen unter `data/companies/`, `data/markets/`, `data/quotes/`, `data/exchange-rates.json` und `data/company-market-data.json`.
+- QA-Skripte liegen unter `tools/qa/`.
+- Zusatzdoku fuer den taeglichen Aktien-EOD-Prozess liegt in `docs/daily-stock-eod.md`.

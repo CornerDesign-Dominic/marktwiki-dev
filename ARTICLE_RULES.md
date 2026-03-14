@@ -1,99 +1,50 @@
-﻿# MarktWiki Artikelregeln
+# MarktWiki Artikelregeln
 
-## Ziel
+## Zweck der Datei
 
-MarktWiki-Artikel sind neutral, sachlich, verständlich, fachlich sauber und praxisorientiert.
-Sie nutzen keine persönliche Sprache, keine Ich-/Wir-/Du-Form und keine unnötige Ausschmückung.
-Sie verzichten sowohl auf künstliche Kürze als auch auf inhaltliche Verwässerung.
+Diese Datei ist die zentrale Regelquelle fuer Wiki- und Artikelinhalte. Sie fasst die bisherigen Inhalte aus `ARTICLE_RULES.md`, `CONTENT_RULES.md` und `KONVENTIONEN.md` zusammen.
 
-## Grundprinzip
+## 1. Geltungsbereich
 
-Artikel dürfen so lang sein, wie sie es fachlich brauchen.
-Sie bleiben dabei klar, auf den Punkt und gut verständlich.
+- Gilt fuer neue und ueberarbeitete Fachartikel im Wiki sowie fuer redaktionelle Artikelinhalte in vergleichbaren Projektbereichen.
+- Gilt nicht fuer rein technische Seiten, Rechtstexte, Tool-Formulare oder datengetriebene Markt-/Unternehmenslisten ohne klassischen Artikelcharakter.
 
-## Standardstruktur
+## 2. Ziel und Zielgruppe
+
+- Artikel sollen wirtschaftliche Themen neutral, fachlich sauber, verstaendlich und praxisnah erklaeren.
+- Zielgruppen sind vor allem Einsteiger, Studierende, Auszubildende, Gruender und allgemein wirtschaftlich interessierte Leser.
+- Inhalte muessen ohne grosses Vorwissen nachvollziehbar sein; Fachbegriffe sind erlaubt, aber zu erklaeren.
+
+## 3. Stil und Ton
+
+- sachlich
+- ruhig
+- neutral
+- professionell
+- gut verstaendlich
+
+Nicht verwenden:
+
+- Ich-/Wir-/Du-Ansprache
+- Werbesprache oder Marketing-Ton
+- persoenliche Meinungen
+- unerklaerte Fachspruenge
+- unnoetige Ausschmueckung
+
+## 4. Inhaltliche Grundsaetze
+
+- Artikel duerfen so lang sein, wie sie es fachlich brauchen.
+- Wichtiger als Wortzahl sind Klarheit, fachliche Belastbarkeit und saubere Struktur.
+- Realistische Beispiele und klare Praxisbezuege sind erwuenscht, wenn sie das Verstaendnis verbessern.
+- Verwandte Begriffe sollen sauber abgegrenzt werden, wenn Verwechslungsgefahr besteht.
+- Keine erfundenen Fakten, leeren Platzhalter oder vorgetaeuschten Weiterfuehrungen.
+
+## 5. Verbindliche Standardstruktur
+
+Die Standardreihenfolge fuer Wiki-Fachartikel lautet:
 
 1. Titel
 2. Kurzdefinition / Einstieg
-3. Definition (nur wenn sinnvoll / vorhanden)
-4. Einordnung
-5. Erklärung
-6. Beispiel (optional)
-7. Praxisbezug
-8. Abgrenzung (optional)
-9. Zusammenfassung
-10. Ähnliche Themen (optional)
-
-## Pflicht in der Regel
-
-- Kurzdefinition / Einstieg
-- Einordnung
-- Erklärung
-- Praxisbezug
-- Zusammenfassung
-
-## Optional nur bei echtem Mehrwert
-
-- Definition
-- Beispiel
-- Abgrenzung
-- Ähnliche Themen
-
-## Abschnittsbeschreibungen
-
-### Titel
-Nur das Thema oder der Begriff.
-
-### Kurzdefinition / Einstieg
-2 bis 4 Sätze zu Thema, Einordnung und Relevanz.
-
-### Definition
-Nur verwenden, wenn es eine klare fachliche Definition gibt.
-
-### Einordnung
-Einordnung in Fachbereich, Zusammenhang und Bedeutung.
-
-### Erklärung
-Hauptteil des Artikels, fachlich belastbar und verständlich.
-
-### Beispiel
-Nur aufnehmen, wenn es das Verständnis konkret verbessert.
-
-### Praxisbezug
-Konkrete Relevanz im Unternehmens-, Lern- oder Arbeitskontext.
-
-### Abgrenzung
-Unterschiede zu ähnlichen Begriffen oder typische Missverständnisse.
-
-### Zusammenfassung
-Kurze, präzise Verdichtung der Kernaussagen.
-
-### Ähnliche Themen
-Am Ende des Artikels nur manuelle interne Links auf passende, vorhandene Inhalte.
-Keine leeren oder erfundenen Links.
-
-## Stil
-
-- ruhig
-- neutral
-- für jeden verständlich
-- fachlich belastbar
-
-## Verbindlicher Referenzstandard
-
-Der Artikel `wiki/inventar.html` ist der verbindliche Referenzartikel fuer Struktur und Layout von MarktWiki-Artikeln.
-
-Wichtig:
-
-- `wiki/inventar.html` dient als Standardvorlage und darf bei Vereinheitlichungen nicht als Zielartikel umgebaut werden.
-- Neue und bestehende Fachartikel im Ordner `wiki/` muessen sich an diesem Referenzstandard orientieren.
-
-## Verbindliche Abschnittsreihenfolge
-
-Die Reihenfolge ist verbindlich:
-
-1. Titel (H1)
-2. Lead / Einleitung
 3. Definition
 4. Einordnung
 5. Erklaerung
@@ -103,22 +54,96 @@ Die Reihenfolge ist verbindlich:
 9. Zusammenfassung
 10. Aehnliche Themen
 
-## Verbindliche Blockstruktur
+## 6. Was ist Pflicht, was optional
 
-Die Abschnitte sind in vier Artikelbloecke zu gruppieren:
+In der Regel verpflichtend:
 
-- Block 1 (`article-block article-block-foundation`):
-  Lead, Definition, Einordnung, Erklaerung
-- Block 2 (`article-block article-block-application`):
-  Beispiel, Praxisbezug, Abgrenzung
-- Block 3 (`article-block article-block-summary`):
-  Zusammenfassung
-- Block 4 (`article-block article-block-related`):
-  Aehnliche Themen
+- Kurzdefinition / Einstieg
+- Einordnung
+- Erklaerung
+- Praxisbezug
+- Zusammenfassung
 
-## Definition-Box und Copy-Funktion
+Optional bei echtem Mehrwert:
 
-Im Abschnitt `Definition` ist folgende Struktur verpflichtend:
+- Definition
+- Beispiel
+- Abgrenzung
+- Aehnliche Themen
+
+Wenn ein optionaler Abschnitt fachlich keinen Nutzen bringt, wird er weggelassen statt kuenstlich gefuellt.
+
+## 7. Abschnittsregeln
+
+### Titel
+
+- Nur der Begriff oder das Thema
+- kurz, eindeutig und ohne unnoetige Zusaetze
+
+### Kurzdefinition / Einstieg
+
+- 2 bis 4 Saetze
+- erklaert Thema, Einordnung und Relevanz
+
+### Definition
+
+- nur verwenden, wenn es eine klare fachliche Definition gibt
+- kurz, praezise und fachlich korrekt
+
+### Einordnung
+
+- verortet das Thema in Fachbereich, Zusammenhang und Bedeutung
+
+### Erklaerung
+
+- Hauptteil des Artikels
+- erklaert Funktionsweise, Hintergruende, Zusammenhaenge und zentrale Details
+
+### Beispiel
+
+- konkret, realistisch und leicht nachvollziehbar
+- bevorzugt nur dann, wenn es das Verstaendnis sichtbar verbessert
+
+### Praxisbezug
+
+- zeigt Relevanz in Unternehmen, Ausbildung, Studium oder beruflicher Anwendung
+
+### Abgrenzung
+
+- klaert Unterschiede zu aehnlichen Begriffen oder typischen Missverstaendnissen
+
+### Zusammenfassung
+
+- kurze Verdichtung der Kernaussagen
+
+### Aehnliche Themen
+
+- nur auf vorhandene, intern passende Seiten verlinken
+- keine leeren, toten oder erfundenen Links
+
+## 8. Struktur- und Layoutstandard fuer Wiki-Artikel
+
+Fuer dateibasierte Wiki-Artikel unter `wiki/` gelten diese technischen Strukturvorgaben:
+
+- Referenzartikel: `wiki/inventar.html`
+- Startvorlage: `wiki/_template.html`
+- `wiki/inventar.html` ist Referenz fuer Struktur und Layout, aber kein Freibrief, alte Einzelheiten ungeprueft auf andere Projektbereiche zu uebertragen.
+
+Verbindlich fuer den Wiki-Artikelstandard:
+
+- H1 als Seitentitel
+- Lead direkt unter dem Titel
+- H2-Abschnitte in der oben definierten Reihenfolge
+- Blockstruktur:
+  - `article-block article-block-foundation`
+  - `article-block article-block-application`
+  - `article-block article-block-summary`
+  - `article-block article-block-related`
+- vorhandene H2-IDs so setzen, dass TOC und Anker sauber funktionieren
+
+## 9. Definition-Box und TOC
+
+Wenn ein Definitionsabschnitt vorhanden ist, soll er mit der bestehenden Definition-Box-Struktur kompatibel bleiben:
 
 ```html
 <div class="definition-box">
@@ -127,21 +152,37 @@ Im Abschnitt `Definition` ist folgende Struktur verpflichtend:
 </div>
 ```
 
-Die technische Copy-Funktion wird ueber die globale Artikellogik in `layout.js` bereitgestellt.
+- Die Copy-Funktion und automatische Nachruestung werden zentral ueber `layout.js` bereitgestellt.
+- Die Inhaltsnavigation wird fuer passende Artikel aus den vorhandenen H2-IDs erzeugt.
+- Struktur, Klassen und Anker eines Wiki-Artikels muessen deshalb mit `layout.js` und `style.css` zusammenspielen.
 
-## Inhaltsnavigation (TOC)
+## 10. Ablageort und Dateibenennung
 
-Wiki-Artikel nutzen eine linke Inhaltsnavigation auf Basis der vorhandenen H2-Anker-IDs.
+Fuer neue dateibasierte Wiki-Artikel gilt:
 
-- Die TOC wird automatisch aus den H2-Abschnitten erzeugt.
-- Die TOC erscheint nur bei ausreichend langen Artikeln.
-- Positionierung und Sticky-Verhalten werden zentral ueber `style.css` und `layout.js` gesteuert.
+- Ablage direkt unter `wiki/`
+- keine Unterordner fuer einzelne Kategorien
+- Dateiname entspricht dem URL-Slug
+- nur Kleinbuchstaben
+- Woerter mit Bindestrichen trennen
+- keine Leerzeichen, Umlaute oder Sonderzeichen im Dateinamen
 
-## Template-Pflicht
+Beispiele:
 
-`wiki/_template.html` muss denselben strukturellen Standard abbilden:
+- `wiki/inventur.html`
+- `wiki/eigenkapitalquote.html`
+- `wiki/schlussbilanzkonto.html`
 
-- identische Abschnittsreihenfolge
-- identische Blockstruktur
-- Definition-Box mit Copy-Button-Markup
-- gleiche Klassenstruktur wie die Referenzimplementierung
+## 11. Interne Verlinkung
+
+- Von Wiki-Uebersichten und Artikellisten mit relativen Links auf die Artikel verlinken
+- Von Artikeln zur Wiki-Uebersicht mit `./index.html` oder zur passenden Kategorie/Unterkategorie verlinken, wenn das der bessere Rueckweg ist
+- Innerhalb eines Artikels nur auf real vorhandene, inhaltlich sinnvolle Seiten verlinken
+- Verwandte Themen nicht aufblasen; wenige treffende Links sind besser als lange Sammellisten
+
+## 12. Bezug auf aktuelle Projektstandards
+
+- Fuer den Textaufbau eines Wiki-Artikels sind `wiki/inventar.html` und `wiki/_template.html` die massgeblichen Referenzen.
+- Fuer allgemeine Projektlogik, Navigation, gemeinsame Karten- und Layoutmuster sind die aktuellen Root-Seiten, `pages/`-Detailseiten sowie `layout.js`, `style.css`, `main.js` und `markets.js` wichtiger als aeltere Wiki-Muster.
+- Wenn Artikel in andere Projektbereiche eingebettet oder verlinkt werden, muessen Benennung, Rueckwege und Anschluss an die aktuelle Bereichslogik passen.
+- Alte JSON-Themenpfade wie `data/themen.json` koennen weiter bestehen, sind aber kein alleiniger Massstab fuer neue dateibasierte Wiki-Artikel.
