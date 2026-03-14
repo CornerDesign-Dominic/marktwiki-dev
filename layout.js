@@ -20,6 +20,7 @@
       key: "markets",
       label: "Märkte",
       aliases: ["stocks"],
+      submenuTitleSectionKey: "markets-home",
       sections: [
         { key: "markets-home", label: "Märkte", path: "maerkte.html", aliases: ["markets"] },
         { key: "listed-companies", label: "Börsennotierte Unternehmen", path: "aktien.html", aliases: ["stocks"] },
@@ -347,6 +348,19 @@
     return false;
   }
 
+  function getSubmenuTitleSection(item) {
+    if (!Array.isArray(item?.sections) || !item.sections.length) {
+      return null;
+    }
+
+    const explicitMatch = normalizeText(item.submenuTitleSectionKey);
+    if (explicitMatch) {
+      return item.sections.find((section) => section.key === explicitMatch) || null;
+    }
+
+    return null;
+  }
+
   function navItemMarkup(basePath, activeNav, item) {
     if (Array.isArray(item.sections) && item.sections.length) {
       const activeClass = isNavActive(activeNav, item) ? " active" : "";
@@ -373,9 +387,8 @@
     const navRoot = document.querySelector(".main-nav");
     const panel = document.querySelector("#main-nav-submenu-panel");
     const panelTitle = panel?.querySelector("[data-submenu-title]");
-    const panelMeta = panel?.querySelector("[data-submenu-meta]");
     const panelList = panel?.querySelector("[data-submenu-list]");
-    if (!navRoot || !navWrap || !panel || !panelTitle || !panelMeta || !panelList) {
+    if (!navRoot || !navWrap || !panel || !panelTitle || !panelList) {
       return;
     }
 
@@ -439,8 +452,7 @@
       navWrap.classList.remove("submenu-open");
       panel.hidden = true;
       panel.setAttribute("aria-hidden", "true");
-      panelTitle.textContent = "";
-      panelMeta.textContent = "";
+      panelTitle.innerHTML = "";
       panelList.innerHTML = "";
       setExpandedState("");
 
@@ -453,10 +465,18 @@
     };
 
     const renderPanelContent = (item) => {
-      const sectionCount = item.sections.length;
-      panelTitle.textContent = item.label;
-      panelMeta.textContent = `${sectionCount} ${sectionCount === 1 ? "Bereich" : "Bereiche"}`;
-      panelList.innerHTML = item.sections.map((section) => {
+      const titleSection = getSubmenuTitleSection(item);
+      if (titleSection) {
+        const titleActiveClass = isSectionActive(activeNav, titleSection) ? " active" : "";
+        const titleKeyAttr = ` data-nav-key="${escapeHtml(titleSection.key)}"`;
+        panelTitle.innerHTML = `<a class="nav-submenu-title-link${titleActiveClass}"${titleKeyAttr} href="${href(basePath, titleSection.path)}">${escapeHtml(item.label)}</a>`;
+      } else {
+        panelTitle.textContent = item.label;
+      }
+
+      panelList.innerHTML = item.sections.filter((section) => {
+        return !titleSection || section.key !== titleSection.key;
+      }).map((section) => {
         const sectionActiveClass = isSectionActive(activeNav, section) ? " class=\"active\"" : "";
         const sectionKeyAttr = ` data-nav-key="${escapeHtml(section.key)}"`;
         return `<li class="nav-submenu-item"><a${sectionActiveClass}${sectionKeyAttr} href="${href(basePath, section.path)}">${section.label}</a></li>`;
@@ -628,10 +648,8 @@
       <div id="main-nav-submenu-panel" class="nav-submenu-panel" hidden aria-hidden="true">
         <div class="nav-submenu-head">
           <div class="nav-submenu-head-copy">
-            <p class="nav-submenu-eyebrow">Bereich</p>
             <p class="nav-submenu-title" data-submenu-title></p>
           </div>
-          <p class="nav-submenu-meta" data-submenu-meta></p>
         </div>
         <div class="nav-submenu-body">
           <ul class="nav-submenu-list" data-submenu-list></ul>
