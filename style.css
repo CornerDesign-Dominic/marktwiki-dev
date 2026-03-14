@@ -786,14 +786,12 @@ p {
   border-color: var(--link);
 }
 
-.topic-card,
 .topic-card {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
 }
 
-.topic-card p,
 .topic-card p {
   color: var(--text-secondary);
   margin-bottom: 0;
