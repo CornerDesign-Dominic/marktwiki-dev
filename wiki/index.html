@@ -7,6 +7,7 @@
   <meta name="description" content="Artikelbasiertes Wirtschafts-Wiki im MarktWiki.">
   <link rel="stylesheet" href="../assets/css/style.css">
   <script src="../assets/js/layout.js"></script>
+  <script src="../assets/js/wiki-overview.js" defer></script>
 </head>
 <body data-base-path=".." data-nav="wiki">
   <script>window.MarktWikiLayout.injectHeader();</script>
@@ -14,29 +15,29 @@
     <div class="container">
       <section class="page-head-compact" aria-label="Seitenkopf">
         <a class="back-link" href="../index.html">&larr; Zur Startseite</a>
-        <h1>Hauptkategorien</h1>
+        <h1>Wiki</h1>
       </section>
-      <section class="section-space" aria-labelledby="wiki-kategorien-heading">
-        <div class="section-head">
-          <h2 id="wiki-kategorien-heading">Kategorien</h2>
+
+      <section class="section-space wiki-overview-shell" aria-labelledby="wiki-overview-heading">
+        <div class="section-head wiki-overview-head">
+          <div>
+            <h2 id="wiki-overview-heading">Wiki-Uebersicht</h2>
+            <p class="muted wiki-overview-intro">Hauptkategorien, Unterkategorien und Artikel auf einer Seite.</p>
+          </div>
+          <button type="button" class="btn wiki-overview-collapse" data-collapse-all>Alle einklappen</button>
         </div>
-        <ul class="wiki-list-main" aria-label="Hauptkategorien">
-          <li>
-            <a class="category-link-card" href="./kategorie-buchfuehrung.html">
-              <span class="category-card-title">Buchfuehrung</span>
-              <span class="category-card-description">Grundlagen der laufenden Buchhaltung.</span>
-            </a>
-          </li>
-          <li>
-            <a class="category-link-card" href="./kategorie-rechnungswesen.html">
-              <span class="category-card-title">Rechnungswesen</span>
-              <span class="category-card-description">Jahresabschluss, Bilanz und Kennzahlen.</span>
-            </a>
-          </li>
-        </ul>
+
+        <div class="wiki-tree" data-wiki-tree aria-live="polite">
+          <p class="muted">Wiki-Uebersicht wird geladen...</p>
+        </div>
       </section>
     </div>
   </main>
+
+  <button type="button" class="wiki-back-to-top" data-back-to-top aria-label="Nach oben scrollen" title="Nach oben">
+    <span class="wiki-back-to-top-icon" aria-hidden="true"></span>
+  </button>
+
   <script>window.MarktWikiLayout.injectFooter();</script>
 </body>
 </html>

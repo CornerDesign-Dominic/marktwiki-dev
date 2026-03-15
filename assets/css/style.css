@@ -794,6 +794,181 @@ p {
   border-color: var(--link);
 }
 
+.wiki-overview-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.85rem;
+}
+
+.wiki-overview-head h2 {
+  margin-bottom: 0.2rem;
+}
+
+.wiki-overview-intro {
+  margin: 0;
+}
+
+.wiki-overview-collapse {
+  flex: 0 0 auto;
+  min-height: 2.45rem;
+  border-color: var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+}
+
+.wiki-overview-collapse:hover,
+.wiki-overview-collapse:focus-visible {
+  background: var(--bg-secondary);
+  color: var(--text);
+}
+
+.wiki-tree-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.wiki-tree-item {
+  min-width: 0;
+}
+
+.wiki-tree-panel {
+  margin-top: 0.7rem;
+}
+
+.wiki-tree-list-subcategories {
+  margin-left: 1.15rem;
+}
+
+.wiki-tree-list-articles {
+  margin-left: 2.3rem;
+}
+
+button.category-link-card.wiki-tree-card {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.wiki-tree-card {
+  position: relative;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.wiki-tree-card-copy {
+  min-width: 0;
+  display: grid;
+  gap: 0.15rem;
+  flex: 1 1 auto;
+}
+
+.wiki-tree-card-toggle {
+  flex-direction: row;
+}
+
+.wiki-tree-chevron {
+  flex: 0 0 auto;
+  width: 0.72rem;
+  height: 0.72rem;
+  margin-top: 0.1rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  color: var(--text-secondary);
+  transform: rotate(45deg);
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.wiki-tree-card-toggle:hover .wiki-tree-chevron,
+.wiki-tree-card-toggle:focus-visible .wiki-tree-chevron,
+.wiki-tree-card-toggle.is-open .wiki-tree-chevron {
+  color: var(--text);
+}
+
+.wiki-tree-card-toggle.is-open .wiki-tree-chevron {
+  transform: rotate(225deg);
+}
+
+.wiki-tree-card-subcategory {
+  background: color-mix(in srgb, var(--surface) 84%, var(--bg-secondary) 16%);
+}
+
+.wiki-tree-card-article {
+  min-height: 0;
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+}
+
+.wiki-tree-article-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.wiki-tree-article-title {
+  flex: 0 1 auto;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiki-tree-article-description {
+  flex: 1 1 auto;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wiki-back-to-top {
+  position: fixed;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  z-index: 12;
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg-secondary) 84%, var(--surface) 16%);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-floating);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+}
+
+.wiki-back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.wiki-back-to-top:hover,
+.wiki-back-to-top:focus-visible {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.wiki-back-to-top-icon {
+  display: inline-block;
+  width: 0.82rem;
+  height: 0.82rem;
+  border-top: 2px solid currentColor;
+  border-left: 2px solid currentColor;
+  transform: rotate(45deg) translate(2px, 2px);
+}
+
 .topic-card {
   display: flex;
   flex-direction: column;
@@ -3384,6 +3559,31 @@ input[type="number"] {
 
   .category-link-card {
     padding: 0.85rem 0.9rem;
+  }
+
+  .wiki-overview-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .wiki-overview-collapse {
+    width: 100%;
+  }
+
+  .wiki-tree-list-subcategories {
+    margin-left: 0.8rem;
+  }
+
+  .wiki-tree-list-articles {
+    margin-left: 1.45rem;
+  }
+
+  .wiki-tree-article-row {
+    gap: 0.65rem;
+  }
+
+  .wiki-tree-article-title {
+    max-width: 46%;
   }
 
   .nav-wrap {
