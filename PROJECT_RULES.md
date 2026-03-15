@@ -42,6 +42,7 @@ Diese Datei enthaelt nur projektweite Regeln. Alles, was speziell Schreibstil, A
 - Neue Seiten sollen sich in Navigation, Abstandssystem, Kartenoptik, Typografie und Interaktionslogik in das bestehende Projekt einfuegen.
 - Header, Footer, Suchlogik, Theme-Umschaltung und Hauptnavigation werden zentral ueber `assets/js/layout.js` gesteuert und nicht seitenweise neu erfunden.
 - Gemeinsame Komponenten und Klassen aus `assets/css/style.css` sollen bevorzugt wiederverwendet werden.
+- Inhaltsverzeichnisse werden wie bei den bestehenden Wiki-Artikelseiten und Detailseiten links an den Hauptcontent angehaengt; sie duerfen nicht innerhalb der Content-Spalte liegen und die nutzbare Content-Breite nicht verkleinern.
 - Karten, Listen und Detailbereiche sollen sich an den aktuell genutzten Mustern orientieren, zum Beispiel:
   - `category-link-card` und `article-card-list` fuer Wiki-Uebersichten
   - `topic-card` fuer einfache Einstiegs- oder Tool-Karten
