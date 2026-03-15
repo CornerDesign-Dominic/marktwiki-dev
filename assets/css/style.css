@@ -811,6 +811,22 @@ p {
 
 .wiki-overview-shell {
   margin-top: 0;
+  min-width: 0;
+}
+
+.wiki-overview-layout {
+  display: grid;
+  grid-template-columns: 190px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.wiki-overview-toc {
+  float: none;
+  width: 190px;
+  margin-left: 0;
+  margin-right: 0;
+  height: fit-content;
 }
 
 .wiki-overview-collapse {
@@ -837,6 +853,7 @@ p {
 
 .wiki-tree-item {
   min-width: 0;
+  display: block;
 }
 
 .wiki-tree-panel {
@@ -877,6 +894,8 @@ button.category-link-card.wiki-tree-card {
 
 .wiki-tree-card {
   position: relative;
+  height: auto;
+  min-height: 0;
   align-items: center;
   gap: 0.85rem;
   min-width: 0;
@@ -891,6 +910,7 @@ button.category-link-card.wiki-tree-card {
 
 .wiki-tree-card-toggle {
   flex-direction: row;
+  height: auto;
   min-height: 0;
   padding-top: 0.82rem;
   padding-bottom: 0.82rem;
@@ -3601,6 +3621,10 @@ input[type="number"] {
     margin-top: 1rem;
   }
 
+  .wiki-overview-layout {
+    display: block;
+  }
+
   .wiki-overview-collapse {
     width: 100%;
   }
@@ -3986,6 +4010,10 @@ input[type="number"] {
 @media (max-width: 1200px) {
   .article-toc {
     display: none;
+  }
+
+  .wiki-overview-layout {
+    display: block;
   }
 }
 
