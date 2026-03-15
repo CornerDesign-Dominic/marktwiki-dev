@@ -46,13 +46,15 @@ Die Standardreihenfolge fuer Wiki-Fachartikel lautet:
 1. Titel
 2. Kurzdefinition / Einstieg
 3. Definition
-4. Einordnung
-5. Erklaerung
+4. Erklaerung
+5. Einordnung
 6. Beispiel
-7. Praxisbezug
-8. Abgrenzung
+7. Abgrenzung
+8. Praxisbezug
 9. Zusammenfassung
-10. Aehnliche Themen
+10. Verwendete Begriffe
+11. Aehnliche Themen
+12. Verwendete Quellen
 
 ## 6. Was ist Pflicht, was optional
 
@@ -69,7 +71,9 @@ Optional bei echtem Mehrwert:
 - Definition
 - Beispiel
 - Abgrenzung
+- Verwendete Begriffe
 - Aehnliche Themen
+- Verwendete Quellen
 
 Wenn ein optionaler Abschnitt fachlich keinen Nutzen bringt, wird er weggelassen statt kuenstlich gefuellt.
 
@@ -121,6 +125,18 @@ Wenn ein optionaler Abschnitt fachlich keinen Nutzen bringt, wird er weggelassen
 - nur auf vorhandene, intern passende Seiten verlinken
 - keine leeren, toten oder erfundenen Links
 
+### Verwendete Begriffe
+
+- nur anlegen, wenn im Artikel tatsaechlich passende interne Begriffe oder Themen referenziert werden koennen
+- nur auf vorhandene interne Seiten verlinken
+- keine erfundenen Begriffe oder Platzhalterlisten
+
+### Verwendete Quellen
+
+- nur anlegen, wenn reale Quellen fuer den Artikel vorliegen
+- keine Dummy-Quellen, keine Platzhalter und keine erfundenen Angaben
+- wenn keine Quellen vorhanden sind, entfaellt die gesamte Quellen-Card
+
 ## 8. Struktur- und Layoutstandard fuer Wiki-Artikel
 
 Fuer dateibasierte Wiki-Artikel unter `wiki/` gelten diese technischen Strukturvorgaben:
@@ -131,15 +147,20 @@ Fuer dateibasierte Wiki-Artikel unter `wiki/` gelten diese technischen Strukturv
 
 Verbindlich fuer den Wiki-Artikelstandard:
 
-- H1 als Seitentitel
-- Lead direkt unter dem Titel
+- H1 als Seitentitel in Card 1
+- Lead direkt unter dem Titel in Card 1
 - H2-Abschnitte in der oben definierten Reihenfolge
-- Blockstruktur:
-  - `article-block article-block-foundation`
-  - `article-block article-block-application`
-  - `article-block article-block-summary`
-  - `article-block article-block-related`
+- verbindliche Card-Struktur:
+  - Card 1: Titel + Lead
+  - Card 2: Definition + Erklaerung + Einordnung
+  - Card 3: Beispiel + Abgrenzung + Praxisbezug
+  - Card 4: Zusammenfassung
+  - Card 5: Verwendete Begriffe + Aehnliche Themen
+  - Card 6: Verwendete Quellen
+- technisch ueber `section.card.wiki-article-card` strukturieren
+- Cards 5 und 6 sowie einzelne optionale Sektionen nur rendern, wenn dort tatsaechlich Inhalte vorhanden sind
 - vorhandene H2-IDs so setzen, dass TOC und Anker sauber funktionieren
+- die Struktur muss mit `assets/js/layout.js` und `assets/css/style.css` kompatibel bleiben
 
 ## 9. Definition-Box und TOC
 

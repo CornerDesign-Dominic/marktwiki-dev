@@ -60,6 +60,7 @@ Diese Datei enthaelt nur projektweite Regeln. Alles, was speziell Schreibstil, A
 - `README.md` beschreibt das Gesamtprojekt und verweist auf die relevanten Regeldateien.
 - `PROJECT_RULES.md` regelt das Projekt allgemein.
 - `ARTICLE_RULES.md` ist die einzige zentrale Regelquelle fuer Wiki- und Artikelinhalte.
+- Fuer dateibasierte Wiki-Fachartikel unter `wiki/` ist die in `ARTICLE_RULES.md` definierte Card-Struktur verbindlich; `wiki/_template.html` und `wiki/inventar.html` bilden dafuer die operative Referenz.
 - `CONTENT_RULES.md` und `KONVENTIONEN.md` bleiben nur als schlanke Verweise bestehen, solange externe oder alte Links auf sie zeigen koennten.
 - `CHANGELOG.md` bleibt die Historie; bestehende Eintraege nicht rueckwirkend umformulieren.
 

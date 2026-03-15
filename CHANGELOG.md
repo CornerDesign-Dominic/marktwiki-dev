@@ -1,5 +1,13 @@
 ﻿# MarktWiki Changelog
 
+## Version 0.55
+
+- Verbindlichen Card-Aufbau fuer Wiki-Fachartikel als neuen Standard festgelegt: Intro, Wissensbasis, Anwendung und Differenzierung, Zusammenfassung, Begriffsnetz und optional Quellen.
+- Alle bestehenden dateibasierten Wiki-Fachartikel unter `wiki/` auf die neue Card-Struktur von `wiki/inventar.html` umgestellt, ohne Inhalte, H2-IDs oder Ankerlogik zu aendern.
+- `wiki/_template.html`, `ARTICLE_RULES.md` und `PROJECT_RULES.md` so aktualisiert, dass neue Artikel denselben Aufbau verbindlich uebernehmen.
+
+---
+
 ## Version 0.52
 
 - Gemeinsames Header-Untermenue in `layout.js` beim bisherigen Single-Panel belassen, aber um festen Kopfbereich mit Bereichszaehler und inhaltsabhaengige Spaltenlogik erweitert.
