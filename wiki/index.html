@@ -18,19 +18,28 @@
         <h1>Wiki</h1>
       </section>
 
-      <section class="section-space wiki-overview-shell" aria-labelledby="wiki-overview-heading">
-        <div class="section-head wiki-overview-head">
-          <div>
-            <h2 id="wiki-overview-heading">Wiki-Uebersicht</h2>
-            <p class="muted wiki-overview-intro">Hauptkategorien, Unterkategorien und Artikel auf einer Seite.</p>
-          </div>
-          <button type="button" class="btn wiki-overview-collapse" data-collapse-all>Alle einklappen</button>
-        </div>
+      <div class="article-with-toc wiki-overview-layout">
+        <section class="article-toc wiki-overview-toc" aria-label="Inhaltsnavigation">
+          <h3>Inhalt</h3>
+          <ul data-wiki-toc-list>
+            <li><span class="muted">Wiki-Uebersicht wird geladen...</span></li>
+          </ul>
+        </section>
 
-        <div class="wiki-tree" data-wiki-tree aria-live="polite">
-          <p class="muted">Wiki-Uebersicht wird geladen...</p>
-        </div>
-      </section>
+        <section class="section-space wiki-overview-shell" aria-labelledby="wiki-overview-heading">
+          <div class="section-head wiki-overview-head">
+            <div>
+              <h2 id="wiki-overview-heading">Wiki-Uebersicht</h2>
+              <p class="muted wiki-overview-intro">Hauptkategorien, Unterkategorien und Artikel auf einer Seite.</p>
+            </div>
+            <button type="button" class="btn wiki-overview-collapse" data-collapse-all>Alle einklappen</button>
+          </div>
+
+          <div class="wiki-tree" data-wiki-tree aria-live="polite">
+            <p class="muted">Wiki-Uebersicht wird geladen...</p>
+          </div>
+        </section>
+      </div>
     </div>
   </main>
 

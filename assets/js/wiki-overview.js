@@ -93,8 +93,9 @@
   function renderArticleCards(basePath, articles) {
     return articles.map((article) => {
       const articleHref = href(basePath, String(article.artikelPfad || "").replace(/^\.?\//, ""));
+      const articleId = `wiki-anchor-article-${escapeHtml(article.id)}`;
       return `<li class="wiki-tree-item wiki-tree-item-article">
-        <a class="category-link-card wiki-tree-card wiki-tree-card-article" href="${escapeHtml(articleHref)}">
+        <a class="category-link-card wiki-tree-card wiki-tree-card-article" id="${articleId}" href="${escapeHtml(articleHref)}">
           <span class="wiki-tree-article-row">
             <span class="wiki-tree-article-title">${escapeHtml(article.titel)}</span>
             <span class="wiki-tree-article-description">${escapeHtml(article.beschreibung || "")}</span>
@@ -107,8 +108,9 @@
   function renderSubcategoryCards(basePath, category) {
     return category.subcategories.map((subcategory) => {
       const panelId = `wiki-subcategory-${escapeHtml(subcategory.id)}`;
+      const buttonId = `wiki-anchor-subcategory-${escapeHtml(subcategory.id)}`;
       return `<li class="wiki-tree-item wiki-tree-item-subcategory">
-        <button type="button" class="category-link-card wiki-tree-card wiki-tree-card-toggle wiki-tree-card-subcategory" data-tree-toggle aria-expanded="false" aria-controls="${panelId}">
+        <button type="button" class="category-link-card wiki-tree-card wiki-tree-card-toggle wiki-tree-card-subcategory" id="${buttonId}" data-tree-toggle aria-expanded="false" aria-controls="${panelId}">
           <span class="wiki-tree-card-copy">
             <span class="category-card-title">${escapeHtml(subcategory.titel)}</span>
             <span class="category-card-description">${escapeHtml(subcategory.beschreibung)}</span>
@@ -128,8 +130,9 @@
     return `<ul class="wiki-tree-list wiki-tree-list-categories" aria-label="Wiki-Hauptkategorien">
       ${tree.map((category) => {
         const panelId = `wiki-category-${escapeHtml(category.id)}`;
+        const buttonId = `wiki-anchor-category-${escapeHtml(category.id)}`;
         return `<li class="wiki-tree-item wiki-tree-item-category">
-          <button type="button" class="category-link-card wiki-tree-card wiki-tree-card-toggle wiki-tree-card-category" data-tree-toggle aria-expanded="false" aria-controls="${panelId}">
+          <button type="button" class="category-link-card wiki-tree-card wiki-tree-card-toggle wiki-tree-card-category" id="${buttonId}" data-tree-toggle aria-expanded="false" aria-controls="${panelId}">
             <span class="wiki-tree-card-copy">
               <span class="category-card-title">${escapeHtml(category.titel)}</span>
               <span class="category-card-description">${escapeHtml(category.beschreibung || "")}</span>
@@ -146,7 +149,62 @@
     </ul>`;
   }
 
-  function initCollapseControls(root) {
+  function renderTocItems(items) {
+    return items.map((item) => {
+      return `<li><a class="wiki-overview-toc-link depth-${item.depth}" href="#${escapeHtml(item.id)}">${escapeHtml(item.label)}</a></li>`;
+    }).join("");
+  }
+
+  function updateTableOfContents(root, tocList) {
+    if (!tocList) {
+      return;
+    }
+
+    const items = [];
+    const categoryButtons = Array.from(root.querySelectorAll(".wiki-tree-item-category > [data-tree-toggle]"));
+
+    categoryButtons.forEach((categoryButton) => {
+      items.push({
+        id: categoryButton.id,
+        label: categoryButton.querySelector(".category-card-title")?.textContent || "",
+        depth: 0
+      });
+
+      const categoryPanelId = categoryButton.getAttribute("aria-controls");
+      const categoryPanel = categoryPanelId ? document.getElementById(categoryPanelId) : null;
+      if (!categoryPanel || categoryPanel.hidden) {
+        return;
+      }
+
+      const subcategoryButtons = Array.from(categoryPanel.querySelectorAll(".wiki-tree-item-subcategory > [data-tree-toggle]"));
+      subcategoryButtons.forEach((subcategoryButton) => {
+        items.push({
+          id: subcategoryButton.id,
+          label: subcategoryButton.querySelector(".category-card-title")?.textContent || "",
+          depth: 1
+        });
+
+        const subcategoryPanelId = subcategoryButton.getAttribute("aria-controls");
+        const subcategoryPanel = subcategoryPanelId ? document.getElementById(subcategoryPanelId) : null;
+        if (!subcategoryPanel || subcategoryPanel.hidden) {
+          return;
+        }
+
+        const articleLinks = Array.from(subcategoryPanel.querySelectorAll(".wiki-tree-item-article > a"));
+        articleLinks.forEach((articleLink) => {
+          items.push({
+            id: articleLink.id,
+            label: articleLink.querySelector(".wiki-tree-article-title")?.textContent || "",
+            depth: 2
+          });
+        });
+      });
+    });
+
+    tocList.innerHTML = renderTocItems(items);
+  }
+
+  function initCollapseControls(root, tocList) {
     const toggles = Array.from(root.querySelectorAll("[data-tree-toggle]"));
     toggles.forEach((toggle) => {
       toggle.addEventListener("click", () => {
@@ -160,6 +218,7 @@
         toggle.setAttribute("aria-expanded", isExpanded ? "false" : "true");
         toggle.classList.toggle("is-open", !isExpanded);
         panel.hidden = isExpanded;
+        updateTableOfContents(root, tocList);
       });
     });
 
@@ -178,6 +237,7 @@
           panel.hidden = true;
         }
       });
+      updateTableOfContents(root, tocList);
     });
   }
 
@@ -201,6 +261,7 @@
 
   async function initWikiOverview() {
     const root = document.querySelector("[data-wiki-tree]");
+    const tocList = document.querySelector("[data-wiki-toc-list]");
     if (!root) {
       return;
     }
@@ -224,10 +285,14 @@
 
       const tree = buildTree(categories, topics);
       root.innerHTML = renderTree(basePath, tree);
-      initCollapseControls(root);
+      initCollapseControls(root, tocList);
+      updateTableOfContents(root, tocList);
       initBackToTop();
     } catch (error) {
       root.innerHTML = '<p class="muted">Die Wiki-Uebersicht konnte gerade nicht geladen werden.</p>';
+      if (tocList) {
+        tocList.innerHTML = '<li><span class="muted">Inhalt konnte nicht geladen werden.</span></li>';
+      }
       initBackToTop();
       console.error(error);
     }
