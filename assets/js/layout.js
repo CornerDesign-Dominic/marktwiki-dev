@@ -197,23 +197,6 @@
     return normalizeText(sections[0]?.text || "");
   }
 
-  function isTemplatedTopic(topic) {
-    const title = normalizeText(topic?.titel);
-    const subcategory = normalizeText(topic?.unterkategorie);
-    const intro = normalizeText(topic?.inhalt?.einleitung);
-    const sections = Array.isArray(topic?.inhalt?.abschnitte) ? topic.inhalt.abschnitte : [];
-    const firstSection = sections[0] || null;
-
-    return Boolean(
-      title
-      && subcategory
-      && intro === `Der Begriff ${title} ist ein grundlegendes Thema aus dem Bereich ${subcategory}.`
-      && sections.length === 1
-      && normalizeText(firstSection?.titel) === "Definition"
-      && normalizeText(firstSection?.text)
-    );
-  }
-
   function buildSearchIndex(basePath, topics) {
     const topicEntries = topics.map((topic) => {
       const title = normalizeText(topic.titel);
@@ -227,8 +210,7 @@
         intro,
         definition,
         href: resolveTopicHref(topic, basePath),
-        searchable,
-        isTestData: isTemplatedTopic(topic)
+        searchable
       };
     });
     return topicEntries;
@@ -274,7 +256,7 @@
       const snippetSource = entry.intro || entry.definition;
       const snippet = shorten(snippetSource || entry.definition, 160);
 
-      return `<a class="search-result-item${entry.isTestData ? " test-data" : ""}" href="${entry.href}">
+      return `<a class="search-result-item" href="${entry.href}">
         <span class="search-result-title">${escapeHtml(entry.title)}</span>
         <span class="search-result-meta">${escapeHtml(entry.type)}</span>
         <span class="search-result-snippet">${escapeHtml(snippet)}</span>

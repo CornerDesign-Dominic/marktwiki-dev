@@ -182,30 +182,6 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function isTemplatedTopic(topic) {
-    const title = normalizeText(topic?.titel);
-    const subcategory = normalizeText(topic?.unterkategorie);
-    const intro = normalizeText(topic?.inhalt?.einleitung);
-    const sections = Array.isArray(topic?.inhalt?.abschnitte) ? topic.inhalt.abschnitte : [];
-    const firstSection = sections[0] || null;
-
-    return Boolean(
-      title
-      && subcategory
-      && intro === `Der Begriff ${title} ist ein grundlegendes Thema aus dem Bereich ${subcategory}.`
-      && sections.length === 1
-      && normalizeText(firstSection?.titel) === "Definition"
-      && normalizeText(firstSection?.text)
-    );
-  }
-
-  function markTestData(element, shouldMark) {
-    if (element instanceof Element && shouldMark) {
-      element.classList.add("test-data");
-    }
-    return element;
-  }
-
   function normalizeCountryCode(value) {
     const normalized = normalizeText(value).toUpperCase();
     return /^[A-Z]{2}$/.test(normalized) ? normalized : "";
@@ -3703,7 +3679,7 @@
     actions.appendChild(createButtonLink(resolveTopicHref(topic), "Artikel lesen"));
 
     card.append(title, desc, badgeRow, actions);
-    return markTestData(card, isTemplatedTopic(topic));
+    return card;
   }
 
   async function initTopics() {
@@ -3816,8 +3792,6 @@
     clearAndSetText("#thema-titel", topic.titel);
     clearAndSetText("#thema-meta", `${topic.kategorie} / ${topic.unterkategorie}`);
     clearAndSetText("#thema-einleitung", getTopicIntro(topic));
-    const isTestData = isTemplatedTopic(topic);
-    markTestData(article, isTestData);
 
     const sectionContainer = document.querySelector("#thema-abschnitte");
     if (sectionContainer) {
@@ -3834,7 +3808,6 @@
         const paragraph = document.createElement("p");
         paragraph.textContent = normalizeText(section.text);
 
-        markTestData(block, isTestData);
         block.append(heading, paragraph);
         sectionContainer.appendChild(block);
       });

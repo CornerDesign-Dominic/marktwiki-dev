@@ -3918,30 +3918,3 @@ input[type="number"] {
   margin-left: 6px;
   border-radius: 4px;
 }
-
-tr.test-data > td {
-  background: #fff6bf;
-}
-
-tr.test-data > td:first-child {
-  border-left: 4px solid #f2c94c;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-}
-
-tr.test-data > td:last-child {
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-
-tr.test-data > td:last-child::after {
-  content: "Testdaten";
-  display: inline-block;
-  font-size: 0.7rem;
-  font-weight: 600;
-  color: #856404;
-  background: #fff3cd;
-  padding: 2px 6px;
-  margin-left: 6px;
-  border-radius: 4px;
-}

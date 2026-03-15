@@ -209,14 +209,6 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function isLocalQuoteTemplateSource(source) {
-    return normalizeText(source) === "Lokale JSON-Vorlage";
-  }
-
-  function getTestDataClass(isTestData) {
-    return isTestData ? " test-data" : "";
-  }
-
   function renderMessage(container, message, isError = false) {
     if (!container) {
       return;
@@ -225,7 +217,7 @@
     container.innerHTML = `<p class="status-message${isError ? " error" : ""}">${message}</p>`;
   }
 
-  function renderOverviewCard(categoryKey, items, displayCurrency, ratesData, source = "") {
+  function renderOverviewCard(categoryKey, items, displayCurrency, ratesData) {
     const config = CATEGORY_CONFIG[categoryKey];
     if (!config) {
       return "";
@@ -233,11 +225,10 @@
 
     const title = categoryKey === "waehrungen" ? "Waehrungen" : config.title;
     const compactItems = items.slice(0, 5);
-    const isTestData = isLocalQuoteTemplateSource(source);
     const rows = compactItems.map((item) => {
       const changeClass = getChangeClass(item.changePct);
 
-      return `<div class="quote-overview-row${getTestDataClass(isTestData)}">
+      return `<div class="quote-overview-row">
         <strong class="quote-overview-name">${normalizeText(item.name) || "k. A."}</strong>
         <span class="quote-overview-symbol">${normalizeText(item.symbol) || "-"}</span>
         <span class="quote-overview-value">${formatQuoteValue(item, "open", config.type, displayCurrency, ratesData)}</span>
@@ -246,7 +237,7 @@
       </div>`;
     }).join("");
 
-    return `<section class="card quote-overview-card${getTestDataClass(isTestData)}">
+    return `<section class="card quote-overview-card">
       <div class="quote-overview-card-head">
         <h2><a class="quote-overview-link" href="${href(config.page)}">${title}</a></h2>
       </div>
@@ -277,8 +268,7 @@
           const data = await loadJson(config.dataPath);
           return {
             categoryKey,
-            items: Array.isArray(data.items) ? data.items : [],
-            source: normalizeText(data.source)
+            items: Array.isArray(data.items) ? data.items : []
           };
         }))
       ]);
@@ -295,7 +285,7 @@
 
       const renderOverview = () => {
         container.innerHTML = entries.map((entry) => {
-          return renderOverviewCard(entry.categoryKey, entry.items, selectedCurrency, ratesData, entry.source);
+          return renderOverviewCard(entry.categoryKey, entry.items, selectedCurrency, ratesData);
         }).join("");
       };
 
@@ -315,7 +305,7 @@
     }
   }
 
-  function renderTableRows(items, config, isTestData = false) {
+  function renderTableRows(items, config) {
     if (!items.length) {
       return `<tr><td colspan="6"><p class="quote-empty-state">Keine Kurse fuer die aktuelle Auswahl gefunden.</p></td></tr>`;
     }
@@ -324,7 +314,7 @@
       const changeClass = getChangeClass(item.changePct);
       const instrumentMeta = [normalizeText(item.symbol), normalizeText(item.market)].filter(Boolean).join(" - ");
 
-      return `<tr class="${getTestDataClass(isTestData).trim()}">
+      return `<tr>
         <td>
           <div class="quote-instrument">
             <strong>${normalizeText(item.name) || "k. A."}</strong>
@@ -358,7 +348,6 @@
     try {
       const data = await loadJson(config.dataPath);
       const items = Array.isArray(data.items) ? data.items : [];
-      const isTestData = isLocalQuoteTemplateSource(data.source);
 
       const applyFilter = () => {
         const query = normalizeForSearch(searchInput?.value || "");
@@ -378,7 +367,7 @@
           return haystack.includes(query);
         });
 
-        tableBody.innerHTML = renderTableRows(filteredItems, config, isTestData);
+        tableBody.innerHTML = renderTableRows(filteredItems, config);
         resultCount.textContent = `${filteredItems.length} Kurse angezeigt.`;
       };
 
