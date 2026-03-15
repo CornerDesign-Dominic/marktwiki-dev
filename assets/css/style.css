@@ -814,18 +814,7 @@ p {
   min-width: 0;
 }
 
-.wiki-overview-layout {
-  display: grid;
-  grid-template-columns: 190px minmax(0, 1fr);
-  gap: 1rem;
-  align-items: start;
-}
-
 .wiki-overview-toc {
-  float: none;
-  width: 190px;
-  margin-left: 0;
-  margin-right: 0;
   height: fit-content;
 }
 
@@ -3622,10 +3611,6 @@ input[type="number"] {
     margin-top: 1rem;
   }
 
-  .wiki-overview-layout {
-    display: block;
-  }
-
   .wiki-overview-collapse {
     width: 100%;
   }
@@ -4013,9 +3998,6 @@ input[type="number"] {
     display: none;
   }
 
-  .wiki-overview-layout {
-    display: block;
-  }
 }
 
 @media (max-width: 1200px) {
