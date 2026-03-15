@@ -1,0 +1,12 @@
+{
+  "name": "marktwiki-dev",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build:wiki": "node scripts/build-wiki.js"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0"
+  }
+}

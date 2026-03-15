@@ -8,6 +8,7 @@ Diese Datei ist die zentrale Regelquelle fuer Wiki- und Artikelinhalte. Sie fass
 
 - Gilt fuer neue und ueberarbeitete Fachartikel im Wiki sowie fuer redaktionelle Artikelinhalte in vergleichbaren Projektbereichen.
 - Gilt nicht fuer rein technische Seiten, Rechtstexte, Tool-Formulare oder datengetriebene Markt-/Unternehmenslisten ohne klassischen Artikelcharakter.
+- Neue Wiki-Artikel werden redaktionell in Markdown gepflegt und technisch nach `wiki/` generiert.
 
 ## 2. Ziel und Zielgruppe
 
@@ -162,7 +163,83 @@ Verbindlich fuer den Wiki-Artikelstandard:
 - vorhandene H2-IDs so setzen, dass TOC und Anker sauber funktionieren
 - die Struktur muss mit `assets/js/layout.js` und `assets/css/style.css` kompatibel bleiben
 
-## 9. Definition-Box und TOC
+## 9. Autoren-Workflow fuer neue Wiki-Artikel
+
+Fuer neue Wiki-Artikel gilt der Markdown-Workflow:
+
+1. Markdown-Datei unter `content/wiki/` anlegen
+2. Einfache Felder wie `Titel:` und `Lead:` ausfuellen
+3. Listen bei Bedarf unter `Verwendete Begriffe:`, `Aehnliche Themen:` und `Quellen:` ergaenzen
+4. Datei committen und pushen
+5. `scripts/build-wiki.js` beziehungsweise die GitHub Action erzeugt daraus die fertige HTML-Seite und aktualisiert `data/wiki-structure.json`
+
+Bevorzugtes Autorenformat:
+
+```md
+Titel: Inventar
+Slug: inventar
+Kategorie: Rechnungswesen
+Unterkategorie: Laufende Buchfuehrung
+Kurzbeschreibung: Inventar als strukturierte Bestandsaufnahme eines Unternehmens.
+
+Lead: Das Inventar ist eine detaillierte Aufstellung aller Vermoegenswerte und Schulden eines Unternehmens.
+Definition: Inventar ist die vollstaendige Aufstellung aller Vermoegensgegenstaende und Schulden eines Unternehmens zu einem bestimmten Zeitpunkt.
+Erklaerung: Das Inventar entsteht aus der Inventur und bildet eine Grundlage fuer die Bilanz.
+Einordnung: Inventar gehoert zum Rechnungswesen und ist Teil des Jahresabschlusses.
+Beispiel: Ein Handelsunternehmen listet zum Jahresende Warenbestaende, Forderungen und Verbindlichkeiten auf.
+Praxisbezug: Unternehmen nutzen Inventare zur Dokumentation, Kontrolle und Vorbereitung des Abschlusses.
+Abgrenzung: Das Inventar ist ausfuehrlicher als die Bilanz und zeigt Einzelwerte statt Verdichtungen.
+Zusammenfassung: Das Inventar dokumentiert detailliert Vermoegen und Schulden und bildet eine wichtige Grundlage fuer die Bilanz.
+
+Verwendete Begriffe:
+- Inventur
+- Bilanz
+- Jahresabschluss
+
+Aehnliche Themen:
+- inventur
+- bilanz
+
+Quellen:
+- HGB §240
+```
+
+Pflichtfelder:
+
+- `Titel`
+- `Slug`
+- `Kategorie`
+- `Unterkategorie`
+- `Kurzbeschreibung`
+- `Lead`
+- `Erklaerung`
+- `Einordnung`
+- `Praxisbezug`
+- `Zusammenfassung`
+
+Optionale Felder:
+
+- `Definition`
+- `Beispiel`
+- `Abgrenzung`
+- `Verwendete Begriffe`
+- `Aehnliche Themen`
+- `Quellen`
+
+Technische Hinweise:
+
+- Quelle fuer neue Artikel: `content/wiki/<slug>.md`
+- Zielseite: `wiki/<slug>.html`
+- Strukturdatei fuer Markdown-Artikel: `data/wiki-structure.json`
+- Der Generator haelt sich am bestehenden Shell-Template `wiki/_template.html` fest.
+- Autoren muessen kein HTML, keine Card-Struktur und keine manuellen H2-IDs pflegen.
+- Kategorien und Unterkategorien werden fuer die Wiki-Struktur automatisch uebernommen.
+- Verwendete Begriffe und Aehnliche Themen werden automatisch als Listen gerendert und intern verlinkt, wenn passende Zielseiten gefunden werden.
+- Quellen werden automatisch als Quellenliste gerendert; URLs koennen direkt oder als `Text | URL` angegeben werden.
+- Vorhandene manuelle HTML-Artikel bleiben bestehen und werden nicht ueberschrieben.
+- Das bereits vorhandene Frontmatter-Format bleibt als Fallback weiter unterstuetzt.
+
+## 10. Definition-Box und TOC
 
 Wenn ein Definitionsabschnitt vorhanden ist, soll er mit der bestehenden Definition-Box-Struktur kompatibel bleiben:
 
@@ -177,11 +254,11 @@ Wenn ein Definitionsabschnitt vorhanden ist, soll er mit der bestehenden Definit
 - Die Inhaltsnavigation wird fuer passende Artikel aus den vorhandenen H2-IDs erzeugt.
 - Struktur, Klassen und Anker eines Wiki-Artikels muessen deshalb mit `assets/js/layout.js` und `assets/css/style.css` zusammenspielen.
 
-## 10. Ablageort und Dateibenennung
+## 11. Ablageort und Dateibenennung
 
-Fuer neue dateibasierte Wiki-Artikel gilt:
+Fuer neue Wiki-Artikel gilt redaktionell:
 
-- Ablage direkt unter `wiki/`
+- Ablage direkt unter `content/wiki/`
 - keine Unterordner fuer einzelne Kategorien
 - Dateiname entspricht dem URL-Slug
 - nur Kleinbuchstaben
@@ -190,18 +267,24 @@ Fuer neue dateibasierte Wiki-Artikel gilt:
 
 Beispiele:
 
+- `content/wiki/inventur.md`
+- `content/wiki/eigenkapitalquote.md`
+- `content/wiki/schlussbilanzkonto.md`
+
+Technisches Build-Ziel:
+
 - `wiki/inventur.html`
 - `wiki/eigenkapitalquote.html`
 - `wiki/schlussbilanzkonto.html`
 
-## 11. Interne Verlinkung
+## 12. Interne Verlinkung
 
 - Von Wiki-Uebersichten und Artikellisten mit relativen Links auf die Artikel verlinken
 - Von Artikeln zur Wiki-Uebersicht mit `./index.html` oder zur passenden Kategorie/Unterkategorie verlinken, wenn das der bessere Rueckweg ist
 - Innerhalb eines Artikels nur auf real vorhandene, inhaltlich sinnvolle Seiten verlinken
 - Verwandte Themen nicht aufblasen; wenige treffende Links sind besser als lange Sammellisten
 
-## 12. Bezug auf aktuelle Projektstandards
+## 13. Bezug auf aktuelle Projektstandards
 
 - Fuer den Textaufbau eines Wiki-Artikels sind `wiki/inventar.html` und `wiki/_template.html` die massgeblichen Referenzen.
 - Fuer allgemeine Projektlogik, Navigation, gemeinsame Karten- und Layoutmuster sind die aktuellen Root-Seiten, `pages/`-Detailseiten sowie `assets/js/layout.js`, `assets/css/style.css`, `assets/js/main.js` und `assets/js/markets.js` wichtiger als aeltere Wiki-Muster.

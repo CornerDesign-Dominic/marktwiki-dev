@@ -46,6 +46,60 @@
     return `Artikel zu ${titles[0]}, ${titles[1]} und ${titles.length - 2} weiteren Themen.`;
   }
 
+  function buildCategoryDescription(subcategories) {
+    if (!Array.isArray(subcategories) || !subcategories.length) {
+      return "Keine Unterkategorien vorhanden.";
+    }
+
+    if (subcategories.length === 1) {
+      return `1 Unterkategorie mit ${subcategories[0].artikel.length} Artikel(n).`;
+    }
+
+    return `${subcategories.length} Unterkategorien mit insgesamt ${subcategories.reduce((sum, entry) => sum + entry.artikel.length, 0)} Artikel(n).`;
+  }
+
+  function mergeUniqueBy(array, keyFn) {
+    const map = new Map();
+    array.forEach((item) => {
+      map.set(keyFn(item), item);
+    });
+    return Array.from(map.values());
+  }
+
+  function flattenGeneratedStructure(structure) {
+    const categories = [];
+    const topics = [];
+
+    Object.entries(structure || {}).forEach(([categoryTitle, subcategories]) => {
+      const categoryId = slugify(categoryTitle);
+      categories.push({
+        id: categoryId,
+        titel: categoryTitle,
+        beschreibung: ""
+      });
+
+      Object.entries(subcategories || {}).forEach(([subcategoryTitle, articles]) => {
+        articles.forEach((article) => {
+          const slug = String(article.slug || "").trim();
+          if (!slug) {
+            return;
+          }
+
+          topics.push({
+            id: slug,
+            titel: article.title,
+            kategorie: categoryTitle,
+            unterkategorie: subcategoryTitle,
+            beschreibung: article.description,
+            artikelPfad: `wiki/${slug}.html`
+          });
+        });
+      });
+    });
+
+    return { categories, topics };
+  }
+
   function buildTree(categories, topics) {
     const tree = categories.map((category) => ({
       ...category,
@@ -73,6 +127,7 @@
       }
 
       subcategory.artikel.push({
+        id: topic.id || slugify(topic.titel),
         titel: topic.titel,
         beschreibung: topic.beschreibung,
         artikelPfad: topic.artikelPfad
@@ -85,6 +140,9 @@
         subcategory.artikel.sort((left, right) => left.titel.localeCompare(right.titel, "de"));
         subcategory.beschreibung = buildSubcategoryDescription(subcategory.artikel);
       });
+      if (!category.beschreibung) {
+        category.beschreibung = buildCategoryDescription(category.subcategories);
+      }
     });
 
     return tree;
@@ -269,21 +327,33 @@
     const basePath = normalizeBasePath(document.body?.dataset.basePath || ".");
 
     try {
-      const [categoriesResponse, topicsResponse] = await Promise.all([
+      const [categoriesResponse, topicsResponse, structureResponse] = await Promise.all([
         fetch(href(basePath, "data/kategorien.json")),
-        fetch(href(basePath, "data/themen.json"))
+        fetch(href(basePath, "data/themen.json")),
+        fetch(href(basePath, "data/wiki-structure.json"))
       ]);
 
-      if (!categoriesResponse.ok || !topicsResponse.ok) {
+      if (!categoriesResponse.ok || !topicsResponse.ok || !structureResponse.ok) {
         throw new Error("Wiki-Daten konnten nicht geladen werden.");
       }
 
-      const [categories, topics] = await Promise.all([
+      const [categories, topics, wikiStructure] = await Promise.all([
         categoriesResponse.json(),
-        topicsResponse.json()
+        topicsResponse.json(),
+        structureResponse.json()
       ]);
 
-      const tree = buildTree(categories, topics);
+      const generated = flattenGeneratedStructure(wikiStructure);
+      const mergedCategories = mergeUniqueBy(
+        [...categories, ...generated.categories],
+        (entry) => String(entry.id || entry.titel || "").trim()
+      );
+      const mergedTopics = mergeUniqueBy(
+        [...topics, ...generated.topics],
+        (entry) => String(entry.id || entry.artikelPfad || "").trim()
+      );
+
+      const tree = buildTree(mergedCategories, mergedTopics);
       root.innerHTML = renderTree(basePath, tree);
       initCollapseControls(root, tocList);
       updateTableOfContents(root, tocList);

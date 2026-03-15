@@ -1,0 +1,53 @@
+name: Build wiki from Markdown
+
+on:
+  push:
+    paths:
+      - "content/wiki/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-wiki:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build wiki files
+        run: npm run build:wiki
+
+      - name: Check for generated changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- wiki data/wiki-structure.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit generated wiki files
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add wiki data/wiki-structure.json
+          git commit -m "chore: build wiki articles"
+
+      - name: Push changes
+        if: steps.changes.outputs.changed == 'true'
+        run: git push
