@@ -952,6 +952,7 @@ button.category-link-card.wiki-tree-card {
 
 .wiki-tree-card-article {
   min-height: 0;
+  padding-left: 0.72rem;
   padding-top: 0.8rem;
   padding-bottom: 0.8rem;
 }
