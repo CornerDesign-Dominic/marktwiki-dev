@@ -3893,3 +3893,21 @@ input[type="number"] {
     gap: 0.2rem;
   }
 }
+
+.test-data {
+  background: #fff6bf;
+  border-left: 4px solid #f2c94c;
+  border-radius: 6px;
+  padding: 6px 8px;
+}
+
+.test-data::after {
+  content: "Testdaten";
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #856404;
+  background: #fff3cd;
+  padding: 2px 6px;
+  margin-left: 6px;
+  border-radius: 4px;
+}

@@ -209,6 +209,14 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
+  function isLikelyTestData(...values) {
+    return values.some((value) => /\b(test|demo|beispiel|sample|mock|dummy)\b/i.test(normalizeForSearch(value)));
+  }
+
+  function getTestDataClass(...values) {
+    return isLikelyTestData(...values) ? " test-data" : "";
+  }
+
   function renderMessage(container, message, isError = false) {
     if (!container) {
       return;
@@ -227,8 +235,9 @@
     const compactItems = items.slice(0, 5);
     const rows = compactItems.map((item) => {
       const changeClass = getChangeClass(item.changePct);
+      const testDataClass = getTestDataClass(item?.name, item?.symbol, item?.market);
 
-      return `<div class="quote-overview-row">
+      return `<div class="quote-overview-row${testDataClass}">
         <strong class="quote-overview-name">${normalizeText(item.name) || "k. A."}</strong>
         <span class="quote-overview-symbol">${normalizeText(item.symbol) || "-"}</span>
         <span class="quote-overview-value">${formatQuoteValue(item, "open", config.type, displayCurrency, ratesData)}</span>
@@ -237,7 +246,7 @@
       </div>`;
     }).join("");
 
-    return `<section class="card quote-overview-card">
+    return `<section class="card quote-overview-card${getTestDataClass(config?.title, ...compactItems.flatMap((item) => [item?.name, item?.symbol]))}">
       <div class="quote-overview-card-head">
         <h2><a class="quote-overview-link" href="${href(config.page)}">${title}</a></h2>
       </div>
@@ -314,7 +323,7 @@
       const changeClass = getChangeClass(item.changePct);
       const instrumentMeta = [normalizeText(item.symbol), normalizeText(item.market)].filter(Boolean).join(" - ");
 
-      return `<tr>
+      return `<tr class="${getTestDataClass(item?.name, item?.symbol, item?.market).trim()}">
         <td>
           <div class="quote-instrument">
             <strong>${normalizeText(item.name) || "k. A."}</strong>

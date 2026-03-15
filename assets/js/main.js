@@ -182,6 +182,17 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
+  function isLikelyTestData(...values) {
+    return values.some((value) => /\b(test|demo|beispiel|sample|mock|dummy)\b/i.test(normalizeForMatch(value)));
+  }
+
+  function markTestData(element, ...values) {
+    if (element instanceof Element && isLikelyTestData(...values)) {
+      element.classList.add("test-data");
+    }
+    return element;
+  }
+
   function normalizeCountryCode(value) {
     const normalized = normalizeText(value).toUpperCase();
     return /^[A-Z]{2}$/.test(normalized) ? normalized : "";
@@ -1686,7 +1697,7 @@
     link.append(title, primary);
 
     card.append(link);
-    return card;
+    return markTestData(card, entry?.name, entry?.currencyCode, entry?.country, entry?.symbol);
   }
 
   function setExchangeBaseCurrencyToggleState(toggle, selectedCurrency) {
@@ -1941,6 +1952,13 @@
     }
     sectionC.append(sectionCTitle, history, predecessor, economy, factsHeadline, factList);
 
+    if (isLikelyTestData(profile?.name, profile?.code, profile?.symbol, profile?.overview, profile?.historicalBackground)) {
+      headerCard.classList.add("test-data");
+      sectionA.classList.add("test-data");
+      sectionB.classList.add("test-data");
+      sectionC.classList.add("test-data");
+    }
+
     container.append(backLink, headerCard, sectionA, sectionB, sectionC);
   }
 
@@ -2125,7 +2143,7 @@
     favoriteButton.classList.add("favorite-toggle-card");
     card.appendChild(favoriteButton);
 
-    return card;
+    return markTestData(card, company?.companyName, company?.symbol, company?.description, company?.ceo);
   }
 
   async function initStocks() {
@@ -3528,6 +3546,17 @@
       title: "Aehnliche Unternehmen"
     });
 
+    if (isLikelyTestData(company?.companyName, company?.symbol, company?.description, company?.exchangeFullName, company?.ceo)) {
+      header.classList.add("test-data");
+      summarySection.classList.add("test-data");
+      descriptionSection.classList.add("test-data");
+      metricsSection.classList.add("test-data");
+      analysisSection.classList.add("test-data");
+      if (similarSection instanceof Element) {
+        similarSection.classList.add("test-data");
+      }
+    }
+
     const contentColumn = document.createElement("div");
     contentColumn.className = "company-content-column";
     contentColumn.append(
@@ -3679,7 +3708,7 @@
     actions.appendChild(createButtonLink(resolveTopicHref(topic), "Artikel lesen"));
 
     card.append(title, desc, badgeRow, actions);
-    return card;
+    return markTestData(card, topic?.titel, topic?.beschreibung, topic?.kategorie, topic?.unterkategorie);
   }
 
   async function initTopics() {
@@ -3792,6 +3821,7 @@
     clearAndSetText("#thema-titel", topic.titel);
     clearAndSetText("#thema-meta", `${topic.kategorie} / ${topic.unterkategorie}`);
     clearAndSetText("#thema-einleitung", getTopicIntro(topic));
+    markTestData(article, topic?.titel, topic?.beschreibung, topic?.kategorie, topic?.unterkategorie);
 
     const sectionContainer = document.querySelector("#thema-abschnitte");
     if (sectionContainer) {
@@ -3808,6 +3838,7 @@
         const paragraph = document.createElement("p");
         paragraph.textContent = normalizeText(section.text);
 
+        markTestData(block, section?.titel, section?.text);
         block.append(heading, paragraph);
         sectionContainer.appendChild(block);
       });

@@ -125,6 +125,17 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
+  function isLikelyTestData(...values) {
+    return values.some((value) => /\b(test|demo|beispiel|sample|mock|dummy)\b/i.test(normalizeForSearch(value)));
+  }
+
+  function markTestData(element, ...values) {
+    if (element instanceof Element && isLikelyTestData(...values)) {
+      element.classList.add("test-data");
+    }
+    return element;
+  }
+
   function renderMessage(container, message, isError = false) {
     if (!container) {
       return;
@@ -407,7 +418,7 @@
     content.append(titleRow, valueRow, summary, facts);
     link.append(visual, content);
     article.appendChild(link);
-    return article;
+    return markTestData(article, item?.name, item?.summary, item?.symbol, item?.ticker, item?.code);
   }
 
   function createSection(title, contentNode, introText = "") {
@@ -524,6 +535,7 @@
         section.appendChild(intro);
       }
       section.appendChild(entry.kind === "pie" ? renderPieDistribution(entry) : renderAllocationBars(entry));
+      markTestData(section, entry?.title, entry?.intro);
       wrapper.appendChild(section);
     });
     return wrapper;
@@ -541,6 +553,7 @@
       }
       const li = document.createElement("li");
       li.textContent = text;
+      markTestData(li, text);
       list.appendChild(li);
     });
     return createSection(title, list);
@@ -842,6 +855,7 @@
 
     const detail = await loadJson(`${config.detailFolder}/${summary.file}`);
     shell.innerHTML = "";
+    markTestData(shell, detail?.name, detail?.summary, detail?.description, detail?.symbol, detail?.ticker, detail?.code);
 
     const backLink = document.createElement("a");
     backLink.className = "back-link";
@@ -909,6 +923,7 @@
       const title = document.createElement("h2");
       title.textContent = normalizeText(group.title) || "Details";
       card.append(title, createDl(group.items));
+      markTestData(card, group?.title, detail?.name, detail?.summary, detail?.description);
       factsWrapper.appendChild(card);
     });
 
