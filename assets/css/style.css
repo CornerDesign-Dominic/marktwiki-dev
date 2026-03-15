@@ -476,10 +476,12 @@ p {
 
 .wiki-article {
   margin: 0 auto;
+  display: grid;
+  gap: 1.25rem;
 }
 
 .wiki-article-header {
-  margin-bottom: 1.15rem;
+  margin-bottom: 0;
 }
 
 .wiki-article-header .lead {
@@ -493,7 +495,7 @@ p {
 }
 
 .wiki-article h2 {
-  margin-top: 40px;
+  margin-top: 0;
   margin-bottom: 10px;
   font-size: 1.45rem;
 }
@@ -501,13 +503,7 @@ p {
 .wiki-article .lead {
   color: var(--text-secondary);
   font-size: 1.1rem;
-  margin-bottom: 2rem;
-}
-
-.wiki-article section {
-  margin-top: 2rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--divider-soft);
+  margin-bottom: 0;
 }
 
 .wiki-article .link-list {
@@ -515,59 +511,71 @@ p {
   padding-left: 1.2rem;
 }
 
-.wiki-article .article-block {
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
+.wiki-article-card {
+  position: relative;
+  padding: 1.35rem 1.4rem;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--surface) 94%, #ffffff 6%), color-mix(in srgb, var(--surface) 98%, var(--bg) 2%));
+  box-shadow: 0 10px 22px rgba(2, 8, 23, 0.14);
 }
 
-.wiki-article .article-block + .article-block {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 3px solid var(--divider-strong);
+.wiki-article-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #ffffff 9%, transparent);
 }
 
-.wiki-article .article-block-foundation {
-  margin-top: 0.6rem;
-  padding-top: 0;
-}
-
-.wiki-article .article-block .lead {
-  margin-bottom: 1.2rem;
-}
-
-.wiki-article .article-block section {
+.wiki-article-card > section {
   margin-top: 0;
   padding-top: 0;
-  padding-bottom: 0.625rem;
+  padding-bottom: 0;
   border-top: 0;
 }
 
-.wiki-article .article-block section + section {
-  margin-top: 0;
-  padding-top: 0.625rem;
+.wiki-article-card > section + section {
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
   border-top: 1px solid var(--divider-soft);
 }
 
-.wiki-article .article-block section > :first-child {
+.wiki-article-card > section > :first-child {
   margin-top: 0;
 }
 
-.wiki-article .article-block section > :last-child {
+.wiki-article-card > section > :last-child {
   margin-bottom: 0;
 }
 
-.wiki-article .article-block section h2 {
+.wiki-article-card > section h2 {
   margin-top: 0;
-  margin-bottom: 0.45rem;
+  margin-bottom: 0.55rem;
 }
 
-.wiki-article .article-block section:last-child {
-  padding-bottom: 0;
+.wiki-article-card .link-list {
+  margin-bottom: 0;
 }
 
-.wiki-article .article-block .link-list {
+.wiki-article-card-intro {
+  padding-top: 1.45rem;
+  padding-bottom: 1.45rem;
+}
+
+.wiki-article-card-foundation {
+  border-color: color-mix(in srgb, var(--accent) 18%, var(--border));
+}
+
+.wiki-article-card-network .link-list,
+.wiki-article-card-sources .link-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.wiki-article-card-network .link-list li,
+.wiki-article-card-sources .link-list li {
   margin-bottom: 0;
 }
 
@@ -3713,19 +3721,18 @@ input[type="number"] {
     text-align: left;
   }
 
-  .wiki-article .article-block {
-    padding: 0;
+  .wiki-article {
+    gap: 1rem;
   }
 
-  .wiki-article .article-block-foundation {
-    margin-top: 0.55rem;
-    padding-top: 0;
+  .wiki-article-card {
+    padding: 1.05rem 1rem;
+    border-radius: 12px;
   }
 
-  .wiki-article .article-block + .article-block {
-    margin-top: 1.25rem;
-    padding-top: 1.25rem;
-    border-top: 3px solid var(--divider-strong);
+  .wiki-article-card > section + section {
+    margin-top: 0.95rem;
+    padding-top: 0.95rem;
   }
 
   .article-toc {
@@ -3903,6 +3910,33 @@ input[type="number"] {
 
 .test-data::after {
   content: "Testdaten";
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #856404;
+  background: #fff3cd;
+  padding: 2px 6px;
+  margin-left: 6px;
+  border-radius: 4px;
+}
+
+tr.test-data > td {
+  background: #fff6bf;
+}
+
+tr.test-data > td:first-child {
+  border-left: 4px solid #f2c94c;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+tr.test-data > td:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+tr.test-data > td:last-child::after {
+  content: "Testdaten";
+  display: inline-block;
   font-size: 0.7rem;
   font-weight: 600;
   color: #856404;

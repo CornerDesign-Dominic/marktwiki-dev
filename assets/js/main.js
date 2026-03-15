@@ -182,12 +182,25 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function isLikelyTestData(...values) {
-    return values.some((value) => /\b(test|demo|beispiel|sample|mock|dummy)\b/i.test(normalizeForMatch(value)));
+  function isTemplatedTopic(topic) {
+    const title = normalizeText(topic?.titel);
+    const subcategory = normalizeText(topic?.unterkategorie);
+    const intro = normalizeText(topic?.inhalt?.einleitung);
+    const sections = Array.isArray(topic?.inhalt?.abschnitte) ? topic.inhalt.abschnitte : [];
+    const firstSection = sections[0] || null;
+
+    return Boolean(
+      title
+      && subcategory
+      && intro === `Der Begriff ${title} ist ein grundlegendes Thema aus dem Bereich ${subcategory}.`
+      && sections.length === 1
+      && normalizeText(firstSection?.titel) === "Definition"
+      && normalizeText(firstSection?.text)
+    );
   }
 
-  function markTestData(element, ...values) {
-    if (element instanceof Element && isLikelyTestData(...values)) {
+  function markTestData(element, shouldMark) {
+    if (element instanceof Element && shouldMark) {
       element.classList.add("test-data");
     }
     return element;
@@ -1697,7 +1710,7 @@
     link.append(title, primary);
 
     card.append(link);
-    return markTestData(card, entry?.name, entry?.currencyCode, entry?.country, entry?.symbol);
+    return card;
   }
 
   function setExchangeBaseCurrencyToggleState(toggle, selectedCurrency) {
@@ -1952,13 +1965,6 @@
     }
     sectionC.append(sectionCTitle, history, predecessor, economy, factsHeadline, factList);
 
-    if (isLikelyTestData(profile?.name, profile?.code, profile?.symbol, profile?.overview, profile?.historicalBackground)) {
-      headerCard.classList.add("test-data");
-      sectionA.classList.add("test-data");
-      sectionB.classList.add("test-data");
-      sectionC.classList.add("test-data");
-    }
-
     container.append(backLink, headerCard, sectionA, sectionB, sectionC);
   }
 
@@ -2143,7 +2149,7 @@
     favoriteButton.classList.add("favorite-toggle-card");
     card.appendChild(favoriteButton);
 
-    return markTestData(card, company?.companyName, company?.symbol, company?.description, company?.ceo);
+    return card;
   }
 
   async function initStocks() {
@@ -3546,17 +3552,6 @@
       title: "Aehnliche Unternehmen"
     });
 
-    if (isLikelyTestData(company?.companyName, company?.symbol, company?.description, company?.exchangeFullName, company?.ceo)) {
-      header.classList.add("test-data");
-      summarySection.classList.add("test-data");
-      descriptionSection.classList.add("test-data");
-      metricsSection.classList.add("test-data");
-      analysisSection.classList.add("test-data");
-      if (similarSection instanceof Element) {
-        similarSection.classList.add("test-data");
-      }
-    }
-
     const contentColumn = document.createElement("div");
     contentColumn.className = "company-content-column";
     contentColumn.append(
@@ -3708,7 +3703,7 @@
     actions.appendChild(createButtonLink(resolveTopicHref(topic), "Artikel lesen"));
 
     card.append(title, desc, badgeRow, actions);
-    return markTestData(card, topic?.titel, topic?.beschreibung, topic?.kategorie, topic?.unterkategorie);
+    return markTestData(card, isTemplatedTopic(topic));
   }
 
   async function initTopics() {
@@ -3821,7 +3816,8 @@
     clearAndSetText("#thema-titel", topic.titel);
     clearAndSetText("#thema-meta", `${topic.kategorie} / ${topic.unterkategorie}`);
     clearAndSetText("#thema-einleitung", getTopicIntro(topic));
-    markTestData(article, topic?.titel, topic?.beschreibung, topic?.kategorie, topic?.unterkategorie);
+    const isTestData = isTemplatedTopic(topic);
+    markTestData(article, isTestData);
 
     const sectionContainer = document.querySelector("#thema-abschnitte");
     if (sectionContainer) {
@@ -3838,7 +3834,7 @@
         const paragraph = document.createElement("p");
         paragraph.textContent = normalizeText(section.text);
 
-        markTestData(block, section?.titel, section?.text);
+        markTestData(block, isTestData);
         block.append(heading, paragraph);
         sectionContainer.appendChild(block);
       });

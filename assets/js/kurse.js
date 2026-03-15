@@ -209,12 +209,12 @@
       .replace(/[\u0300-\u036f]/g, "");
   }
 
-  function isLikelyTestData(...values) {
-    return values.some((value) => /\b(test|demo|beispiel|sample|mock|dummy)\b/i.test(normalizeForSearch(value)));
+  function isLocalQuoteTemplateSource(source) {
+    return normalizeText(source) === "Lokale JSON-Vorlage";
   }
 
-  function getTestDataClass(...values) {
-    return isLikelyTestData(...values) ? " test-data" : "";
+  function getTestDataClass(isTestData) {
+    return isTestData ? " test-data" : "";
   }
 
   function renderMessage(container, message, isError = false) {
@@ -225,7 +225,7 @@
     container.innerHTML = `<p class="status-message${isError ? " error" : ""}">${message}</p>`;
   }
 
-  function renderOverviewCard(categoryKey, items, displayCurrency, ratesData) {
+  function renderOverviewCard(categoryKey, items, displayCurrency, ratesData, source = "") {
     const config = CATEGORY_CONFIG[categoryKey];
     if (!config) {
       return "";
@@ -233,11 +233,11 @@
 
     const title = categoryKey === "waehrungen" ? "Waehrungen" : config.title;
     const compactItems = items.slice(0, 5);
+    const isTestData = isLocalQuoteTemplateSource(source);
     const rows = compactItems.map((item) => {
       const changeClass = getChangeClass(item.changePct);
-      const testDataClass = getTestDataClass(item?.name, item?.symbol, item?.market);
 
-      return `<div class="quote-overview-row${testDataClass}">
+      return `<div class="quote-overview-row${getTestDataClass(isTestData)}">
         <strong class="quote-overview-name">${normalizeText(item.name) || "k. A."}</strong>
         <span class="quote-overview-symbol">${normalizeText(item.symbol) || "-"}</span>
         <span class="quote-overview-value">${formatQuoteValue(item, "open", config.type, displayCurrency, ratesData)}</span>
@@ -246,7 +246,7 @@
       </div>`;
     }).join("");
 
-    return `<section class="card quote-overview-card${getTestDataClass(config?.title, ...compactItems.flatMap((item) => [item?.name, item?.symbol]))}">
+    return `<section class="card quote-overview-card${getTestDataClass(isTestData)}">
       <div class="quote-overview-card-head">
         <h2><a class="quote-overview-link" href="${href(config.page)}">${title}</a></h2>
       </div>
@@ -277,7 +277,8 @@
           const data = await loadJson(config.dataPath);
           return {
             categoryKey,
-            items: Array.isArray(data.items) ? data.items : []
+            items: Array.isArray(data.items) ? data.items : [],
+            source: normalizeText(data.source)
           };
         }))
       ]);
@@ -294,7 +295,7 @@
 
       const renderOverview = () => {
         container.innerHTML = entries.map((entry) => {
-          return renderOverviewCard(entry.categoryKey, entry.items, selectedCurrency, ratesData);
+          return renderOverviewCard(entry.categoryKey, entry.items, selectedCurrency, ratesData, entry.source);
         }).join("");
       };
 
@@ -314,7 +315,7 @@
     }
   }
 
-  function renderTableRows(items, config) {
+  function renderTableRows(items, config, isTestData = false) {
     if (!items.length) {
       return `<tr><td colspan="6"><p class="quote-empty-state">Keine Kurse fuer die aktuelle Auswahl gefunden.</p></td></tr>`;
     }
@@ -323,7 +324,7 @@
       const changeClass = getChangeClass(item.changePct);
       const instrumentMeta = [normalizeText(item.symbol), normalizeText(item.market)].filter(Boolean).join(" - ");
 
-      return `<tr class="${getTestDataClass(item?.name, item?.symbol, item?.market).trim()}">
+      return `<tr class="${getTestDataClass(isTestData).trim()}">
         <td>
           <div class="quote-instrument">
             <strong>${normalizeText(item.name) || "k. A."}</strong>
@@ -357,6 +358,7 @@
     try {
       const data = await loadJson(config.dataPath);
       const items = Array.isArray(data.items) ? data.items : [];
+      const isTestData = isLocalQuoteTemplateSource(data.source);
 
       const applyFilter = () => {
         const query = normalizeForSearch(searchInput?.value || "");
@@ -376,7 +378,7 @@
           return haystack.includes(query);
         });
 
-        tableBody.innerHTML = renderTableRows(filteredItems, config);
+        tableBody.innerHTML = renderTableRows(filteredItems, config, isTestData);
         resultCount.textContent = `${filteredItems.length} Kurse angezeigt.`;
       };
 
