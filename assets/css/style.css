@@ -946,9 +946,10 @@ button.category-link-card.wiki-tree-card {
 
 .wiki-tree-article-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  grid-template-columns: minmax(0, 34%) minmax(0, 66%);
   align-items: baseline;
   gap: 0.75rem;
+  width: 100%;
   min-width: 0;
   white-space: nowrap;
 }
