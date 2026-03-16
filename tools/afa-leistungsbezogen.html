@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Leistungs-AfA | MarktWiki</title>
+  <meta name="description" content="Statischer Rechner fuer leistungsbezogene AfA im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="./afa-abschreibungsrechner.html">&larr; Zur AfA-Uebersicht</a>
+        <h1>Leistungs-AfA</h1>
+        <p class="lead">Mit diesem Rechner laesst sich die Abschreibung nach tatsaechlicher Nutzung berechnen, zum Beispiel pro Kilometer, pro Betriebsstunde oder pro Stueck.</p>
+        <p class="muted">Die Ausgabe zeigt den Abschreibungsbetrag je Einheit und fuer den betrachteten Zeitraum.</p>
+        <form class="input-grid calculator-form" id="afa-leistung-form" novalidate>
+          <section class="calc-group" aria-labelledby="afa-leistung-grunddaten">
+            <h2 id="afa-leistung-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="afa-leistung-anschaffung">Anschaffungskosten (Pflicht)</label><input type="number" id="afa-leistung-anschaffung" min="0" step="0.01" placeholder="12000"></div>
+              <div class="field"><label for="afa-leistung-gesamt">Geschaetzte Gesamtleistung (Pflicht)</label><input type="number" id="afa-leistung-gesamt" min="0" step="0.01" placeholder="200000"></div>
+              <div class="field"><label for="afa-leistung-jahr">Leistung im betrachteten Zeitraum (Pflicht)</label><input type="number" id="afa-leistung-jahr" min="0" step="0.01" placeholder="25000"></div>
+              <div class="field"><label for="afa-leistung-restwert">Restwert (optional)</label><input type="number" id="afa-leistung-restwert" min="0" step="0.01" placeholder="0"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="afa-leistung-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="afa-leistung-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="afa-leistung-erklaerung">
+          <h2 id="afa-leistung-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was ist die Leistungs-AfA?</h3><p>Bei der Leistungs-AfA wird nicht nach Jahren, sondern nach tatsaechlicher Nutzung abgeschrieben. Je mehr ein Wirtschaftsgut genutzt wird, desto hoeher ist der Abschreibungsbetrag fuer diesen Zeitraum.</p></article>
+            <article class="calc-explanation-block"><h3>Wann wird sie typischerweise genutzt?</h3><p>Sie passt vor allem dann, wenn die Nutzung gut messbar ist, zum Beispiel ueber Kilometer, Maschinenstunden oder produzierte Einheiten.</p></article>
+            <article class="calc-explanation-block"><h3>Wie funktioniert die Berechnung?</h3><p>Der abschreibbare Betrag wird zuerst auf die geschaetzte Gesamtleistung verteilt. Daraus entsteht ein Wert pro Einheit, der dann mit der tatsaechlichen Leistung multipliziert wird.</p></article>
+            <article class="calc-explanation-block"><h3>Grenzen des Rechners</h3><p>Der Rechner bildet einen betrachteten Zeitraum ab. Mehrjahresverlaeufe oder spaetere Aenderungen der Gesamtleistung werden nicht automatisch nachgefuehrt.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("afa-leistung-form");
+      const anschaffungField = document.getElementById("afa-leistung-anschaffung");
+      const gesamtField = document.getElementById("afa-leistung-gesamt");
+      const jahrField = document.getElementById("afa-leistung-jahr");
+      const restwertField = document.getElementById("afa-leistung-restwert");
+      const button = document.getElementById("afa-leistung-berechnen");
+      const result = document.getElementById("afa-leistung-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function parseOptional(value) { const trimmed = String(value).trim(); return trimmed === "" ? 0 : parseNumber(trimmed); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const anschaffung = parseNumber(anschaffungField.value);
+        const gesamt = parseNumber(gesamtField.value);
+        const leistung = parseNumber(jahrField.value);
+        const restwert = parseOptional(restwertField.value);
+        if (!Number.isFinite(anschaffung) || !Number.isFinite(gesamt) || !Number.isFinite(leistung) || !Number.isFinite(restwert)) { showError("Bitte alle Pflichtwerte vollstaendig eingeben."); return; }
+        if (anschaffung < 0 || gesamt <= 0 || leistung < 0 || restwert < 0) { showError("Anschaffungskosten und Restwert muessen mindestens 0 sein. Die Leistungswerte muessen groesser als 0 bzw. mindestens 0 sein."); return; }
+        if (restwert > anschaffung) { showError("Der Restwert darf nicht hoeher als die Anschaffungskosten sein."); return; }
+        if (leistung > gesamt) { showError("Die Leistung im Zeitraum darf nicht hoeher als die geschaetzte Gesamtleistung sein."); return; }
+        const basis = anschaffung - restwert;
+        const afaProEinheit = basis / gesamt;
+        const afaZeitraum = afaProEinheit * leistung;
+        const restbuchwert = Math.max(restwert, anschaffung - afaZeitraum);
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Abschreibung im Zeitraum</span><strong>${formatCurrency(afaZeitraum)} EUR</strong></p><p class="result-line"><span>Abschreibung je Einheit</span><strong>${formatCurrency(afaProEinheit)} EUR</strong></p><p class="result-line"><span>Abschreibungsbasis</span><strong>${formatCurrency(basis)} EUR</strong></p><p class="result-line"><span>Verbleibender Wert</span><strong>${formatCurrency(restbuchwert)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>
