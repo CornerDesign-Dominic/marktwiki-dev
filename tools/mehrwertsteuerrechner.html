@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mehrwertsteuerrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Mehrwertsteuerrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Mehrwertsteuerrechner</h1>
+        <p class="lead">Mit diesem Rechner lassen sich Netto-, Steuer- und Bruttobetrag bei frei waehlbarem Mehrwertsteuersatz berechnen.</p>
+        <p class="muted">Der Rechner eignet sich fuer Preispruefungen, Angebotswerte und einfache Brutto-Netto-Umrechnungen.</p>
+        <form class="input-grid calculator-form" id="mehrwertsteuer-form" novalidate>
+          <section class="calc-group" aria-labelledby="mehrwertsteuer-grunddaten">
+            <h2 id="mehrwertsteuer-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="mehrwertsteuer-netto">Nettobetrag</label><input type="number" id="mehrwertsteuer-netto" min="0" step="0.01" placeholder="1000"></div>
+              <div class="field"><label for="mehrwertsteuer-satz">Mehrwertsteuersatz in %</label><input type="number" id="mehrwertsteuer-satz" min="0" step="0.01" placeholder="19"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="mehrwertsteuer-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="mehrwertsteuer-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="mehrwertsteuer-erklaerung">
+          <h2 id="mehrwertsteuer-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Er addiert einen frei waehlbaren Mehrwertsteuersatz auf einen Nettobetrag und zeigt Steuer- und Bruttowert.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Steuerbetrag = Nettobetrag mal Steuersatz. Bruttobetrag = Nettobetrag plus Steuerbetrag.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Umrechnung ist hilfreich fuer Rechnungen, Preise, Angebote und Kalkulationen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 1.000 EUR netto und 19 Prozent Mehrwertsteuer ergibt sich ein Steuerbetrag von 190 EUR und ein Bruttobetrag von 1.190 EUR.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("mehrwertsteuer-form");
+      const nettoField = document.getElementById("mehrwertsteuer-netto");
+      const satzField = document.getElementById("mehrwertsteuer-satz");
+      const button = document.getElementById("mehrwertsteuer-berechnen");
+      const result = document.getElementById("mehrwertsteuer-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const netto = parseNumber(nettoField.value);
+        const satz = parseNumber(satzField.value);
+        if (!Number.isFinite(netto) || !Number.isFinite(satz)) { showError("Bitte Nettobetrag und Mehrwertsteuersatz vollstaendig eingeben."); return; }
+        if (netto < 0 || satz < 0) { showError("Nettobetrag und Steuersatz muessen mindestens 0 sein."); return; }
+        const steuer = netto * (satz / 100);
+        const brutto = netto + steuer;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Bruttobetrag</span><strong>${formatCurrency(brutto)} EUR</strong></p><p class="result-line"><span>Nettobetrag</span><strong>${formatCurrency(netto)} EUR</strong></p><p class="result-line"><span>Mehrwertsteuer</span><strong>${formatCurrency(steuer)} EUR</strong></p><p class="result-line"><span>Steuersatz</span><strong>${satz.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

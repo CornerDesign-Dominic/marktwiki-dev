@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Skonto-Rechner | MarktWiki</title>
+  <meta name="description" content="Statischer Skonto-Rechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Skonto-Rechner</h1>
+        <p class="lead">Mit diesem Rechner lassen sich Skontobetrag und Zahlungsbetrag nach Abzug von Skonto berechnen.</p>
+        <p class="muted">Die Ausgabe zeigt, wie stark sich ein fruehes Zahlungsziel auf den tatsaechlichen Rechnungsbetrag auswirkt.</p>
+        <form class="input-grid calculator-form" id="skonto-form" novalidate>
+          <section class="calc-group" aria-labelledby="skonto-grunddaten">
+            <h2 id="skonto-grunddaten" class="calc-group-title">Rechnungsdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="skonto-betrag">Rechnungsbetrag</label><input type="number" id="skonto-betrag" min="0" step="0.01" placeholder="2500"></div>
+              <div class="field"><label for="skonto-satz">Skontosatz in %</label><input type="number" id="skonto-satz" min="0" step="0.01" placeholder="2"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="skonto-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="skonto-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="skonto-erklaerung">
+          <h2 id="skonto-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner zeigt den absoluten Skontobetrag und den verbleibenden Zahlungsbetrag nach Abzug des vereinbarten Skontos.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Skontobetrag = Rechnungsbetrag mal Skontosatz. Zahlungsbetrag = Rechnungsbetrag minus Skontobetrag.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Skonto hilft bei Liquiditaetsentscheidungen, Lieferantenvergleichen und der Bewertung von fruehen Zahlungsanreizen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 2.500 EUR Rechnungsbetrag und 2 Prozent Skonto sinkt der Zahlungsbetrag auf 2.450 EUR.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("skonto-form");
+      const betragField = document.getElementById("skonto-betrag");
+      const satzField = document.getElementById("skonto-satz");
+      const button = document.getElementById("skonto-berechnen");
+      const result = document.getElementById("skonto-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatPercent(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const betrag = parseNumber(betragField.value);
+        const satz = parseNumber(satzField.value);
+        if (!Number.isFinite(betrag) || !Number.isFinite(satz)) { showError("Bitte Rechnungsbetrag und Skontosatz vollstaendig eingeben."); return; }
+        if (betrag < 0 || satz < 0) { showError("Rechnungsbetrag und Skontosatz muessen mindestens 0 sein."); return; }
+        const skonto = betrag * (satz / 100);
+        const zahlungsbetrag = betrag - skonto;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Zahlungsbetrag nach Skonto</span><strong>${formatCurrency(zahlungsbetrag)} EUR</strong></p><p class="result-line"><span>Skontobetrag</span><strong>${formatCurrency(skonto)} EUR</strong></p><p class="result-line"><span>Skontosatz</span><strong>${formatPercent(satz)} %</strong></p><p class="result-line"><span>Rechnungsbetrag</span><strong>${formatCurrency(betrag)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

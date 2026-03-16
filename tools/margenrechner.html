@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Margenrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Margenrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Margenrechner</h1>
+        <p class="lead">Mit diesem Rechner lassen sich Gewinn, Gewinnmarge und Aufschlag aus Umsatz und Kosten berechnen.</p>
+        <p class="muted">Die Ausgabe eignet sich zur schnellen Preis- und Wirtschaftlichkeitspruefung im Browser.</p>
+        <form class="input-grid calculator-form" id="margen-form" novalidate>
+          <section class="calc-group" aria-labelledby="margen-grunddaten">
+            <h2 id="margen-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="margen-umsatz">Umsatz</label><input type="number" id="margen-umsatz" min="0" step="0.01" placeholder="1500"></div>
+              <div class="field"><label for="margen-kosten">Kosten</label><input type="number" id="margen-kosten" min="0" step="0.01" placeholder="1100"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="margen-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="margen-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="margen-erklaerung">
+          <h2 id="margen-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Er leitet aus Umsatz und Kosten den absoluten Gewinn, die Marge auf den Umsatz und den Aufschlag auf die Kosten ab.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Gewinn = Umsatz minus Kosten. Marge = Gewinn / Umsatz mal 100. Aufschlag = Gewinn / Kosten mal 100.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Margen helfen bei Preisgestaltung, Angebotskalkulation und beim Vergleich unterschiedlicher Produkte oder Leistungen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Wenn 1.500 EUR Umsatz 1.100 EUR Kosten gegenueberstehen, betraegt der Gewinn 400 EUR und die Marge rund 26,67 Prozent.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("margen-form");
+      const umsatzField = document.getElementById("margen-umsatz");
+      const kostenField = document.getElementById("margen-kosten");
+      const button = document.getElementById("margen-berechnen");
+      const result = document.getElementById("margen-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatPercent(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const umsatz = parseNumber(umsatzField.value);
+        const kosten = parseNumber(kostenField.value);
+        if (!Number.isFinite(umsatz) || !Number.isFinite(kosten)) { showError("Bitte Umsatz und Kosten vollstaendig eingeben."); return; }
+        if (umsatz < 0 || kosten < 0) { showError("Umsatz und Kosten muessen mindestens 0 sein."); return; }
+        const gewinn = umsatz - kosten;
+        const marge = umsatz === 0 ? 0 : (gewinn / umsatz) * 100;
+        const aufschlag = kosten === 0 ? 0 : (gewinn / kosten) * 100;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Gewinn</span><strong>${formatCurrency(gewinn)} EUR</strong></p><p class="result-line"><span>Marge auf Umsatz</span><strong>${formatPercent(marge)} %</strong></p><p class="result-line"><span>Aufschlag auf Kosten</span><strong>${formatPercent(aufschlag)} %</strong></p><p class="result-line"><span>Kostenquote</span><strong>${formatPercent(umsatz === 0 ? 0 : (kosten / umsatz) * 100)} %</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

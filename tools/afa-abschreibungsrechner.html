@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AfA-Abschreibungsrechner | MarktWiki</title>
+  <meta name="description" content="Statischer AfA-Abschreibungsrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>AfA-Abschreibungsrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich die lineare Abschreibung eines Wirtschaftsguts ueber die geplante Nutzungsdauer berechnen.</p>
+        <p class="muted">Die Ausgabe zeigt jaehrliche, monatliche und gesamte Abschreibungsbetraege auf Basis einer linearen AfA.</p>
+        <form class="input-grid calculator-form" id="afa-form" novalidate>
+          <section class="calc-group" aria-labelledby="afa-grunddaten">
+            <h2 id="afa-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="afa-anschaffung">Anschaffungskosten</label><input type="number" id="afa-anschaffung" min="0" step="0.01" placeholder="12000"></div>
+              <div class="field"><label for="afa-restwert">Restwert</label><input type="number" id="afa-restwert" min="0" step="0.01" placeholder="0"></div>
+              <div class="field"><label for="afa-dauer">Nutzungsdauer in Jahren</label><input type="number" id="afa-dauer" min="0" step="0.01" placeholder="5"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="afa-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="afa-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="afa-erklaerung">
+          <h2 id="afa-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner verteilt die abschreibungsfaehigen Anschaffungskosten gleichmaessig auf die Nutzungsdauer.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Lineare AfA = (Anschaffungskosten minus Restwert) / Nutzungsdauer. Daraus wird auch ein Monatswert abgeleitet.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Abschreibung unterstuetzt Kostenplanung, Investitionsrechnung und periodengerechte Aufwandserfassung.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>12.000 EUR Anschaffungskosten bei 5 Jahren Nutzungsdauer ergeben ohne Restwert eine jaehrliche AfA von 2.400 EUR.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("afa-form");
+      const anschaffungField = document.getElementById("afa-anschaffung");
+      const restwertField = document.getElementById("afa-restwert");
+      const dauerField = document.getElementById("afa-dauer");
+      const button = document.getElementById("afa-berechnen");
+      const result = document.getElementById("afa-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const anschaffung = parseNumber(anschaffungField.value);
+        const restwert = parseNumber(restwertField.value || "0");
+        const dauer = parseNumber(dauerField.value);
+        if (!Number.isFinite(anschaffung) || !Number.isFinite(restwert) || !Number.isFinite(dauer)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (anschaffung < 0 || restwert < 0 || dauer <= 0) { showError("Anschaffungskosten und Restwert muessen mindestens 0 sein. Die Nutzungsdauer muss groesser als 0 sein."); return; }
+        if (restwert > anschaffung) { showError("Der Restwert darf nicht hoeher als die Anschaffungskosten sein."); return; }
+        const basis = anschaffung - restwert;
+        const jahresAfa = basis / dauer;
+        const monatsAfa = jahresAfa / 12;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Jaehrliche AfA</span><strong>${formatCurrency(jahresAfa)} EUR</strong></p><p class="result-line"><span>Monatlicher Durchschnitt</span><strong>${formatCurrency(monatsAfa)} EUR</strong></p><p class="result-line"><span>Abschreibungsbasis</span><strong>${formatCurrency(basis)} EUR</strong></p><p class="result-line"><span>Restwert</span><strong>${formatCurrency(restwert)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

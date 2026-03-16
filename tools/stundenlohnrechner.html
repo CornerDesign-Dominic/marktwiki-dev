@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stundenlohnrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Stundenlohnrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Stundenlohnrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich ein Stundenlohn aus Monatsgehalt, Wochenstunden und Gehaltszahlungen pro Jahr abschaetzen.</p>
+        <p class="muted">Die Ausgabe eignet sich fuer Angebotsvergleiche, Gehaltsgespraeche und interne Kalkulationen.</p>
+        <form class="input-grid calculator-form" id="stundenlohn-form" novalidate>
+          <section class="calc-group" aria-labelledby="stundenlohn-grunddaten">
+            <h2 id="stundenlohn-grunddaten" class="calc-group-title">Gehaltsdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="stundenlohn-gehalt">Monatsgehalt</label><input type="number" id="stundenlohn-gehalt" min="0" step="0.01" placeholder="3500"></div>
+              <div class="field"><label for="stundenlohn-wochenstunden">Wochenstunden</label><input type="number" id="stundenlohn-wochenstunden" min="0" step="0.01" placeholder="40"></div>
+              <div class="field"><label for="stundenlohn-gehaelter">Gehaltszahlungen pro Jahr</label><input type="number" id="stundenlohn-gehaelter" min="0" step="0.01" placeholder="12"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="stundenlohn-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="stundenlohn-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="stundenlohn-erklaerung">
+          <h2 id="stundenlohn-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner leitet aus dem Jahresgehalt und der woechentlichen Arbeitszeit einen durchschnittlichen Stundenlohn ab.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Jahresgehalt = Monatsgehalt mal Anzahl der Gehaltszahlungen. Jahresstunden = Wochenstunden mal 52. Stundenlohn = Jahresgehalt / Jahresstunden.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Der Wert hilft beim Vergleich von Gehaltsangeboten, Projektverrechnungssaetzen und Arbeitszeitmodellen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 3.500 EUR Monatsgehalt, 40 Wochenstunden und 12 Zahlungen pro Jahr kann der effektive Stundenlohn einfach berechnet werden.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const WEEKS_PER_YEAR = 52;
+      const form = document.getElementById("stundenlohn-form");
+      const gehaltField = document.getElementById("stundenlohn-gehalt");
+      const wochenstundenField = document.getElementById("stundenlohn-wochenstunden");
+      const gehaelterField = document.getElementById("stundenlohn-gehaelter");
+      const button = document.getElementById("stundenlohn-berechnen");
+      const result = document.getElementById("stundenlohn-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const gehalt = parseNumber(gehaltField.value);
+        const wochenstunden = parseNumber(wochenstundenField.value);
+        const gehaelter = parseNumber(gehaelterField.value);
+        if (!Number.isFinite(gehalt) || !Number.isFinite(wochenstunden) || !Number.isFinite(gehaelter)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (gehalt < 0 || wochenstunden <= 0 || gehaelter <= 0) { showError("Das Gehalt muss mindestens 0 sein. Wochenstunden und Gehaltszahlungen muessen groesser als 0 sein."); return; }
+        const jahresgehalt = gehalt * gehaelter;
+        const jahresstunden = wochenstunden * WEEKS_PER_YEAR;
+        const stundenlohn = jahresgehalt / jahresstunden;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Geschaetzter Stundenlohn</span><strong>${formatCurrency(stundenlohn)} EUR</strong></p><p class="result-line"><span>Jahresgehalt</span><strong>${formatCurrency(jahresgehalt)} EUR</strong></p><p class="result-line"><span>Jahresarbeitszeit</span><strong>${jahresstunden.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} Stunden</strong></p><p class="result-line"><span>Monatsgehalt</span><strong>${formatCurrency(gehalt)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Einkommensteuerrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Einkommensteuerrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Einkommensteuerrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich eine vereinfachte Einkommensteuer-Schaetzung aus zu versteuerndem Einkommen und Steuersaetzen berechnen.</p>
+        <p class="muted">Die Seite arbeitet mit den eingegebenen Saetzen und dient nur als informative Naeherung, nicht als verbindliche Steuerberechnung.</p>
+        <form class="input-grid calculator-form" id="einkommensteuer-form" novalidate>
+          <section class="calc-group" aria-labelledby="einkommensteuer-grunddaten">
+            <h2 id="einkommensteuer-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="einkommensteuer-einkommen">Zu versteuerndes Einkommen</label><input type="number" id="einkommensteuer-einkommen" min="0" step="0.01" placeholder="52000"></div>
+              <div class="field"><label for="einkommensteuer-steuersatz">Durchschnittlicher Steuersatz in %</label><input type="number" id="einkommensteuer-steuersatz" min="0" step="0.01" placeholder="24"></div>
+              <div class="field"><label for="einkommensteuer-soli">Solidaritaetszuschlag in %</label><input type="number" id="einkommensteuer-soli" min="0" step="0.01" placeholder="5.5"></div>
+              <div class="field"><label for="einkommensteuer-kirche">Kirchensteuer in %</label><input type="number" id="einkommensteuer-kirche" min="0" step="0.01" placeholder="0"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="einkommensteuer-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="einkommensteuer-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="einkommensteuer-erklaerung">
+          <h2 id="einkommensteuer-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner schaetzt die Einkommensteuer auf Basis eines selbst eingegebenen durchschnittlichen Steuersatzes.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Einkommensteuer = Einkommen mal Steuersatz. Solidaritaetszuschlag und Kirchensteuer werden als Zuschlag auf die Einkommensteuer berechnet.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Schaetzung kann bei Ruecklagenplanung, Liquiditaetsvorschau und einfachen Szenariovergleichen helfen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Wer 52.000 EUR Einkommen mit einem angenommenen Durchschnittssteuersatz von 24 Prozent plant, kann die ungefaehre Steuerlast vorausberechnen.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("einkommensteuer-form");
+      const einkommenField = document.getElementById("einkommensteuer-einkommen");
+      const steuersatzField = document.getElementById("einkommensteuer-steuersatz");
+      const soliField = document.getElementById("einkommensteuer-soli");
+      const kircheField = document.getElementById("einkommensteuer-kirche");
+      const button = document.getElementById("einkommensteuer-berechnen");
+      const result = document.getElementById("einkommensteuer-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatPercent(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const einkommen = parseNumber(einkommenField.value);
+        const steuersatz = parseNumber(steuersatzField.value);
+        const soli = parseNumber(soliField.value || "0");
+        const kirche = parseNumber(kircheField.value || "0");
+        if (!Number.isFinite(einkommen) || !Number.isFinite(steuersatz) || !Number.isFinite(soli) || !Number.isFinite(kirche)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (einkommen < 0 || steuersatz < 0 || soli < 0 || kirche < 0) { showError("Einkommen und Saetze muessen mindestens 0 sein."); return; }
+        const einkommensteuer = einkommen * (steuersatz / 100);
+        const solidaritaetszuschlag = einkommensteuer * (soli / 100);
+        const kirchensteuer = einkommensteuer * (kirche / 100);
+        const gesamtsteuer = einkommensteuer + solidaritaetszuschlag + kirchensteuer;
+        const netto = einkommen - gesamtsteuer;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Geschaetzte Gesamtsteuer</span><strong>${formatCurrency(gesamtsteuer)} EUR</strong></p><p class="result-line"><span>Einkommensteuer</span><strong>${formatCurrency(einkommensteuer)} EUR</strong></p><p class="result-line"><span>Solidaritaetszuschlag</span><strong>${formatCurrency(solidaritaetszuschlag)} EUR</strong></p><p class="result-line"><span>Kirchensteuer</span><strong>${formatCurrency(kirchensteuer)} EUR</strong></p><p class="result-line"><span>Geschaetztes Nettoeinkommen</span><strong>${formatCurrency(netto)} EUR</strong></p><p class="result-line"><span>Effektiver Satz</span><strong>${formatPercent(einkommen === 0 ? 0 : (gesamtsteuer / einkommen) * 100)} %</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

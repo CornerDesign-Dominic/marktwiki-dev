@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fristenrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Fristenrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Fristenrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich ein Zieltermin aus Startdatum und Fristdauer in Tagen, Wochen oder Monaten bestimmen.</p>
+        <p class="muted">Die Berechnung dient als statische Orientierung fuer organisatorische und kaufmaennische Fristen.</p>
+        <form class="input-grid calculator-form" id="fristen-form" novalidate>
+          <section class="calc-group" aria-labelledby="fristen-grunddaten">
+            <h2 id="fristen-grunddaten" class="calc-group-title">Fristdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="fristen-start">Startdatum</label><input type="date" id="fristen-start"></div>
+              <div class="field"><label for="fristen-dauer">Fristdauer</label><input type="number" id="fristen-dauer" min="0" step="0.01" placeholder="14"></div>
+              <div class="field"><label for="fristen-einheit">Einheit</label><select id="fristen-einheit" aria-label="Einheit der Frist"><option value="tage">Tage</option><option value="wochen">Wochen</option><option value="monate">Monate</option></select></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="fristen-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="fristen-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="fristen-erklaerung">
+          <h2 id="fristen-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner addiert eine frei definierte Frist in Tagen, Wochen oder Monaten zu einem Startdatum.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Je nach Einheit werden Kalendertage, Wochen oder Monate zum Startdatum addiert und als neues Datum ausgegeben.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Fristenrechner sind hilfreich bei Zahlungszielen, organisatorischen Deadlines oder internen Bearbeitungsfristen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Wer ein Zahlungsziel von 14 Tagen oder eine Bearbeitungsfrist von 3 Monaten pruefen moechte, kann den Termin direkt ermitteln.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("fristen-form");
+      const startField = document.getElementById("fristen-start");
+      const dauerField = document.getElementById("fristen-dauer");
+      const einheitField = document.getElementById("fristen-einheit");
+      const button = document.getElementById("fristen-berechnen");
+      const result = document.getElementById("fristen-result");
+      let hasCalculated = false;
+      function formatDate(date) { return date.toLocaleDateString("de-DE"); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function addMonths(date, months) {
+        const copy = new Date(date.getTime());
+        const originalDay = copy.getDate();
+        copy.setDate(1);
+        copy.setMonth(copy.getMonth() + months);
+        const lastDay = new Date(copy.getFullYear(), copy.getMonth() + 1, 0).getDate();
+        copy.setDate(Math.min(originalDay, lastDay));
+        return copy;
+      }
+      function updateResult() {
+        const startValue = startField.value;
+        const dauer = Number(String(dauerField.value).trim().replace(",", "."));
+        const einheit = einheitField.value;
+        if (!startValue || !Number.isFinite(dauer)) { showError("Bitte Startdatum und Fristdauer vollstaendig eingeben."); return; }
+        if (dauer < 0 || !Number.isInteger(dauer)) { showError("Bitte eine ganze Fristdauer groesser oder gleich 0 eingeben."); return; }
+        const startDate = new Date(startValue + "T00:00:00");
+        if (Number.isNaN(startDate.getTime())) { showError("Bitte ein gueltiges Startdatum eingeben."); return; }
+        let endDate = new Date(startDate.getTime());
+        if (einheit === "tage") { endDate.setDate(endDate.getDate() + dauer); }
+        else if (einheit === "wochen") { endDate.setDate(endDate.getDate() + dauer * 7); }
+        else { endDate = addMonths(endDate, dauer); }
+        const differenzTage = Math.round((endDate.getTime() - startDate.getTime()) / 86400000);
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Zieltermin</span><strong>${formatDate(endDate)}</strong></p><p class="result-line"><span>Startdatum</span><strong>${formatDate(startDate)}</strong></p><p class="result-line"><span>Fristdauer</span><strong>${dauer.toLocaleString("de-DE")} ${einheit}</strong></p><p class="result-line"><span>Kalendertage Differenz</span><strong>${differenzTage.toLocaleString("de-DE")} Tage</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      form.addEventListener("change", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

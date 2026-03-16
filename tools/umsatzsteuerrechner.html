@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Umsatzsteuerrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Umsatzsteuerrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Umsatzsteuerrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich eine einfache Umsatzsteuer-Zahllast aus steuerpflichtigem Netto-Umsatz, Steuersatz und Vorsteuer bestimmen.</p>
+        <p class="muted">Die Berechnung ist eine statische Orientierung fuer einfache USt-Szenarien im Browser.</p>
+        <form class="input-grid calculator-form" id="umsatzsteuer-form" novalidate>
+          <section class="calc-group" aria-labelledby="umsatzsteuer-grunddaten">
+            <h2 id="umsatzsteuer-grunddaten" class="calc-group-title">Steuerdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="umsatzsteuer-umsatz">Steuerpflichtiger Netto-Umsatz</label><input type="number" id="umsatzsteuer-umsatz" min="0" step="0.01" placeholder="18000"></div>
+              <div class="field"><label for="umsatzsteuer-satz">Umsatzsteuersatz in %</label><input type="number" id="umsatzsteuer-satz" min="0" step="0.01" placeholder="19"></div>
+              <div class="field"><label for="umsatzsteuer-vorsteuer">Abziehbare Vorsteuer</label><input type="number" id="umsatzsteuer-vorsteuer" min="0" step="0.01" placeholder="1800"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="umsatzsteuer-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="umsatzsteuer-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="umsatzsteuer-erklaerung">
+          <h2 id="umsatzsteuer-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner stellt vereinnahmte Umsatzsteuer und abziehbare Vorsteuer gegenueber und berechnet die resultierende Zahllast oder Erstattung.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Umsatzsteuer = Netto-Umsatz mal Steuersatz. Zahllast = Umsatzsteuer minus Vorsteuer.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Berechnung hilft bei einfacher Liquiditaetsplanung fuer Umsatzsteuer-Voranmeldungen und Steuerruecklagen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 18.000 EUR steuerpflichtigem Umsatz, 19 Prozent Satz und 1.800 EUR Vorsteuer laesst sich die Zahllast schnell abschaetzen.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("umsatzsteuer-form");
+      const umsatzField = document.getElementById("umsatzsteuer-umsatz");
+      const satzField = document.getElementById("umsatzsteuer-satz");
+      const vorsteuerField = document.getElementById("umsatzsteuer-vorsteuer");
+      const button = document.getElementById("umsatzsteuer-berechnen");
+      const result = document.getElementById("umsatzsteuer-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const umsatz = parseNumber(umsatzField.value);
+        const satz = parseNumber(satzField.value);
+        const vorsteuer = parseNumber(vorsteuerField.value || "0");
+        if (!Number.isFinite(umsatz) || !Number.isFinite(satz) || !Number.isFinite(vorsteuer)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (umsatz < 0 || satz < 0 || vorsteuer < 0) { showError("Umsatz, Steuersatz und Vorsteuer muessen mindestens 0 sein."); return; }
+        const umsatzsteuer = umsatz * (satz / 100);
+        const zahllast = umsatzsteuer - vorsteuer;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Zahllast / Erstattung</span><strong>${formatCurrency(zahllast)} EUR</strong></p><p class="result-line"><span>Umsatzsteuer aus Umsatz</span><strong>${formatCurrency(umsatzsteuer)} EUR</strong></p><p class="result-line"><span>Vorsteuer</span><strong>${formatCurrency(vorsteuer)} EUR</strong></p><p class="result-line"><span>Brutto-Umsatz</span><strong>${formatCurrency(umsatz + umsatzsteuer)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

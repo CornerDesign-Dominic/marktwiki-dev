@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arbeitszeitrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Arbeitszeitrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Arbeitszeitrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich die voraussichtliche Arbeitszeit pro Jahr, Monat und Tag aus Wochenstunden und Ausfalltagen abschaetzen.</p>
+        <p class="muted">Die Berechnung ist eine vereinfachte Planungsgrundlage fuer Arbeitszeitmodelle im Unternehmen und im Alltag.</p>
+        <form class="input-grid calculator-form" id="arbeitszeit-form" novalidate>
+          <section class="calc-group" aria-labelledby="arbeitszeit-grunddaten">
+            <h2 id="arbeitszeit-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="arbeitszeit-wochenstunden">Wochenstunden</label><input type="number" id="arbeitszeit-wochenstunden" min="0" step="0.01" placeholder="40"></div>
+              <div class="field"><label for="arbeitszeit-tage">Arbeitstage pro Woche</label><input type="number" id="arbeitszeit-tage" min="0" step="0.01" placeholder="5"></div>
+              <div class="field"><label for="arbeitszeit-urlaub">Urlaubstage pro Jahr</label><input type="number" id="arbeitszeit-urlaub" min="0" step="0.01" placeholder="30"></div>
+              <div class="field"><label for="arbeitszeit-feiertage">Feiertage auf Arbeitstage</label><input type="number" id="arbeitszeit-feiertage" min="0" step="0.01" placeholder="10"></div>
+              <div class="field"><label for="arbeitszeit-sonstige">Weitere Ausfalltage</label><input type="number" id="arbeitszeit-sonstige" min="0" step="0.01" placeholder="5"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="arbeitszeit-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="arbeitszeit-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="arbeitszeit-erklaerung">
+          <h2 id="arbeitszeit-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Er ermittelt die effektive Jahresarbeitszeit nach Abzug von Urlaub, Feiertagen und weiteren Ausfalltagen.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>52 Wochen mal Arbeitstage pro Woche ergeben die Soll-Arbeitstage. Daraus werden Ausfalltage abgezogen und mit Tagesstunden multipliziert.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Werte helfen bei Kapazitaetsplanung, Personalbedarf und Stundenkalkulation.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 40 Wochenstunden und 5 Arbeitstagen sinkt die effektive Jahresarbeitszeit durch Urlaub und Feiertage deutlich unter die reine Sollzeit.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const WEEKS_PER_YEAR = 52;
+      const MONTHS_PER_YEAR = 12;
+      const form = document.getElementById("arbeitszeit-form");
+      const wochenstundenField = document.getElementById("arbeitszeit-wochenstunden");
+      const tageField = document.getElementById("arbeitszeit-tage");
+      const urlaubField = document.getElementById("arbeitszeit-urlaub");
+      const feiertageField = document.getElementById("arbeitszeit-feiertage");
+      const sonstigeField = document.getElementById("arbeitszeit-sonstige");
+      const button = document.getElementById("arbeitszeit-berechnen");
+      const result = document.getElementById("arbeitszeit-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatNumber(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const wochenstunden = parseNumber(wochenstundenField.value);
+        const tage = parseNumber(tageField.value);
+        const urlaub = parseNumber(urlaubField.value || "0");
+        const feiertage = parseNumber(feiertageField.value || "0");
+        const sonstige = parseNumber(sonstigeField.value || "0");
+        if (!Number.isFinite(wochenstunden) || !Number.isFinite(tage) || !Number.isFinite(urlaub) || !Number.isFinite(feiertage) || !Number.isFinite(sonstige)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (wochenstunden <= 0 || tage <= 0 || tage > 7 || urlaub < 0 || feiertage < 0 || sonstige < 0) { showError("Wochenstunden muessen groesser als 0 sein, Arbeitstage zwischen 0 und 7 liegen und Ausfalltage duerfen nicht negativ sein."); return; }
+        const geplanteTage = WEEKS_PER_YEAR * tage;
+        const ausfalltage = urlaub + feiertage + sonstige;
+        const effektiveTage = geplanteTage - ausfalltage;
+        if (effektiveTage < 0) { showError("Die Summe der Ausfalltage darf die geplanten Arbeitstage nicht uebersteigen."); return; }
+        const stundenProTag = wochenstunden / tage;
+        const jahresstunden = effektiveTage * stundenProTag;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Jahresarbeitszeit</span><strong>${formatNumber(jahresstunden)} Stunden</strong></p><p class="result-line"><span>Monatlicher Durchschnitt</span><strong>${formatNumber(jahresstunden / MONTHS_PER_YEAR)} Stunden</strong></p><p class="result-line"><span>Arbeitsstunden pro Tag</span><strong>${formatNumber(stundenProTag)} Stunden</strong></p><p class="result-line"><span>Effektive Arbeitstage</span><strong>${formatNumber(effektiveTage)} Tage</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

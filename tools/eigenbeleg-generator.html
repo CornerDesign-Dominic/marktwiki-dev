@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Eigenbeleg-Generator | MarktWiki</title>
+  <meta name="description" content="Statischer Eigenbeleg-Generator im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Eigenbeleg-Generator</h1>
+        <p class="lead">Mit diesem Generator laesst sich ein einfacher Eigenbeleg fuer fehlende Originalbelege direkt im Browser vorbereiten.</p>
+        <p class="muted">Die Seite erstellt eine strukturierte Vorlage mit den eingegebenen Daten, ersetzt aber keine steuerliche Pruefung.</p>
+        <form class="input-grid calculator-form" id="eigenbeleg-form" novalidate>
+          <section class="calc-group" aria-labelledby="eigenbeleg-grunddaten">
+            <h2 id="eigenbeleg-grunddaten" class="calc-group-title">Belegdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="eigenbeleg-betrag">Betrag</label><input type="number" id="eigenbeleg-betrag" min="0" step="0.01" placeholder="48.90"></div>
+              <div class="field"><label for="eigenbeleg-datum">Datum</label><input type="date" id="eigenbeleg-datum"></div>
+              <div class="field"><label for="eigenbeleg-empfaenger">Empfaenger</label><input type="text" id="eigenbeleg-empfaenger" placeholder="Beispiel GmbH"></div>
+              <div class="field"><label for="eigenbeleg-zweck">Zweck</label><input type="text" id="eigenbeleg-zweck" placeholder="Bueromaterial"></div>
+              <div class="field"><label for="eigenbeleg-grund">Grund fuer Ersatzbeleg</label><input type="text" id="eigenbeleg-grund" placeholder="Originalbeleg verloren"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="eigenbeleg-berechnen" class="btn calc-submit">Beleg erstellen</button></div>
+        </form>
+        <div id="eigenbeleg-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="eigenbeleg-erklaerung">
+          <h2 id="eigenbeleg-erklaerung" class="result-heading">Erlaeuterung zum Generator</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was erstellt der Generator?</h3><p>Er erzeugt eine einfache Eigenbeleg-Vorlage mit Betrag, Datum, Empfaenger, Zweck und Begruendung.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Angaben sind wichtig?</h3><p>Typisch sind Leistungsdatum, Zahlungsempfaenger, Verwendungszweck, Betrag und der Grund fuer den fehlenden Originalbeleg.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird ein Eigenbeleg genutzt?</h3><p>Ein Eigenbeleg kann in der Buchhaltung als Ersatzdokument dienen, wenn kein Fremdbeleg mehr beschafft werden kann.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Fuer einen bar bezahlten Kleinbetrag ohne auffindbaren Kassenbon kann ein Eigenbeleg die interne Dokumentation unterstuetzen.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("eigenbeleg-form");
+      const betragField = document.getElementById("eigenbeleg-betrag");
+      const datumField = document.getElementById("eigenbeleg-datum");
+      const empfaengerField = document.getElementById("eigenbeleg-empfaenger");
+      const zweckField = document.getElementById("eigenbeleg-zweck");
+      const grundField = document.getElementById("eigenbeleg-grund");
+      const button = document.getElementById("eigenbeleg-berechnen");
+      const result = document.getElementById("eigenbeleg-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatDate(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "" : date.toLocaleDateString("de-DE"); }
+      function escapeHtml(value) { return String(value).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const betrag = parseNumber(betragField.value);
+        const datum = datumField.value;
+        const empfaenger = empfaengerField.value.trim();
+        const zweck = zweckField.value.trim();
+        const grund = grundField.value.trim();
+        if (!Number.isFinite(betrag) || betrag <= 0) { showError("Bitte einen gueltigen Betrag groesser als 0 eingeben."); return; }
+        if (!datum || !empfaenger || !zweck || !grund) { showError("Bitte alle Angaben fuer den Eigenbeleg vollstaendig ausfuellen."); return; }
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Eigenbeleg</p><div class="result-summary"><p class="result-line result-line-total"><span>Betrag</span><strong>${formatCurrency(betrag)} EUR</strong></p><p class="result-line"><span>Datum</span><strong>${escapeHtml(formatDate(datum))}</strong></p><p class="result-line"><span>Empfaenger</span><strong>${escapeHtml(empfaenger)}</strong></p><p class="result-line"><span>Zweck</span><strong>${escapeHtml(zweck)}</strong></p><p class="result-line"><span>Begruendung</span><strong>${escapeHtml(grund)}</strong></p></div><p>Hiermit bestaetige ich die betriebliche Veranlassung der Ausgabe sowie den fehlenden Originalbeleg.</p><p>Unterschrift: ________________________________</p>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

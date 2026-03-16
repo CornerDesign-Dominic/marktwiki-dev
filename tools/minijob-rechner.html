@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minijob-Rechner | MarktWiki</title>
+  <meta name="description" content="Statischer Minijob-Rechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Minijob-Rechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich der monatliche Verdienst aus Stundenlohn und Arbeitsstunden abschaetzen und mit einer Minijob-Grenze vergleichen.</p>
+        <p class="muted">Die Grenze ist frei anpassbar, damit der Rechner flexibel fuer unterschiedliche Zeitpunkte genutzt werden kann.</p>
+        <form class="input-grid calculator-form" id="minijob-form" novalidate>
+          <section class="calc-group" aria-labelledby="minijob-grunddaten">
+            <h2 id="minijob-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="minijob-stundenlohn">Stundenlohn</label><input type="number" id="minijob-stundenlohn" min="0" step="0.01" placeholder="12.82"></div>
+              <div class="field"><label for="minijob-stunden">Arbeitsstunden pro Monat</label><input type="number" id="minijob-stunden" min="0" step="0.01" placeholder="40"></div>
+              <div class="field"><label for="minijob-grenze">Monatliche Minijob-Grenze</label><input type="number" id="minijob-grenze" min="0" step="0.01" placeholder="556"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="minijob-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="minijob-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="minijob-erklaerung">
+          <h2 id="minijob-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner multipliziert Stundenlohn und monatliche Arbeitszeit und vergleicht den Verdienst mit einer frei eingegebenen Minijob-Grenze.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Monatsverdienst = Stundenlohn mal Arbeitsstunden pro Monat. Die Differenz zur Grenze zeigt den verbleibenden Spielraum oder eine Ueberschreitung.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Berechnung hilft bei der Einsatzplanung von Minijobbern und bei der persoenlichen Abschaetzung moeglicher Stundenumfaenge.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Mit 12,82 EUR Stundenlohn und 40 Stunden im Monat laesst sich sofort pruefen, ob die gewaehlte Minijob-Grenze eingehalten wird.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("minijob-form");
+      const stundenlohnField = document.getElementById("minijob-stundenlohn");
+      const stundenField = document.getElementById("minijob-stunden");
+      const grenzeField = document.getElementById("minijob-grenze");
+      const button = document.getElementById("minijob-berechnen");
+      const result = document.getElementById("minijob-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const stundenlohn = parseNumber(stundenlohnField.value);
+        const stunden = parseNumber(stundenField.value);
+        const grenze = parseNumber(grenzeField.value);
+        if (!Number.isFinite(stundenlohn) || !Number.isFinite(stunden) || !Number.isFinite(grenze)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (stundenlohn < 0 || stunden < 0 || grenze < 0) { showError("Stundenlohn, Arbeitsstunden und Grenze muessen mindestens 0 sein."); return; }
+        const monatsverdienst = stundenlohn * stunden;
+        const differenz = grenze - monatsverdienst;
+        const status = differenz >= 0 ? "Grenze eingehalten" : "Grenze ueberschritten";
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Monatsverdienst</span><strong>${formatCurrency(monatsverdienst)} EUR</strong></p><p class="result-line"><span>Minijob-Grenze</span><strong>${formatCurrency(grenze)} EUR</strong></p><p class="result-line"><span>Differenz zur Grenze</span><strong>${formatCurrency(differenz)} EUR</strong></p><p class="result-line"><span>Status</span><strong>${status}</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

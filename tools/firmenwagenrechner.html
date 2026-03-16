@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firmenwagenrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Firmenwagenrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Firmenwagenrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich der geldwerte Vorteil eines Firmenwagens nach der 1-Prozent-Methode vereinfacht abschaetzen.</p>
+        <p class="muted">Zusatzkosten fuer den Arbeitsweg werden ueber die Distanz innerhalb der 1-Prozent-Logik beruecksichtigt.</p>
+        <form class="input-grid calculator-form" id="firmenwagen-form" novalidate>
+          <section class="calc-group" aria-labelledby="firmenwagen-grunddaten">
+            <h2 id="firmenwagen-grunddaten" class="calc-group-title">Fahrzeugdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="firmenwagen-listenpreis">Bruttolistenpreis</label><input type="number" id="firmenwagen-listenpreis" min="0" step="0.01" placeholder="42000"></div>
+              <div class="field"><label for="firmenwagen-entfernung">Entfernung Wohnung - Arbeitsstaette in km</label><input type="number" id="firmenwagen-entfernung" min="0" step="0.01" placeholder="18"></div>
+              <div class="field"><label for="firmenwagen-steuersatz">Persoenlicher Steuersatz in %</label><input type="number" id="firmenwagen-steuersatz" min="0" step="0.01" placeholder="30"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="firmenwagen-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="firmenwagen-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="firmenwagen-erklaerung">
+          <h2 id="firmenwagen-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner ermittelt den monatlichen und jaehrlichen geldwerten Vorteil eines Firmenwagens inklusive Arbeitsweg.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Monatlicher Vorteil = 1 Prozent des Bruttolistenpreises plus 0,03 Prozent des Bruttolistenpreises pro Entfernungskilometer.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Schaetzung hilft bei Vergleichen zwischen Dienstwagen und Privatfahrzeug sowie bei der persoenlichen Netto-Planung.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 42.000 EUR Listenpreis und 18 Kilometern Arbeitsweg steigt der geldwerte Vorteil ueber den reinen Privatnutzungsanteil hinaus.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("firmenwagen-form");
+      const listenpreisField = document.getElementById("firmenwagen-listenpreis");
+      const entfernungField = document.getElementById("firmenwagen-entfernung");
+      const steuersatzField = document.getElementById("firmenwagen-steuersatz");
+      const button = document.getElementById("firmenwagen-berechnen");
+      const result = document.getElementById("firmenwagen-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const listenpreis = parseNumber(listenpreisField.value);
+        const entfernung = parseNumber(entfernungField.value || "0");
+        const steuersatz = parseNumber(steuersatzField.value || "0");
+        if (!Number.isFinite(listenpreis) || !Number.isFinite(entfernung) || !Number.isFinite(steuersatz)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (listenpreis <= 0 || entfernung < 0 || steuersatz < 0) { showError("Der Listenpreis muss groesser als 0 sein. Entfernung und Steuersatz duerfen nicht negativ sein."); return; }
+        const privatnutzung = listenpreis * 0.01;
+        const arbeitsweg = listenpreis * 0.0003 * entfernung;
+        const monatlicherVorteil = privatnutzung + arbeitsweg;
+        const jaehrlicherVorteil = monatlicherVorteil * 12;
+        const geschaetzteSteuerlast = jaehrlicherVorteil * (steuersatz / 100);
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Monatlicher geldwerter Vorteil</span><strong>${formatCurrency(monatlicherVorteil)} EUR</strong></p><p class="result-line"><span>Privatnutzung (1 %)</span><strong>${formatCurrency(privatnutzung)} EUR</strong></p><p class="result-line"><span>Arbeitsweg (0,03 % je km)</span><strong>${formatCurrency(arbeitsweg)} EUR</strong></p><p class="result-line"><span>Jaehrlicher geldwerter Vorteil</span><strong>${formatCurrency(jaehrlicherVorteil)} EUR</strong></p><p class="result-line"><span>Geschaetzte Steuerwirkung pro Jahr</span><strong>${formatCurrency(geschaetzteSteuerlast)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gewerbesteuerrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Gewerbesteuerrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Gewerbesteuerrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich die Gewerbesteuer aus Gewerbeertrag, Freibetrag und Hebesatz vereinfacht berechnen.</p>
+        <p class="muted">Die Berechnung basiert auf Steuermesszahl und kommunalem Hebesatz und dient als informative Schaetzung.</p>
+        <form class="input-grid calculator-form" id="gewerbesteuer-form" novalidate>
+          <section class="calc-group" aria-labelledby="gewerbesteuer-grunddaten">
+            <h2 id="gewerbesteuer-grunddaten" class="calc-group-title">Steuerdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="gewerbesteuer-ertrag">Gewerbeertrag</label><input type="number" id="gewerbesteuer-ertrag" min="0" step="0.01" placeholder="95000"></div>
+              <div class="field"><label for="gewerbesteuer-freibetrag">Freibetrag</label><input type="number" id="gewerbesteuer-freibetrag" min="0" step="0.01" placeholder="24500"></div>
+              <div class="field"><label for="gewerbesteuer-hebesatz">Hebesatz in %</label><input type="number" id="gewerbesteuer-hebesatz" min="0" step="0.01" placeholder="400"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="gewerbesteuer-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="gewerbesteuer-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="gewerbesteuer-erklaerung">
+          <h2 id="gewerbesteuer-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner ermittelt den gekuerzten Gewerbeertrag, den Steuermessbetrag und die darauf basierende Gewerbesteuer.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Steuermessbetrag = gekuerzter Gewerbeertrag mal 3,5 Prozent. Gewerbesteuer = Steuermessbetrag mal Hebesatz.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie hilft bei der Steuerplanung fuer Einzelunternehmen, Personengesellschaften und Kapitalgesellschaften auf lokaler Ebene.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 95.000 EUR Gewerbeertrag, 24.500 EUR Freibetrag und 400 Prozent Hebesatz laesst sich die voraussichtliche Gewerbesteuer schnell abschaetzen.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("gewerbesteuer-form");
+      const ertragField = document.getElementById("gewerbesteuer-ertrag");
+      const freibetragField = document.getElementById("gewerbesteuer-freibetrag");
+      const hebesatzField = document.getElementById("gewerbesteuer-hebesatz");
+      const button = document.getElementById("gewerbesteuer-berechnen");
+      const result = document.getElementById("gewerbesteuer-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const ertrag = parseNumber(ertragField.value);
+        const freibetrag = parseNumber(freibetragField.value || "0");
+        const hebesatz = parseNumber(hebesatzField.value);
+        if (!Number.isFinite(ertrag) || !Number.isFinite(freibetrag) || !Number.isFinite(hebesatz)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (ertrag < 0 || freibetrag < 0 || hebesatz < 0) { showError("Ertrag, Freibetrag und Hebesatz muessen mindestens 0 sein."); return; }
+        const gekuerzterErtrag = Math.max(ertrag - freibetrag, 0);
+        const steuermessbetrag = gekuerzterErtrag * 0.035;
+        const gewerbesteuer = steuermessbetrag * (hebesatz / 100);
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Gewerbesteuer</span><strong>${formatCurrency(gewerbesteuer)} EUR</strong></p><p class="result-line"><span>Gekuerzter Gewerbeertrag</span><strong>${formatCurrency(gekuerzterErtrag)} EUR</strong></p><p class="result-line"><span>Steuermessbetrag</span><strong>${formatCurrency(steuermessbetrag)} EUR</strong></p><p class="result-line"><span>Hebesatz</span><strong>${hebesatz.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} %</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>
