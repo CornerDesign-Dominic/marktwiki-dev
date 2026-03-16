@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nettovermoegensrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Nettovermoegensrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Nettovermoegensrechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich das Nettovermoegen aus Vermoegenswerten und Verbindlichkeiten berechnen.</p>
+        <p class="muted">Die Seite liefert eine einfache Bilanz aus liquiden Mitteln, Sachwerten und Schulden.</p>
+        <form class="input-grid calculator-form" id="nettovermoegen-form" novalidate>
+          <section class="calc-group" aria-labelledby="nettovermoegen-grunddaten">
+            <h2 id="nettovermoegen-grunddaten" class="calc-group-title">Vermoegen und Schulden</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="nettovermoegen-liquide">Liquide Mittel</label><input type="number" id="nettovermoegen-liquide" min="0" step="0.01" placeholder="15000"></div>
+              <div class="field"><label for="nettovermoegen-anlagen">Wertpapiere und Anlagen</label><input type="number" id="nettovermoegen-anlagen" min="0" step="0.01" placeholder="40000"></div>
+              <div class="field"><label for="nettovermoegen-sachwerte">Sachwerte und Immobilien</label><input type="number" id="nettovermoegen-sachwerte" min="0" step="0.01" placeholder="180000"></div>
+              <div class="field"><label for="nettovermoegen-schulden">Schulden und Verbindlichkeiten</label><input type="number" id="nettovermoegen-schulden" min="0" step="0.01" placeholder="95000"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="nettovermoegen-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="nettovermoegen-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="nettovermoegen-erklaerung">
+          <h2 id="nettovermoegen-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner stellt das gesamte Vermoegen den gesamten Verbindlichkeiten gegenueber und ermittelt daraus das Nettovermoegen.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Nettovermoegen = liquide Mittel plus Anlagen plus Sachwerte minus Schulden.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie eignet sich fuer private Vermoegensplanung, Haushaltsbilanzen und langfristige Finanzuebersichten.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Wer seine Bankguthaben, Wertpapiere und Immobilienwerte mit offenen Krediten verrechnet, sieht direkt sein aktuelles Nettovermoegen.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("nettovermoegen-form");
+      const liquideField = document.getElementById("nettovermoegen-liquide");
+      const anlagenField = document.getElementById("nettovermoegen-anlagen");
+      const sachwerteField = document.getElementById("nettovermoegen-sachwerte");
+      const schuldenField = document.getElementById("nettovermoegen-schulden");
+      const button = document.getElementById("nettovermoegen-berechnen");
+      const result = document.getElementById("nettovermoegen-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const liquide = parseNumber(liquideField.value || "0");
+        const anlagen = parseNumber(anlagenField.value || "0");
+        const sachwerte = parseNumber(sachwerteField.value || "0");
+        const schulden = parseNumber(schuldenField.value || "0");
+        if (!Number.isFinite(liquide) || !Number.isFinite(anlagen) || !Number.isFinite(sachwerte) || !Number.isFinite(schulden)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (liquide < 0 || anlagen < 0 || sachwerte < 0 || schulden < 0) { showError("Alle Werte muessen mindestens 0 sein."); return; }
+        const vermoegen = liquide + anlagen + sachwerte;
+        const nettovermoegen = vermoegen - schulden;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Nettovermoegen</span><strong>${formatCurrency(nettovermoegen)} EUR</strong></p><p class="result-line"><span>Gesamtvermoegen</span><strong>${formatCurrency(vermoegen)} EUR</strong></p><p class="result-line"><span>Gesamtschulden</span><strong>${formatCurrency(schulden)} EUR</strong></p><p class="result-line"><span>Liquide Mittel</span><strong>${formatCurrency(liquide)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

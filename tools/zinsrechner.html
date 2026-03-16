@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zinsrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Zinsrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Zinsrechner</h1>
+        <p class="lead">Mit diesem Rechner lassen sich Zinsertrag, Endkapital und effektiver Jahreszins aus Kapital, Laufzeit und Zinssatz berechnen.</p>
+        <p class="muted">Die Berechnung eignet sich fuer einfache Zinsvergleiche ohne regelmaessige Sparraten.</p>
+        <form class="input-grid calculator-form" id="zinsrechner-form" novalidate>
+          <section class="calc-group" aria-labelledby="zinsrechner-grunddaten">
+            <h2 id="zinsrechner-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="zinsrechner-kapital">Anfangskapital</label><input type="number" id="zinsrechner-kapital" min="0" step="0.01" placeholder="10000"></div>
+              <div class="field"><label for="zinsrechner-zinssatz">Zinssatz in % pro Jahr</label><input type="number" id="zinsrechner-zinssatz" min="0" step="0.01" placeholder="3.5"></div>
+              <div class="field"><label for="zinsrechner-laufzeit">Laufzeit in Jahren</label><input type="number" id="zinsrechner-laufzeit" min="0" step="0.01" placeholder="3"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="zinsrechner-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="zinsrechner-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="zinsrechner-erklaerung">
+          <h2 id="zinsrechner-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner ermittelt den gesamten Zinsertrag und das Endkapital eines angelegten Betrags ueber eine feste Laufzeit.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Zinsertrag = Anfangskapital mal Zinssatz mal Laufzeit. Endkapital = Anfangskapital plus Zinsertrag.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie hilft beim Vergleich einfacher Zinsangebote fuer Tagesgeld, Festgeld oder Darlehensszenarien.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 10.000 EUR, 3,5 Prozent und 3 Jahren entsteht ein Zinsertrag von 1.050 EUR und damit ein Endkapital von 11.050 EUR.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("zinsrechner-form");
+      const kapitalField = document.getElementById("zinsrechner-kapital");
+      const zinssatzField = document.getElementById("zinsrechner-zinssatz");
+      const laufzeitField = document.getElementById("zinsrechner-laufzeit");
+      const button = document.getElementById("zinsrechner-berechnen");
+      const result = document.getElementById("zinsrechner-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatPercent(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const kapital = parseNumber(kapitalField.value);
+        const zinssatz = parseNumber(zinssatzField.value);
+        const laufzeit = parseNumber(laufzeitField.value);
+        if (!Number.isFinite(kapital) || !Number.isFinite(zinssatz) || !Number.isFinite(laufzeit)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (kapital < 0 || zinssatz < 0 || laufzeit < 0) { showError("Kapital, Zinssatz und Laufzeit muessen mindestens 0 sein."); return; }
+        const zinsen = kapital * (zinssatz / 100) * laufzeit;
+        const endkapital = kapital + zinsen;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Endkapital</span><strong>${formatCurrency(endkapital)} EUR</strong></p><p class="result-line"><span>Zinsertrag</span><strong>${formatCurrency(zinsen)} EUR</strong></p><p class="result-line"><span>Anfangskapital</span><strong>${formatCurrency(kapital)} EUR</strong></p><p class="result-line"><span>Zinssatz</span><strong>${formatPercent(zinssatz)} %</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

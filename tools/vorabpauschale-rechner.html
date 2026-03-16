@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vorabpauschale-Rechner | MarktWiki</title>
+  <meta name="description" content="Statischer Vorabpauschale-Rechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Vorabpauschale-Rechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich die Vorabpauschale fuer ETF oder Fonds vereinfacht aus Fondswert, Basiszins und Teilfreistellung abschaetzen.</p>
+        <p class="muted">Die Berechnung dient nur als informative Naeherung fuer thesaurierende Fondsanlagen.</p>
+        <form class="input-grid calculator-form" id="vorabpauschale-form" novalidate>
+          <section class="calc-group" aria-labelledby="vorabpauschale-grunddaten">
+            <h2 id="vorabpauschale-grunddaten" class="calc-group-title">Fondsdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="vorabpauschale-wert">Fondswert zu Jahresbeginn</label><input type="number" id="vorabpauschale-wert" min="0" step="0.01" placeholder="20000"></div>
+              <div class="field"><label for="vorabpauschale-basiszins">Basiszins in %</label><input type="number" id="vorabpauschale-basiszins" min="0" step="0.01" placeholder="2.55"></div>
+              <div class="field"><label for="vorabpauschale-teilfreistellung">Teilfreistellung in %</label><input type="number" id="vorabpauschale-teilfreistellung" min="0" step="0.01" placeholder="30"></div>
+              <div class="field"><label for="vorabpauschale-steuersatz">Abgeltungssteuersatz in %</label><input type="number" id="vorabpauschale-steuersatz" min="0" step="0.01" placeholder="26.375"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="vorabpauschale-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="vorabpauschale-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="vorabpauschale-erklaerung">
+          <h2 id="vorabpauschale-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner schaetzt die steuerliche Vorabpauschale sowie eine daraus abgeleitete Steuerbelastung fuer Fonds oder ETF.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Die Vorabpauschale wird vereinfacht aus Fondswert mal Basiszins berechnet. Die Teilfreistellung reduziert die steuerpflichtige Bemessungsgrundlage.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie hilft bei der Liquiditaetsplanung fuer Fondsanlagen, insbesondere bei thesaurierenden Produkten.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 20.000 EUR Fondswert und 30 Prozent Teilfreistellung kann die potenzielle Vorabpauschale schnell grob eingeordnet werden.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("vorabpauschale-form");
+      const wertField = document.getElementById("vorabpauschale-wert");
+      const basiszinsField = document.getElementById("vorabpauschale-basiszins");
+      const teilfreistellungField = document.getElementById("vorabpauschale-teilfreistellung");
+      const steuersatzField = document.getElementById("vorabpauschale-steuersatz");
+      const button = document.getElementById("vorabpauschale-berechnen");
+      const result = document.getElementById("vorabpauschale-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatPercent(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const wert = parseNumber(wertField.value);
+        const basiszins = parseNumber(basiszinsField.value);
+        const teilfreistellung = parseNumber(teilfreistellungField.value || "0");
+        const steuersatz = parseNumber(steuersatzField.value || "0");
+        if (!Number.isFinite(wert) || !Number.isFinite(basiszins) || !Number.isFinite(teilfreistellung) || !Number.isFinite(steuersatz)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (wert < 0 || basiszins < 0 || teilfreistellung < 0 || teilfreistellung > 100 || steuersatz < 0) { showError("Bitte nur gueltige Werte eingeben. Die Teilfreistellung muss zwischen 0 und 100 liegen."); return; }
+        const bruttoVorabpauschale = wert * (basiszins / 100);
+        const steuerpflichtig = bruttoVorabpauschale * (1 - teilfreistellung / 100);
+        const steuerlast = steuerpflichtig * (steuersatz / 100);
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Geschaetzte Vorabpauschale</span><strong>${formatCurrency(bruttoVorabpauschale)} EUR</strong></p><p class="result-line"><span>Steuerpflichtiger Anteil</span><strong>${formatCurrency(steuerpflichtig)} EUR</strong></p><p class="result-line"><span>Geschaetzte Steuerlast</span><strong>${formatCurrency(steuerlast)} EUR</strong></p><p class="result-line"><span>Teilfreistellung</span><strong>${formatPercent(teilfreistellung)} %</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>
