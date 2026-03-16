@@ -15,17 +15,32 @@
       <section class="card">
         <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
         <h1>Werbungskostenrechner</h1>
-        <p class="lead">Mit diesem Rechner laesst sich eine einfache Summe beruflich veranlasster Werbungskosten aus Pendelstrecke, Homeoffice und weiteren Ausgaben abschaetzen.</p>
-        <p class="muted">Die Pauschale ist frei anpassbar, damit die Vergleichsrechnung flexibel genutzt werden kann.</p>
+        <p class="lead">Mit diesem Rechner laesst sich eine einfache Summe typischer beruflicher Kosten berechnen, zum Beispiel fuer den Arbeitsweg, Homeoffice und weitere Ausgaben rund um den Job.</p>
+        <p class="muted">So sehen Sie schnell, welche Summe zusammenkommt und wie diese im Vergleich zu einer Pauschale aussieht.</p>
         <form class="input-grid calculator-form" id="werbungskosten-form" novalidate>
           <section class="calc-group" aria-labelledby="werbungskosten-grunddaten">
-            <h2 id="werbungskosten-grunddaten" class="calc-group-title">Grunddaten</h2>
+            <h2 id="werbungskosten-grunddaten" class="calc-group-title">Ihre Angaben</h2>
             <div class="calc-grid">
-              <div class="field"><label for="werbungskosten-entfernung">Einfache Entfernung in km</label><input type="number" id="werbungskosten-entfernung" min="0" step="0.01" placeholder="18"></div>
-              <div class="field"><label for="werbungskosten-arbeitstage">Fahrten zur Arbeitstage</label><input type="number" id="werbungskosten-arbeitstage" min="0" step="0.01" placeholder="210"></div>
-              <div class="field"><label for="werbungskosten-homeoffice">Homeoffice-Tage</label><input type="number" id="werbungskosten-homeoffice" min="0" step="0.01" placeholder="40"></div>
-              <div class="field"><label for="werbungskosten-sonstige">Weitere Werbungskosten</label><input type="number" id="werbungskosten-sonstige" min="0" step="0.01" placeholder="650"></div>
-              <div class="field"><label for="werbungskosten-pauschale">Vergleichs-Pauschale</label><input type="number" id="werbungskosten-pauschale" min="0" step="0.01" placeholder="1230"></div>
+              <div class="field">
+                <label for="werbungskosten-entfernung">Einfache Entfernung zur Arbeit in km (Pflicht)</label>
+                <input type="number" id="werbungskosten-entfernung" min="0" step="0.01" placeholder="18">
+              </div>
+              <div class="field">
+                <label for="werbungskosten-arbeitstage">Arbeitstage mit Fahrt zur Arbeit pro Jahr (Pflicht)</label>
+                <input type="number" id="werbungskosten-arbeitstage" min="0" step="0.01" placeholder="210">
+              </div>
+              <div class="field">
+                <label for="werbungskosten-homeoffice">Homeoffice-Tage (optional)</label>
+                <input type="number" id="werbungskosten-homeoffice" min="0" step="0.01" placeholder="40">
+              </div>
+              <div class="field">
+                <label for="werbungskosten-sonstige">Weitere Werbungskosten in EUR (optional)</label>
+                <input type="number" id="werbungskosten-sonstige" min="0" step="0.01" placeholder="650">
+              </div>
+              <div class="field">
+                <label for="werbungskosten-pauschale">Vergleichs-Pauschale in EUR (optional)</label>
+                <input type="number" id="werbungskosten-pauschale" min="0" step="0.01" placeholder="1230">
+              </div>
             </div>
           </section>
           <div class="calculator-actions"><button type="button" id="werbungskosten-berechnen" class="btn calc-submit">Berechnen</button></div>
@@ -34,10 +49,30 @@
         <section class="result-box calculator-explanation" aria-labelledby="werbungskosten-erklaerung">
           <h2 id="werbungskosten-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
           <div class="calc-explanation-grid">
-            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner summiert vereinfachte Werbungskosten aus Entfernungspauschale, Homeoffice und weiteren beruflichen Ausgaben.</p></article>
-            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Entfernungskosten = Entfernung mal Arbeitstage mal 0,30 EUR. Homeoffice = Tage mal 6 EUR. Dazu kommen weitere direkte Werbungskosten.</p></article>
-            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Die Summe hilft bei der groben Vorbereitung einer Einkommensteuererklaerung und beim Vergleich mit einer frei gesetzten Pauschale.</p></article>
-            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Wer 210 Tage ins Buero pendelt, 40 Tage im Homeoffice arbeitet und weitere berufliche Kosten hat, kann die grobe Gesamtsumme schnell abschaetzen.</p></article>
+            <article class="calc-explanation-block">
+              <h3>Was sind Werbungskosten?</h3>
+              <p>Werbungskosten sind Ausgaben, die durch Ihren Beruf entstehen. Dazu gehoeren zum Beispiel Kosten fuer den Arbeitsweg, fuer Arbeitsmittel oder fuer berufliche Fortbildungen.</p>
+            </article>
+            <article class="calc-explanation-block">
+              <h3>Wo fallen Werbungskosten typischerweise an?</h3>
+              <p>Haeufig entstehen Werbungskosten bei Fahrten zur Arbeit, im Homeoffice, beim Kauf von Arbeitsmitteln, bei Bewerbungen, bei beruflichen Reisen oder bei anteiligen Telefon- und Internetkosten.</p>
+            </article>
+            <article class="calc-explanation-block">
+              <h3>Welche Werbungskosten deckt dieser Rechner ab?</h3>
+              <p>Der Rechner beruecksichtigt Ihre Fahrten zur Arbeit, Ihre Homeoffice-Tage, ein Sammelfeld fuer weitere berufliche Ausgaben und auf Wunsch den Vergleich mit einer Pauschale.</p>
+            </article>
+            <article class="calc-explanation-block">
+              <h3>Wie berechnet der Rechner die Werte?</h3>
+              <p>Die Entfernung zur Arbeit wird mit den Arbeitstagen und einem Kilometersatz von 0,30 EUR verrechnet. Homeoffice-Tage werden mit 6 EUR pro Tag angesetzt. Weitere berufliche Kosten werden direkt dazugerechnet. Wenn Sie eine Pauschale eintragen, vergleicht der Rechner die Gesamtsumme damit.</p>
+            </article>
+            <article class="calc-explanation-block">
+              <h3>Welche Werbungskosten gibt es noch?</h3>
+              <p>Typische Werbungskosten sind Fahrtkosten, Homeoffice, Arbeitsmittel wie Laptop oder Schreibtischstuhl, Fort- und Weiterbildungen, Bewerbungskosten, berufliche Reisekosten, beruflich genutztes Telefon oder Internet sowie in vielen Faellen auch Kontofuehrungs- oder Berufsverbandskosten.</p>
+            </article>
+            <article class="calc-explanation-block">
+              <h3>Wichtiger Hinweis</h3>
+              <p>Der Rechner bietet eine einfache Orientierung fuer haeufige Arbeitnehmerfaelle. Ob und in welcher Hoehe Kosten steuerlich anerkannt werden, haengt am Ende immer vom konkreten Einzelfall ab.</p>
+            </article>
           </div>
         </section>
       </section>
@@ -56,27 +91,90 @@
       const button = document.getElementById("werbungskosten-berechnen");
       const result = document.getElementById("werbungskosten-result");
       let hasCalculated = false;
-      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
-      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-      function resetResult() { result.hidden = true; result.textContent = ""; }
-      function showError(message) { result.hidden = false; result.textContent = message; }
-      function updateResult() {
-        const entfernung = parseNumber(entfernungField.value || "0");
-        const arbeitstage = parseNumber(arbeitstageField.value || "0");
-        const homeoffice = parseNumber(homeofficeField.value || "0");
-        const sonstige = parseNumber(sonstigeField.value || "0");
-        const pauschale = parseNumber(pauschaleField.value || "0");
-        if (!Number.isFinite(entfernung) || !Number.isFinite(arbeitstage) || !Number.isFinite(homeoffice) || !Number.isFinite(sonstige) || !Number.isFinite(pauschale)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
-        if (entfernung < 0 || arbeitstage < 0 || homeoffice < 0 || sonstige < 0 || pauschale < 0) { showError("Alle Werte muessen mindestens 0 sein."); return; }
-        const entfernungskosten = entfernung * arbeitstage * 0.30;
-        const homeofficeKosten = homeoffice * 6;
-        const gesamt = entfernungskosten + homeofficeKosten + sonstige;
-        const differenz = gesamt - pauschale;
-        result.hidden = false;
-        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Geschaetzte Werbungskosten</span><strong>${formatCurrency(gesamt)} EUR</strong></p><p class="result-line"><span>Entfernungspauschale</span><strong>${formatCurrency(entfernungskosten)} EUR</strong></p><p class="result-line"><span>Homeoffice</span><strong>${formatCurrency(homeofficeKosten)} EUR</strong></p><p class="result-line"><span>Weitere Kosten</span><strong>${formatCurrency(sonstige)} EUR</strong></p><p class="result-line"><span>Differenz zur Pauschale</span><strong>${formatCurrency(differenz)} EUR</strong></p></div>`;
+
+      function parseNumber(value) {
+        return Number(String(value).trim().replace(/\s+/g, "").replace(",", "."));
       }
-      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
-      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+
+      function parseOptional(value) {
+        const trimmed = String(value).trim();
+        if (trimmed === "") {
+          return null;
+        }
+        return parseNumber(trimmed);
+      }
+
+      function formatCurrency(value) {
+        return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function resetResult() {
+        result.hidden = true;
+        result.textContent = "";
+      }
+
+      function showError(message) {
+        result.hidden = false;
+        result.textContent = message;
+      }
+
+      function updateResult() {
+        const entfernung = parseNumber(entfernungField.value);
+        const arbeitstage = parseNumber(arbeitstageField.value);
+        const homeoffice = parseOptional(homeofficeField.value);
+        const sonstige = parseOptional(sonstigeField.value);
+        const pauschale = parseOptional(pauschaleField.value);
+
+        if (!Number.isFinite(entfernung) || !Number.isFinite(arbeitstage)) {
+          showError("Bitte die Entfernung zur Arbeit und die Arbeitstage pro Jahr eingeben.");
+          return;
+        }
+
+        if (entfernung < 0 || arbeitstage < 0) {
+          showError("Entfernung und Arbeitstage muessen mindestens 0 sein.");
+          return;
+        }
+
+        if ((homeoffice !== null && (!Number.isFinite(homeoffice) || homeoffice < 0)) || (sonstige !== null && (!Number.isFinite(sonstige) || sonstige < 0)) || (pauschale !== null && (!Number.isFinite(pauschale) || pauschale < 0))) {
+          showError("Optionale Werte muessen leer bleiben oder als Zahl groesser oder gleich 0 eingegeben werden.");
+          return;
+        }
+
+        const pendlerkosten = entfernung * arbeitstage * 0.30;
+        const homeofficeAnteil = (homeoffice || 0) * 6;
+        const weitereWerbungskosten = sonstige || 0;
+        const summeWerbungskosten = pendlerkosten + homeofficeAnteil + weitereWerbungskosten;
+
+        const resultLines = [
+          `<p class="result-line result-line-total"><span>Summe Werbungskosten</span><strong>${formatCurrency(summeWerbungskosten)} EUR</strong></p>`,
+          `<p class="result-line"><span>Pendlerkosten</span><strong>${formatCurrency(pendlerkosten)} EUR</strong></p>`,
+          `<p class="result-line"><span>Homeoffice-Anteil</span><strong>${formatCurrency(homeofficeAnteil)} EUR</strong></p>`,
+          `<p class="result-line"><span>Weitere Werbungskosten</span><strong>${formatCurrency(weitereWerbungskosten)} EUR</strong></p>`
+        ];
+
+        if (pauschale !== null) {
+          const differenz = summeWerbungskosten - pauschale;
+          const label = differenz >= 0 ? "Betrag ueber der Pauschale" : "Betrag unter der Pauschale";
+          resultLines.push(`<p class="result-line"><span>Vergleich mit Pauschale</span><strong>${formatCurrency(pauschale)} EUR</strong></p>`);
+          resultLines.push(`<p class="result-line"><span>${label}</span><strong>${formatCurrency(Math.abs(differenz))} EUR</strong></p>`);
+        }
+
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary">${resultLines.join("")}</div>`;
+      }
+
+      form.addEventListener("input", function () {
+        if (hasCalculated) {
+          hasCalculated = false;
+          resetResult();
+        }
+      });
+
+      button.addEventListener("click", function () {
+        hasCalculated = true;
+        updateResult();
+      });
+
       resetResult();
     })();
   </script>
