@@ -2,8 +2,10 @@ name: Update daily stock EOD data
 
 on:
   schedule:
-    # Wochentags nach Handelsende in den USA.
-    - cron: "15 21 * * 1-5"
+    # GitHub Actions cron runs in UTC.
+    # We trigger every 10 minutes during the two UTC hours that can map to
+    # 16:20 in New York, then gate the real work with an America/New_York check.
+    - cron: "*/10 20-21 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -25,23 +27,58 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check scheduled run time in New York
+        id: market_time
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          # Allow manual runs at any time. The time gate only protects the schedule trigger.
+          if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Manual dispatch detected, skipping time gate."
+            exit 0
+          fi
+
+          # Resolve the current local exchange time in America/New_York so DST
+          # changes are handled by the runner's timezone database automatically.
+          current_hour=$(TZ="America/New_York" date +%H)
+          current_minute=$(TZ="America/New_York" date +%M)
+          current_time="${current_hour}:${current_minute}"
+
+          echo "Current America/New_York time: ${current_time}"
+
+          # Run the EOD workflow only at exactly 16:20 New York time.
+          if [ "$current_hour" = "16" ] && [ "$current_minute" = "20" ]; then
+            echo "should_run=true" >> "$GITHUB_OUTPUT"
+            echo "Matched 16:20 America/New_York. Continuing EOD update."
+          else
+            echo "should_run=false" >> "$GITHUB_OUTPUT"
+            echo "Not 16:20 America/New_York. Skipping scheduled EOD update."
+          fi
+
       - name: Check out repository
+        if: steps.market_time.outputs.should_run == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Node.js
+        if: steps.market_time.outputs.should_run == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "22"
 
       - name: Fetch stock EOD file
+        if: steps.market_time.outputs.should_run == 'true'
         env:
           EOD_API_KEY: ${{ secrets.MASSIVE_API_KEY }}
         run: node scripts/fetch-eod-stock-data.mjs
 
       - name: Process matched stock EOD data
+        if: steps.market_time.outputs.should_run == 'true'
         run: node scripts/process-eod-stock-data.mjs "$EOD_SOURCE_FILE"
 
       - name: Check for data changes
+        if: steps.market_time.outputs.should_run == 'true'
         id: changes
         shell: bash
         run: |
