@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gehaltserhoehungs-Rechner | MarktWiki</title>
+  <meta name="description" content="Statischer Gehaltserhoehungs-Rechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Gehaltserhoehungs-Rechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich eine Gehaltserhoehung in Euro und Prozent auf Monats- und Jahresbasis berechnen.</p>
+        <p class="muted">Die Ausgabe zeigt altes und neues Gehalt sowie den absoluten Zuwachs.</p>
+        <form class="input-grid calculator-form" id="gehaltserhoehung-form" novalidate>
+          <section class="calc-group" aria-labelledby="gehaltserhoehung-grunddaten">
+            <h2 id="gehaltserhoehung-grunddaten" class="calc-group-title">Gehaltsdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="gehaltserhoehung-alt">Bisheriges Monatsgehalt</label><input type="number" id="gehaltserhoehung-alt" min="0" step="0.01" placeholder="3500"></div>
+              <div class="field"><label for="gehaltserhoehung-prozent">Gehaltserhoehung in %</label><input type="number" id="gehaltserhoehung-prozent" min="0" step="0.01" placeholder="7.5"></div>
+              <div class="field"><label for="gehaltserhoehung-gehaelter">Gehaltszahlungen pro Jahr</label><input type="number" id="gehaltserhoehung-gehaelter" min="0" step="0.01" placeholder="12"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="gehaltserhoehung-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="gehaltserhoehung-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="gehaltserhoehung-erklaerung">
+          <h2 id="gehaltserhoehung-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner zeigt die monatliche und jaehrliche Wirkung einer prozentualen Gehaltserhoehung.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Neues Gehalt = altes Gehalt mal (1 + Prozent / 100). Der Zuwachs ergibt sich aus der Differenz beider Werte.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie hilft bei Gehaltsverhandlungen, Angebotsvergleichen und Budgetplanungen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Eine Erhoehung um 7,5 Prozent auf 3.500 EUR entspricht 262,50 EUR mehr pro Monat.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("gehaltserhoehung-form");
+      const altField = document.getElementById("gehaltserhoehung-alt");
+      const prozentField = document.getElementById("gehaltserhoehung-prozent");
+      const gehaelterField = document.getElementById("gehaltserhoehung-gehaelter");
+      const button = document.getElementById("gehaltserhoehung-berechnen");
+      const result = document.getElementById("gehaltserhoehung-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const alt = parseNumber(altField.value);
+        const prozent = parseNumber(prozentField.value);
+        const gehaelter = parseNumber(gehaelterField.value || "12");
+        if (!Number.isFinite(alt) || !Number.isFinite(prozent) || !Number.isFinite(gehaelter)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (alt < 0 || prozent < 0 || gehaelter <= 0) { showError("Gehalt und Prozent muessen mindestens 0 sein. Die Zahl der Gehaltszahlungen muss groesser als 0 sein."); return; }
+        const neu = alt * (1 + prozent / 100);
+        const monatlichMehr = neu - alt;
+        const jaehrlichMehr = monatlichMehr * gehaelter;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Neues Monatsgehalt</span><strong>${formatCurrency(neu)} EUR</strong></p><p class="result-line"><span>Monatlicher Zuwachs</span><strong>${formatCurrency(monatlichMehr)} EUR</strong></p><p class="result-line"><span>Jaehrlicher Zuwachs</span><strong>${formatCurrency(jaehrlichMehr)} EUR</strong></p><p class="result-line"><span>Bisheriges Monatsgehalt</span><strong>${formatCurrency(alt)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

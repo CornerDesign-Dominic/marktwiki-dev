@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spritrechner | MarktWiki</title>
+  <meta name="description" content="Statischer Spritrechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Spritrechner</h1>
+        <p class="lead">Mit diesem Rechner lassen sich Kraftstoffverbrauch, Spritkosten und Kosten pro Kilometer fuer eine Strecke berechnen.</p>
+        <p class="muted">Die Berechnung eignet sich fuer Reiseplanung, Pendelstrecken und Fahrzeugvergleiche.</p>
+        <form class="input-grid calculator-form" id="sprit-form" novalidate>
+          <section class="calc-group" aria-labelledby="sprit-grunddaten">
+            <h2 id="sprit-grunddaten" class="calc-group-title">Fahrtdaten</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="sprit-strecke">Strecke in km</label><input type="number" id="sprit-strecke" min="0" step="0.01" placeholder="240"></div>
+              <div class="field"><label for="sprit-verbrauch">Verbrauch in Liter je 100 km</label><input type="number" id="sprit-verbrauch" min="0" step="0.01" placeholder="6.8"></div>
+              <div class="field"><label for="sprit-preis">Spritpreis je Liter</label><input type="number" id="sprit-preis" min="0" step="0.01" placeholder="1.79"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="sprit-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="sprit-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="sprit-erklaerung">
+          <h2 id="sprit-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner bestimmt den benoetigten Kraftstoff, die Gesamtkosten und die Kosten pro Kilometer einer Fahrt.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Literbedarf = Strecke mal Verbrauch / 100. Spritkosten = Literbedarf mal Preis je Liter.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie hilft bei Reiseplanung, Pendlerkosten und Vergleichen zwischen Fahrzeugen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 240 km, 6,8 Litern je 100 km und 1,79 EUR je Liter lassen sich die Fahrtkosten schnell abschaetzen.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("sprit-form");
+      const streckeField = document.getElementById("sprit-strecke");
+      const verbrauchField = document.getElementById("sprit-verbrauch");
+      const preisField = document.getElementById("sprit-preis");
+      const button = document.getElementById("sprit-berechnen");
+      const result = document.getElementById("sprit-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function formatNumber(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const strecke = parseNumber(streckeField.value);
+        const verbrauch = parseNumber(verbrauchField.value);
+        const preis = parseNumber(preisField.value);
+        if (!Number.isFinite(strecke) || !Number.isFinite(verbrauch) || !Number.isFinite(preis)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (strecke < 0 || verbrauch < 0 || preis < 0) { showError("Strecke, Verbrauch und Preis muessen mindestens 0 sein."); return; }
+        const liter = strecke * verbrauch / 100;
+        const kosten = liter * preis;
+        const kostenProKm = strecke === 0 ? 0 : kosten / strecke;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Spritkosten</span><strong>${formatCurrency(kosten)} EUR</strong></p><p class="result-line"><span>Literbedarf</span><strong>${formatNumber(liter)} Liter</strong></p><p class="result-line"><span>Kosten pro Kilometer</span><strong>${formatCurrency(kostenProKm)} EUR</strong></p><p class="result-line"><span>Strecke</span><strong>${formatNumber(strecke)} km</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Abgeltungssteuer-Rechner | MarktWiki</title>
+  <meta name="description" content="Statischer Abgeltungssteuer-Rechner im MarktWiki.">
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <script src="../assets/js/layout.js"></script>
+</head>
+<body data-base-path=".." data-nav="tools">
+  <script>window.MarktWikiLayout.injectHeader();</script>
+  <main>
+    <div class="container">
+      <section class="card">
+        <a class="back-link" href="../werkzeuge.html">&larr; Zur Werkzeuguebersicht</a>
+        <h1>Abgeltungssteuer-Rechner</h1>
+        <p class="lead">Mit diesem Rechner laesst sich die Abgeltungssteuer auf Kapitalertraege vereinfacht aus Ertrag, Freibetrag und Steuersatz berechnen.</p>
+        <p class="muted">Der Rechner arbeitet mit frei anpassbaren Saetzen und dient als einfache Orientierung.</p>
+        <form class="input-grid calculator-form" id="abgeltungssteuer-form" novalidate>
+          <section class="calc-group" aria-labelledby="abgeltungssteuer-grunddaten">
+            <h2 id="abgeltungssteuer-grunddaten" class="calc-group-title">Kapitalertraege</h2>
+            <div class="calc-grid">
+              <div class="field"><label for="abgeltungssteuer-ertrag">Kapitalertrag</label><input type="number" id="abgeltungssteuer-ertrag" min="0" step="0.01" placeholder="2400"></div>
+              <div class="field"><label for="abgeltungssteuer-freibetrag">Freibetrag</label><input type="number" id="abgeltungssteuer-freibetrag" min="0" step="0.01" placeholder="1000"></div>
+              <div class="field"><label for="abgeltungssteuer-satz">Abgeltungssteuersatz in %</label><input type="number" id="abgeltungssteuer-satz" min="0" step="0.01" placeholder="25"></div>
+              <div class="field"><label for="abgeltungssteuer-soli">Solidaritaetszuschlag in %</label><input type="number" id="abgeltungssteuer-soli" min="0" step="0.01" placeholder="5.5"></div>
+            </div>
+          </section>
+          <div class="calculator-actions"><button type="button" id="abgeltungssteuer-berechnen" class="btn calc-submit">Berechnen</button></div>
+        </form>
+        <div id="abgeltungssteuer-result" class="result-box" aria-live="polite" hidden></div>
+        <section class="result-box calculator-explanation" aria-labelledby="abgeltungssteuer-erklaerung">
+          <h2 id="abgeltungssteuer-erklaerung" class="result-heading">Erlaeuterung zum Rechner</h2>
+          <div class="calc-explanation-grid">
+            <article class="calc-explanation-block"><h3>Was berechnet der Rechner?</h3><p>Der Rechner ermittelt den steuerpflichtigen Kapitalertrag sowie die daraus folgende Abgeltungssteuer und den Solidaritaetszuschlag.</p></article>
+            <article class="calc-explanation-block"><h3>Welche Formel wird verwendet?</h3><p>Steuerpflichtiger Ertrag = Kapitalertrag minus Freibetrag. Die Abgeltungssteuer ergibt sich aus dem Steuersatz, der Soli als Zuschlag darauf.</p></article>
+            <article class="calc-explanation-block"><h3>Wofuer wird die Kennzahl genutzt?</h3><p>Sie hilft bei Dividenden-, Zins- und Verkausgewinnschaetzungen fuer Kapitalanlagen.</p></article>
+            <article class="calc-explanation-block"><h3>Praxisbeispiel</h3><p>Bei 2.400 EUR Kapitalertrag und 1.000 EUR Freibetrag wird nur der verbleibende Betrag besteuert.</p></article>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+  <script>window.MarktWikiLayout.injectFooter();</script>
+  <script>
+    (function () {
+      "use strict";
+      const form = document.getElementById("abgeltungssteuer-form");
+      const ertragField = document.getElementById("abgeltungssteuer-ertrag");
+      const freibetragField = document.getElementById("abgeltungssteuer-freibetrag");
+      const satzField = document.getElementById("abgeltungssteuer-satz");
+      const soliField = document.getElementById("abgeltungssteuer-soli");
+      const button = document.getElementById("abgeltungssteuer-berechnen");
+      const result = document.getElementById("abgeltungssteuer-result");
+      let hasCalculated = false;
+      function parseNumber(value) { return Number(String(value).trim().replace(/\s+/g, "").replace(",", ".")); }
+      function formatCurrency(value) { return value.toLocaleString("de-DE", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+      function resetResult() { result.hidden = true; result.textContent = ""; }
+      function showError(message) { result.hidden = false; result.textContent = message; }
+      function updateResult() {
+        const ertrag = parseNumber(ertragField.value);
+        const freibetrag = parseNumber(freibetragField.value || "0");
+        const satz = parseNumber(satzField.value);
+        const soli = parseNumber(soliField.value || "0");
+        if (!Number.isFinite(ertrag) || !Number.isFinite(freibetrag) || !Number.isFinite(satz) || !Number.isFinite(soli)) { showError("Bitte alle Werte vollstaendig eingeben."); return; }
+        if (ertrag < 0 || freibetrag < 0 || satz < 0 || soli < 0) { showError("Alle Werte muessen mindestens 0 sein."); return; }
+        const steuerpflichtig = Math.max(ertrag - freibetrag, 0);
+        const steuer = steuerpflichtig * (satz / 100);
+        const solidaritaetszuschlag = steuer * (soli / 100);
+        const gesamt = steuer + solidaritaetszuschlag;
+        const netto = ertrag - gesamt;
+        result.hidden = false;
+        result.innerHTML = `<p class="result-heading">Ergebnisuebersicht</p><div class="result-summary"><p class="result-line result-line-total"><span>Steuerlast gesamt</span><strong>${formatCurrency(gesamt)} EUR</strong></p><p class="result-line"><span>Steuerpflichtiger Ertrag</span><strong>${formatCurrency(steuerpflichtig)} EUR</strong></p><p class="result-line"><span>Abgeltungssteuer</span><strong>${formatCurrency(steuer)} EUR</strong></p><p class="result-line"><span>Solidaritaetszuschlag</span><strong>${formatCurrency(solidaritaetszuschlag)} EUR</strong></p><p class="result-line"><span>Nettoertrag</span><strong>${formatCurrency(netto)} EUR</strong></p></div>`;
+      }
+      form.addEventListener("input", function () { if (hasCalculated) { hasCalculated = false; resetResult(); } });
+      button.addEventListener("click", function () { hasCalculated = true; updateResult(); });
+      resetResult();
+    })();
+  </script>
+</body>
+</html>
