@@ -5,6 +5,17 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..");
+const US_MARKET_HOLIDAYS = [
+  "2026-01-01", // New Year's Day
+  "2026-01-19", // Martin Luther King Jr. Day
+  "2026-02-16", // Presidents Day
+  "2026-04-03", // Good Friday
+  "2026-05-25", // Memorial Day
+  "2026-07-03", // Independence Day observed
+  "2026-09-07", // Labor Day
+  "2026-11-26", // Thanksgiving
+  "2026-12-25" // Christmas
+];
 
 function normalizeText(value) {
   return String(value ?? "").trim();
@@ -14,27 +25,98 @@ function resolveRepoPath(filePath) {
   return path.resolve(repoRoot, normalizeText(filePath));
 }
 
+function getDatePartsInTimeZone(date, timeZone) {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  });
+
+  const parts = formatter.formatToParts(date);
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  if (!year || !month || !day) {
+    throw new Error(`Datum fuer Zeitzone ${timeZone} konnte nicht aufgeloest werden.`);
+  }
+
+  return { year, month, day };
+}
+
+function createUtcDateFromDateText(dateText) {
+  return new Date(`${dateText}T00:00:00Z`);
+}
+
+function formatUtcDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function getUtcWeekday(date) {
+  return date.getUTCDay();
+}
+
+function shiftDateString(dateText, days) {
+  const date = createUtcDateFromDateText(dateText);
+  date.setUTCDate(date.getUTCDate() + days);
+  return formatUtcDate(date);
+}
+
+function isWeekend(dateText) {
+  const weekday = getUtcWeekday(createUtcDateFromDateText(dateText));
+  return weekday === 0 || weekday === 6;
+}
+
+function isUsMarketHoliday(dateText) {
+  return US_MARKET_HOLIDAYS.includes(dateText);
+}
+
+function findLatestUsTradingDay(dateText) {
+  let candidateDate = dateText;
+
+  while (isWeekend(candidateDate) || isUsMarketHoliday(candidateDate)) {
+    candidateDate = shiftDateString(candidateDate, -1);
+  }
+
+  return candidateDate;
+}
+
+function getPreviousUsTradingDate(dateText) {
+  const date = createUtcDateFromDateText(dateText);
+  const weekday = getUtcWeekday(date);
+
+  if (weekday === 1) {
+    return findLatestUsTradingDay(shiftDateString(dateText, -3));
+  }
+
+  if (weekday === 0) {
+    return findLatestUsTradingDay(shiftDateString(dateText, -2));
+  }
+
+  if (weekday === 6) {
+    return findLatestUsTradingDay(shiftDateString(dateText, -1));
+  }
+
+  return findLatestUsTradingDay(shiftDateString(dateText, -1));
+}
+
 function resolveTradingDate() {
   const explicitDate = normalizeText(process.env.EOD_TRADING_DATE);
   if (explicitDate) {
     return {
-      value: explicitDate,
+      value: findLatestUsTradingDay(explicitDate),
       isExplicit: true
     };
   }
 
-  const date = new Date();
-  date.setUTCDate(date.getUTCDate() - 1);
+  const currentDateParts = getDatePartsInTimeZone(new Date(), "America/New_York");
+  const currentDateInNewYork = `${currentDateParts.year}-${currentDateParts.month}-${currentDateParts.day}`;
+
   return {
-    value: date.toISOString().slice(0, 10),
+    value: getPreviousUsTradingDate(currentDateInNewYork),
     isExplicit: false
   };
-}
-
-function shiftDateString(dateText, days) {
-  const date = new Date(`${dateText}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
 }
 
 function buildRequestUrl(tradingDate) {
@@ -109,75 +191,52 @@ async function writeJsonAtomically(filePath, payload) {
 async function main() {
   const outputPath = resolveRepoPath(process.env.EOD_OUTPUT_PATH || "data/eod_stocks_latest.json");
   const tradingDateConfig = resolveTradingDate();
-  const attemptedDates = [tradingDateConfig.value];
+  const selectedTradingDate = tradingDateConfig.value;
+  const { url } = buildRequestUrl(selectedTradingDate);
 
-  if (!tradingDateConfig.isExplicit) {
-    for (let offset = 1; offset <= 4; offset += 1) {
-      attemptedDates.push(shiftDateString(tradingDateConfig.value, -offset));
-    }
+  console.log(`Requesting Massive EOD data: ${redactUrl(url)}`);
+  console.log("Authentication mode: query parameter apiKey");
+  console.log(`Using trading date: ${selectedTradingDate}`);
+
+  if (tradingDateConfig.isExplicit) {
+    console.log("Trading date source: EOD_TRADING_DATE (adjusted to previous US trading day if needed)");
+  } else {
+    console.log("Trading date source: current America/New_York date adjusted to previous US trading day");
   }
 
-  let payload = null;
-  let selectedTradingDate = "";
-  let lastErrorMessage = "";
-
-  for (const attemptedDate of attemptedDates) {
-    const { url } = buildRequestUrl(attemptedDate);
-    console.log(`Requesting Massive EOD data: ${redactUrl(url)}`);
-    console.log("Authentication mode: query parameter apiKey");
-    console.log(`Trying trading date: ${attemptedDate}`);
-
-    const response = await fetch(url, {
-      headers: {
-        "user-agent": "MarktWiki EOD Stock Data Updater"
-      }
-    });
-
-    if (response.ok) {
-      const nextPayload = ensureEodPayload(await response.json());
-      if (hasUsableResults(nextPayload)) {
-        payload = nextPayload;
-        selectedTradingDate = attemptedDate;
-        break;
-      }
-
-      lastErrorMessage = `Massive lieferte fuer ${attemptedDate} keine verwertbaren Results.`;
-      console.warn(lastErrorMessage);
-      if (tradingDateConfig.isExplicit) {
-        throw new Error(lastErrorMessage);
-      }
-      continue;
+  const response = await fetch(url, {
+    headers: {
+      "user-agent": "MarktWiki EOD Stock Data Updater"
     }
+  });
 
+  if (!response.ok) {
     const errorBody = await readErrorBody(response);
-    const baseMessage = `EOD-Daten konnten nicht geladen werden (HTTP ${response.status}) fuer ${attemptedDate}.`;
-    lastErrorMessage = `${baseMessage}${errorBody ? ` Antwort: ${errorBody}` : ""}`;
+    const baseMessage = `EOD-Daten konnten nicht geladen werden (HTTP ${response.status}) fuer ${selectedTradingDate}.`;
+    const errorMessage = `${baseMessage}${errorBody ? ` Antwort: ${errorBody}` : ""}`;
 
     if (response.status === 401) {
-      throw new Error(`${lastErrorMessage} Massive-Authentifizierung ist fehlgeschlagen.`);
+      throw new Error(`${errorMessage} Massive-Authentifizierung ist fehlgeschlagen.`);
     }
 
     if (response.status === 403) {
-      console.warn(`${lastErrorMessage} Massive blockiert Abrufe vor EOD oder fuer ungueltige Handelstage.`);
-      if (tradingDateConfig.isExplicit) {
-        throw new Error(lastErrorMessage);
-      }
-      continue;
+      console.warn(`${errorMessage} Massive blockiert Abrufe vor EOD oder fuer ungueltige Handelstage.`);
+      return;
     }
 
     if (response.status === 404) {
-      console.warn(`${lastErrorMessage} Wahrscheinlich kein Handelstag oder keine Daten verfuegbar.`);
-      if (tradingDateConfig.isExplicit) {
-        throw new Error(lastErrorMessage);
-      }
-      continue;
+      console.warn(`${errorMessage} Wahrscheinlich kein Handelstag oder keine Daten verfuegbar.`);
+      return;
     }
 
-    throw new Error(lastErrorMessage);
+    throw new Error(errorMessage);
   }
 
-  if (!payload) {
-    throw new Error(lastErrorMessage || "Massive-EOD-Daten konnten fuer keinen der geprueften Handelstage geladen werden.");
+  const payload = ensureEodPayload(await response.json());
+
+  if (!hasUsableResults(payload)) {
+    console.warn(`Massive lieferte fuer ${selectedTradingDate} keine Results. Workflow wird ohne Fehler beendet.`);
+    return;
   }
 
   const jsonOutput = `${JSON.stringify(payload, null, 2)}\n`;
